@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastro de Curso</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f8f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .form-container {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        input, textarea {
+            margin-top: 5px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .btn-salvar {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .btn-salvar:hover {
+            background-color: #45a049;
+        }
+
+        .btn-voltar {
+            background-color: #ccc;
+            color: black;
+        }
+
+        .btn-voltar:hover {
+            background-color: #bbb;
+        }
+    </style>
+</head>
+<body>
+<div class="form-container">
+    <h2>Cadastro de Curso</h2>
+    <form th:action="@{/curso/salvar}" method="post" th:object="${curso}">
+        <label for="nome">Nome do Curso:</label>
+        <input type="text" id="nome" th:field="*{nome}" required>
+
+        <label for="descricao">Descrição:</label>
+        <textarea id="descricao" th:field="*{descricao}" required></textarea>
+
+        <label for="professor">Professor:</label>
+        <select id="professor" name="professorId" required>
+            <option value="">Selecione um professor</option>
+            <th:block th:each="professor : ${professores}">
+                <option th:value="${professor.id}" th:text="${professor.nomeCompleto}"></option>
+            </th:block>
+        </select>
+
+        <div class="btn-group">
+            <button type="submit" class="btn btn-salvar">Salvar Curso</button>
+            <a th:href="@{/cursos}" class="btn btn-voltar">Voltar</a>
+        </div>
+    </form>
+
+</div>
+</body>
+</html>

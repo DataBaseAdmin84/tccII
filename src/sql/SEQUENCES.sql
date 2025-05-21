@@ -1,0 +1,1 @@
+CREATE sequence hibernate_sequence START WITH 1 ORDER CACHE 1000 INCREMENT BY 1;

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Nova Aula</title>
+</head>
+<body>
+<h1>Postar Nova Aula</h1>
+<form th:action="@{/aulas/salvar}" th:object="${aula}" method="post">
+    <input type="hidden" th:field="*{curso.id}" />
+    <label>Título:</label>
+    <input type="text" th:field="*{titulo}" required/><br/>
+    <label>Descrição:</label>
+    <textarea th:field="*{descricao}" required></textarea><br/>
+    <label>URL do Vídeo:</label>
+    <input type="text" th:field="*{urlVideo}" required/><br/>
+    <button type="submit">Salvar Aula</button>
+</form>
+</body>
+</html>

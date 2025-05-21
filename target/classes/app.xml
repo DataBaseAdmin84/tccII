@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuracao>
+
+    <app>
+        <name>tcc</name>
+        <dbUser>tcc</dbUser>
+        <url>http://localhost:1521/</url>
+    </app>
+</configuracao>
