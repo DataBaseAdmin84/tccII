@@ -2,17 +2,13 @@ package com.controller;
 
 import com.model.Aula;
 import com.model.Curso;
-
 import com.model.Usuario;
+import com.repository.CursoRepository;
 import com.service.AulaService;
 import com.service.CursoService;
 import com.service.UsuarioService;
 import jakarta.servlet.http.HttpSession;
-
-import com.repository.CursoRepository;
-import com.service.AulaService;
 import jakarta.validation.Valid;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -62,27 +58,4 @@ public class AulaController {
         model.addAttribute("cursoId", id);
         return "aluno/aulas";
     }
-
-    @GetMapping("/novo/{cursoId}")
-    public String novaAulaForm(@PathVariable Long cursoId, Model model) {
-        Curso curso = cursoRepository.findById(cursoId).orElseThrow();
-        Aula aula = new Aula();
-        aula.setCurso(curso);
-        model.addAttribute("aula", aula);
-        return "professor/formularioaula";
-    }
-
-    @PostMapping("/salvar")
-    public String salvarAula(@ModelAttribute @Valid Aula aula) {
-        aulaService.salvar(aula);
-        return "redirect:/professor/cursos";
-    }
-
-    @GetMapping("/curso/listar/{cursoId}")
-    public String listarAulasPorCurso(@PathVariable Long cursoId, Model model) {
-        Curso curso = cursoRepository.findById(cursoId).orElseThrow();
-        model.addAttribute("aulas", aulaService.listarPorCurso(curso));
-        return "aluno/aulas";
-    }
 }
-

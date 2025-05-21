@@ -5,3 +5,4 @@
 /mavenHomeManager.xml
 **/*.class
 *.class
+/target

@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Lista de Matrículas</title>
+    <title>Gerenciar Matrículas</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -45,6 +45,9 @@
             margin-bottom: 15px;
             margin-right: 10px;
         }
+        .btn-danger {
+            background-color: #d9534f;
+        }
         .btn:hover {
             background-color: #45a049;
         }
@@ -62,10 +65,10 @@
 <body>
 
 <div class="container">
-    <h2>Lista de Matrículas</h2>
+    <h2>Gerenciar Matrículas</h2>
 
     <a th:href="@{/matriculas/novo}" class="btn">Nova Matrícula</a>
-    <a th:href="@{/home}" class="btn" style="background-color: #d9534f;">Voltar</a>
+    <a th:href="@{/admin/home}" class="btn btn-danger">Voltar</a>
 
     <table>
         <thead>
@@ -85,11 +88,11 @@
                 <a th:href="@{'/matriculas/editar/' + ${matricula.id}}">Editar</a>
                 <a th:href="@{'/matriculas/excluir/' + ${matricula.id}}"
                    onclick="return confirm('Tem certeza que deseja excluir esta matrícula?')">Excluir</a>
+                <a th:href="@{'/aulas/curso/' + ${matricula.curso.id}}">Ver Aulas</a>
             </td>
         </tr>
         </tbody>
     </table>
-
 </div>
 
 </body>

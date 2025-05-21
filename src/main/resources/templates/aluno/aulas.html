@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html xmlns:th="http://www.thymeleaf.org" lang="pt-br">
 <head>
     <meta charset="UTF-8">
@@ -26,18 +25,5 @@
         </div>
     </div>
 </div>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Aulas do Curso</title>
-</head>
-<body>
-<h1>Aulas Disponíveis</h1>
-<ul>
-    <li th:each="aula : ${aulas}">
-        <h3 th:text="${aula.titulo}"></h3>
-        <p th:text="${aula.descricao}"></p>
-        <iframe th:src="${aula.urlVideo}" width="560" height="315" frameborder="0" allowfullscreen></iframe>
-    </li>
-</ul>
 </body>
 </html>

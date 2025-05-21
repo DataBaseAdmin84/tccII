@@ -2,49 +2,29 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Home - Plataforma TCC</title>
+    <title>Painel do Administrador</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-
-        .home-container {
-            background: white;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.1);
-            width: 100%;
-            max-width: 500px;
+            background-color: #f9f9f9;
             text-align: center;
+            padding: 60px;
         }
 
         h2 {
             color: #4CAF50;
         }
 
-        p {
-            margin-bottom: 20px;
-        }
-
         .btn {
             display: inline-block;
-            margin: 10px auto;
-            padding: 12px 20px;
-            background-color: #4CAF50;
+            padding: 12px 24px;
+            margin: 10px;
+            font-size: 16px;
             color: white;
+            background-color: #4CAF50;
             border: none;
             border-radius: 6px;
-            font-size: 16px;
             text-decoration: none;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            width: 80%;
         }
 
         .btn:hover {
@@ -53,13 +33,13 @@
     </style>
 </head>
 <body>
-<div class="home-container">
-    <h2>Gerenciamento de Cursos</h2>
-    <p></p>
 
-    <a th:href="@{/usuarios}" class="btn">Gerenciar Usuários</a>
-    <a th:href="@{/cursos}" class="btn">Ver Cursos</a>
-    <a th:href="@{/matriculas}" class="btn">Ver Matrículas</a>
-</div>
+<h2>Bem-vindo, Administrador</h2>
+<p>Você está logado com sucesso.</p>
+
+<a th:href="@{/admin/matriculas}" class="btn">Ver Matrículas</a>
+<a th:href="@{/usuarios}" class="btn">Gerenciar Usuários</a>
+<a th:href="@{/cursos}" class="btn">Gerenciar Cursos</a>
+
 </body>
 </html>

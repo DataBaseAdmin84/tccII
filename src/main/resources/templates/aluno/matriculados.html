@@ -64,13 +64,12 @@
 <div class="container">
     <h2>Lista de Matrículas</h2>
 
-    <a th:href="@{/matriculas/novo}" class="btn">Nova Matrícula</a>
-    <a th:href="@{/home}" class="btn" style="background-color: #d9534f;">Voltar</a>
+    <!-- Voltar para home do aluno -->
+    <a th:href="@{/aluno/home}" class="btn" style="background-color: #d9534f;">Voltar</a>
 
     <table>
         <thead>
         <tr>
-            <th>Usuário</th>
             <th>Curso</th>
             <th>Data da Matrícula</th>
             <th>Ações</th>
@@ -78,14 +77,9 @@
         </thead>
         <tbody>
         <tr th:each="matricula : ${matriculas}">
-            <td th:text="${matricula.usuario != null ? matricula.usuario.nomeCompleto : 'Sem Usuário'}">Usuário</td>
             <td th:text="${matricula.curso != null ? matricula.curso.nome : 'Sem Curso'}">Curso</td>
             <td th:text="${#dates.format(matricula.dataMatricula, 'dd/MM/yyyy')}">Data</td>
             <td class="actions">
-                <a th:href="@{'/matriculas/editar/' + ${matricula.id}}">Editar</a>
-                <a th:href="@{'/matriculas/excluir/' + ${matricula.id}}"
-                   onclick="return confirm('Tem certeza que deseja excluir esta matrícula?')">Excluir</a>
-                <!-- NOVO BOTÃO AQUI -->
                 <a th:href="@{'/aulas/curso/' + ${matricula.curso.id}}">Ver Aulas</a>
             </td>
         </tr>
