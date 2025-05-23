@@ -1,5 +1,6 @@
 package com.controller;
 
+import com.service.CursoService;
 import com.service.MatriculaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,11 +12,12 @@ public class AdminController {
 
     @Autowired
     private MatriculaService matriculaService;
+    private CursoService cursoService;
 
     // Página inicial do admin
     @GetMapping("/admin/home")
     public String exibirHomeAdmin() {
-        return "admin/home"; // templates/admin/home.html
+        return "home"; // templates/admin/home.html
     }
 
     // Listar todas as matrículas (admin)
@@ -24,4 +26,16 @@ public class AdminController {
         model.addAttribute("matriculas", matriculaService.buscarTodas());
         return "admin/matriculas"; // templates/admin/matriculas-admin.html
     }
+    @GetMapping("/admin/cursos")
+    public String listarCursosAdmin(Model model) {
+        model.addAttribute("cursos", cursoService.listarTodos()); //
+        return "admin/cursos"; // corresponde a templates/admin/cursos.html
+    }
+    @GetMapping("/admin/matriculas/novo")
+    public String novaMatriculaForm(Model model) {
+        // adiciona atributos se necessário
+        return "admin/formmatricula"; //  correto
+    }
+
+
 }

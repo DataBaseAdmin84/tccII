@@ -26,7 +26,7 @@ public class MatriculaController {
     // Listar todas as matrículas
     @GetMapping
     public String listarMatriculas(Model model) {
-        model.addAttribute("matriculas", matriculaService.listarMatriculas());
+        model.addAttribute("matriculas", matriculaService.buscarTodas());
         return "matriculas";
     }
 

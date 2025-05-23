@@ -25,7 +25,6 @@ public class ProfessorController {
     public String listarCursosDoProfessor(HttpSession session, Model model) {
         Usuario professor = (Usuario) session.getAttribute("usuarioLogado");
         if (professor == null) return "redirect:/";
-
         List<Curso> cursos = cursoService.listarTodos(); // ou cursoService.listarCursosPorProfessor(professor);
         model.addAttribute("cursos", cursos);
         return "professor/cursos";
