@@ -25,6 +25,20 @@
             color: #4CAF50;
         }
 
+        .mensagem {
+            text-align: center;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .mensagem.sucesso {
+            color: green;
+        }
+
+        .mensagem.erro {
+            color: red;
+        }
+
         .btn {
             display: inline-block;
             padding: 10px 16px;
@@ -79,6 +93,10 @@
 <body>
 <div class="container">
     <h2>Lista de Cursos</h2>
+
+    <!-- Mensagens -->
+    <div th:if="${msg}" class="mensagem sucesso" th:text="${msg}"></div>
+    <div th:if="${erro}" class="mensagem erro" th:text="${erro}"></div>
 
     <!-- Botões Novo Curso e Voltar -->
     <div style="margin-bottom: 20px;">

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/matriculas")
@@ -40,10 +41,12 @@ public class MatriculaController {
     }
 
     @PostMapping("/salvar")
-    public String salvarMatricula(@ModelAttribute MatriculaDTO matriculaDTO) {
+    public String salvarMatricula(@ModelAttribute MatriculaDTO matriculaDTO, RedirectAttributes redirect) {
         matriculaService.salvarMatricula(matriculaDTO);
-        return "redirect:/aluno/matriculados"; // agora redireciona para a tela do aluno
+        redirect.addFlashAttribute("msg", "Matrícula salva com sucesso!");
+        return "redirect:/matriculas"; // ← redireciona para a tela correta do admin
     }
+
 
 
     // Editar matrícula

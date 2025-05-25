@@ -5,6 +5,7 @@ import com.model.Curso;
 import com.model.Usuario;
 import com.repository.CursoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -51,10 +52,6 @@ public class CursoService {
         return dto;
     }
 
-    public void excluirCurso(Long id) {
-        cursoRepository.deleteById(id);
-    }
-
     public List<Curso> listarTodos() {
         return cursoRepository.findAll();
     }
@@ -69,5 +66,13 @@ public class CursoService {
             dto.setProfessorNome(professor.getNomeCompleto());
             return dto;
         }).collect(Collectors.toList());
+    }
+
+    public void excluirPorId(Long id) {
+        try {
+            cursoRepository.deleteById(id);
+        } catch (DataIntegrityViolationException e) {
+            throw new RuntimeException("Não é possível excluir este curso. Existem matrículas vinculadas a ele.");
+        }
     }
 }
