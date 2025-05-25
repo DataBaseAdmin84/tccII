@@ -10,7 +10,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -25,9 +27,9 @@ public class ProfessorController {
     public String listarCursosDoProfessor(HttpSession session, Model model) {
         Usuario professor = (Usuario) session.getAttribute("usuarioLogado");
         if (professor == null) return "redirect:/";
-        List<Curso> cursos = cursoService.listarTodos(); // ou cursoService.listarCursosPorProfessor(professor);
+        List<CursoDTO> cursos = cursoService.listarCursosPorProfessor(professor);
         model.addAttribute("cursos", cursos);
-        return "professor/cursos";
+        return "professor/home";
     }
 
     // Formulário de novo curso
@@ -47,5 +49,54 @@ public class ProfessorController {
 
         cursoService.salvarCurso(dto, professor);
         return "redirect:/professor/home";
+    }
+
+    // Editar curso
+    @GetMapping("/professor/curso/editar/{id}")
+    public String editarCurso(@PathVariable Long id, Model model, HttpSession session) {
+        Usuario professor = (Usuario) session.getAttribute("usuarioLogado");
+        CursoDTO curso = cursoService.buscarPorId(id);
+
+        // verifica se o curso pertence a esse professor
+        if (!curso.getProfessorId().equals(professor.getId())) {
+            return "redirect:/professor/home";
+        }
+
+        model.addAttribute("curso", curso);
+        return "professor/formcurso";
+    }
+
+    // Excluir curso
+    @GetMapping("/professor/curso/excluir/{id}")
+    public String excluirCurso(@PathVariable Long id, HttpSession session, RedirectAttributes redirect) {
+        Usuario professor = (Usuario) session.getAttribute("usuarioLogado");
+
+        if (professor == null) {
+            redirect.addFlashAttribute("erro", "Sessão expirada. Faça login novamente.");
+            return "redirect:/";
+        }
+
+        try {
+            cursoService.excluirCursoSePertencerAoProfessor(id, professor);
+            redirect.addFlashAttribute("msg", "Curso excluído com sucesso!");
+        } catch (Exception e) {
+            redirect.addFlashAttribute("erro", "Erro ao excluir curso: " + e.getMessage());
+        }
+
+        return "redirect:/professor/home";
+    }
+
+
+
+    // Painel redirecionado (botão Voltar)
+    @GetMapping("/professor/painel")
+    public String painelProfessor(HttpSession session, Model model) {
+        Usuario professor = (Usuario) session.getAttribute("usuarioLogado");
+        if (professor == null) return "redirect:/";
+
+        List<CursoDTO> cursos = cursoService.listarCursosPorProfessor(professor);
+
+        model.addAttribute("cursos", cursos);
+        return "professor/painel";
     }
 }

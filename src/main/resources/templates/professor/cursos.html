@@ -6,67 +6,73 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
+            background-color: #f8f8f8;
             display: flex;
             justify-content: center;
-            align-items: flex-start;
-            height: 100vh;
-            margin: 0;
-            padding-top: 60px;
+            align-items: center;
+            min-height: 100vh;
         }
 
         .container {
-            background: white;
+            background-color: #ffffff;
             padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            width: 90%;
-            max-width: 800px;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 900px;
         }
 
         h2 {
-            color: #4CAF50;
             text-align: center;
+            color: #4CAF50;
             margin-bottom: 20px;
         }
 
         .btn {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 15px;
+            padding: 10px 20px;
+            margin-right: 10px;
             border: none;
             border-radius: 5px;
             text-decoration: none;
-            font-size: 14px;
-            cursor: pointer;
-            margin-bottom: 20px;
+            font-weight: bold;
+            color: white;
+            background-color: #4CAF50;
+            display: inline-block;
         }
 
         .btn:hover {
             background-color: #45a049;
         }
 
+        .btn-voltar {
+            background-color: #d9534f;
+        }
+
+        .btn-voltar:hover {
+            background-color: #c9302c;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 15px;
+            margin-top: 20px;
         }
 
         th, td {
             padding: 12px;
-            border: 1px solid #ddd;
+            border-bottom: 1px solid #ddd;
             text-align: left;
         }
 
         th {
-            background-color: #dff0d8;
+            background-color: #e8f5e9;
         }
 
         .actions a {
-            margin-right: 10px;
             color: #4CAF50;
             text-decoration: none;
             font-weight: bold;
+            margin-right: 10px;
         }
 
         .actions a:hover {
@@ -77,9 +83,13 @@
 <body>
 <div class="container">
     <h2>Meus Cursos</h2>
-    <a th:href="@{/professor/curso/novo}" class="btn">Novo Curso</a>
-    <a th:href="@{/professor/home}" class="btn" style="background-color: #6c757d;">Voltar</a>
 
+    <div style="margin-bottom: 20px;">
+        <!-- ✅ Corrigido o botão para a rota correta -->
+        <a th:href="@{/professor/curso/novo}" class="btn">Novo Curso</a>
+        <a th:href="@{/professor/home}" class="btn btn-voltar">Voltar</a>
+
+    </div>
 
     <table>
         <thead>
@@ -91,11 +101,12 @@
         </thead>
         <tbody>
         <tr th:each="curso : ${cursos}">
-            <td th:text="${curso.nome}">Nome</td>
-            <td th:text="${curso.descricao}">Descrição</td>
+            <td th:text="${curso.nome}">Nome do Curso</td>
+            <td th:text="${curso.descricao}">Descrição do Curso</td>
             <td class="actions">
-                <a th:href="@{'/curso/editar/' + ${curso.id}}">Editar</a>
-                <a th:href="@{'/curso/excluir/' + ${curso.id}}">Excluir</a>
+                <a th:href="@{'/professor/curso/editar/' + ${curso.id}}">Editar</a>
+                <a th:href="@{'/professor/curso/excluir/' + ${curso.id}}" class="text-danger">Excluir</a>
+
             </td>
         </tr>
         </tbody>

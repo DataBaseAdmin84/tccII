@@ -45,12 +45,16 @@ public class CursoService {
     public CursoDTO buscarPorId(Long id) {
         Curso curso = cursoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Curso não encontrado"));
+
         CursoDTO dto = new CursoDTO();
         dto.setId(curso.getId());
         dto.setNome(curso.getNome());
         dto.setDescricao(curso.getDescricao());
+        dto.setProfessorId(curso.getProfessor().getId()); // <<< ESSA LINHA É ESSENCIAL
+
         return dto;
     }
+
 
     public List<Curso> listarTodos() {
         return cursoRepository.findAll();
@@ -75,4 +79,16 @@ public class CursoService {
             throw new RuntimeException("Não é possível excluir este curso. Existem matrículas vinculadas a ele.");
         }
     }
+
+    public void excluirCursoSePertencerAoProfessor(Long id, Usuario professor) {
+        Curso curso = cursoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Curso não encontrado"));
+
+        if (!curso.getProfessor().getId().equals(professor.getId())) {
+            throw new RuntimeException("Curso não pertence ao professor logado");
+        }
+
+        cursoRepository.deleteById(id);
+    }
+
 }
