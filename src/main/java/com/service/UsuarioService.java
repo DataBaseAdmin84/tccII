@@ -121,4 +121,7 @@ public class UsuarioService {
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
     }
 
+    public Object buscarTodos() {
+        return usuarioRepository.findAll();
+    }
 }

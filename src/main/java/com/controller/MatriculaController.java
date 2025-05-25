@@ -39,12 +39,12 @@ public class MatriculaController {
         return "formmatricula";
     }
 
-    // Salvar matrícula (novo ou edição)
     @PostMapping("/salvar")
     public String salvarMatricula(@ModelAttribute MatriculaDTO matriculaDTO) {
         matriculaService.salvarMatricula(matriculaDTO);
-        return "redirect:/matriculas";
+        return "redirect:/aluno/matriculados"; // agora redireciona para a tela do aluno
     }
+
 
     // Editar matrícula
     @GetMapping("/editar/{id}")

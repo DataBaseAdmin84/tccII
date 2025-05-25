@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <title>Nova Matrícula</title>
@@ -92,20 +92,23 @@
         <label for="usuario">Usuário:</label>
         <select id="usuario" th:field="*{usuarioId}" required>
             <option value="" disabled selected>Selecione um usuário</option>
-            <option th:each="usuario : ${usuarios}" th:value="${usuario.id}" th:text="${usuario.nomeCompleto}"></option>
+            <option th:each="usuario : ${usuarios}"
+                    th:value="${usuario.id}"
+                    th:text="${usuario.nomeCompleto}"></option>
         </select>
 
         <label for="curso">Curso:</label>
         <select id="curso" th:field="*{cursoId}" required>
             <option value="" disabled selected>Selecione um curso</option>
-            <option th:each="curso : ${cursos}" th:value="${curso.id}" th:text="${curso.nome}"></option>
+            <option th:each="curso : ${cursos}"
+                    th:value="${curso.id}"
+                    th:text="${curso.nome}"></option>
         </select>
 
         <div class="button-group">
             <button type="submit" class="btn-salvar">Salvar Matrícula</button>
-            <a th:href="@{/admin/matriculas}" class="btn btn-danger">Cancelar</a>
+            <a th:href="@{/aluno/matriculados}" class="btn-cancelar">Cancelar</a>
         </div>
-
     </form>
 </div>
 </body>

@@ -1,5 +1,6 @@
 package com.controller;
 
+import com.dto.MatriculaDTO;
 import com.dto.UsuarioDTO;
 import com.model.Curso;
 import com.model.Perfil;
@@ -103,5 +104,15 @@ public class AlunoController {
         model.addAttribute("matriculas", matriculaService.buscarMatriculasPorAluno(aluno.getId()));
         return "aluno/matriculados";
     }
+    @GetMapping("/matriculas/novo")
+    public String novaMatriculaForm(Model model) {
+        model.addAttribute("matricula", new MatriculaDTO());
+        model.addAttribute("usuarios", usuarioService.buscarTodos());
+        model.addAttribute("cursos", cursoService.listarTodos());
+        return "aluno/formmatricula";
+    }
+
+
+
 }
     

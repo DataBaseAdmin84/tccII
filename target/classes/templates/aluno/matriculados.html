@@ -10,6 +10,7 @@
             margin: 0;
             padding: 0;
         }
+
         .container {
             max-width: 900px;
             margin: 50px auto;
@@ -18,23 +19,12 @@
             border-radius: 12px;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
         }
+
         h2 {
             text-align: center;
             color: #4CAF50;
         }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        th {
-            background-color: #e8f5e9;
-        }
+
         .btn {
             display: inline-block;
             padding: 10px 16px;
@@ -44,16 +34,44 @@
             border-radius: 6px;
             margin-bottom: 15px;
             margin-right: 10px;
+            font-weight: bold;
         }
+
         .btn:hover {
             background-color: #45a049;
         }
+
+        .btn-danger {
+            background-color: #d9534f;
+        }
+
+        .btn-danger:hover {
+            background-color: #c9302c;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #e8f5e9;
+        }
+
         .actions a {
             margin-right: 10px;
             color: #4CAF50;
             text-decoration: none;
             font-weight: bold;
         }
+
         .actions a:hover {
             text-decoration: underline;
         }
@@ -64,13 +82,16 @@
 <div class="container">
     <h2>Lista de Matrículas</h2>
 
-    <a th:href="@{/matriculas/novo}" class="btn">Nova Matrícula</a>
-    <a th:href="@{/home}" class="btn" style="background-color: #d9534f;">Voltar</a>
+    <!-- Botões Nova Matrícula e Voltar -->
+    <div>
+        <a th:href="@{/aluno/matriculas/novo}" class="btn">Nova Matrícula</a>
+        <a th:href="@{/aluno/home}" class="btn btn-danger">Voltar</a>
+
+    </div>
 
     <table>
         <thead>
         <tr>
-            <th>Usuário</th>
             <th>Curso</th>
             <th>Data da Matrícula</th>
             <th>Ações</th>
@@ -78,14 +99,9 @@
         </thead>
         <tbody>
         <tr th:each="matricula : ${matriculas}">
-            <td th:text="${matricula.usuario != null ? matricula.usuario.nomeCompleto : 'Sem Usuário'}">Usuário</td>
             <td th:text="${matricula.curso != null ? matricula.curso.nome : 'Sem Curso'}">Curso</td>
             <td th:text="${#dates.format(matricula.dataMatricula, 'dd/MM/yyyy')}">Data</td>
             <td class="actions">
-                <a th:href="@{'/matriculas/editar/' + ${matricula.id}}">Editar</a>
-                <a th:href="@{'/matriculas/excluir/' + ${matricula.id}}"
-                   onclick="return confirm('Tem certeza que deseja excluir esta matrícula?')">Excluir</a>
-                <!-- NOVO BOTÃO AQUI -->
                 <a th:href="@{'/aulas/curso/' + ${matricula.curso.id}}">Ver Aulas</a>
             </td>
         </tr>
