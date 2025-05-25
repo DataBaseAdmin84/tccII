@@ -93,4 +93,8 @@ public class MatriculaService {
     public Object buscarTodas() {
         return matriculaRepository.findAll();
     }
+
+    public Object buscarMatriculasDoAluno(Usuario aluno) {
+        return matriculaRepository.findAll();
+    }
 }

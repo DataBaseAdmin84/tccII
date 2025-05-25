@@ -111,6 +111,17 @@ public class AlunoController {
         model.addAttribute("cursos", cursoService.listarTodos());
         return "aluno/formmatricula";
     }
+    @GetMapping("/aluno/matriculados")
+    public String listarMeusCursos(Model model, HttpSession session) {
+        Usuario aluno = (Usuario) session.getAttribute("usuarioLogado");
+
+        if (aluno == null) {
+            return "redirect:/";
+        }
+
+        model.addAttribute("matriculas", matriculaService.buscarMatriculasDoAluno(aluno));
+        return "aluno/matriculados";    }
+
 
 
 
