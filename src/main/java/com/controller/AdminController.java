@@ -12,6 +12,7 @@ public class AdminController {
 
     @Autowired
     private MatriculaService matriculaService;
+    @Autowired
     private CursoService cursoService;
 
     // Página inicial do admin

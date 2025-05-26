@@ -12,6 +12,7 @@ com\service\AulaService.class
 com\controller\UsuarioController.class
 com\controller\CursoController.class
 com\service\UsuarioService.class
+com\controller\CustomErrorController.class
 com\dto\UsuarioDTO.class
 com\controller\AulaController.class
 com\repository\AulaRepository.class

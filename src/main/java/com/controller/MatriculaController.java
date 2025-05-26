@@ -28,7 +28,7 @@ public class MatriculaController {
     @GetMapping
     public String listarMatriculas(Model model) {
         model.addAttribute("matriculas", matriculaService.buscarTodas());
-        return "matriculas";
+        return "admin/matriculas";
     }
 
     // Formulário de nova matrícula
@@ -37,7 +37,7 @@ public class MatriculaController {
         model.addAttribute("matricula", new MatriculaDTO());
         model.addAttribute("usuarios", usuarioService.listarEntidades()); // Certo: listarEntidades()
         model.addAttribute("cursos", cursoService.listarCursos());
-        return "formmatricula";
+        return "admin/formmatricula";
     }
 
     @PostMapping("/salvar")
@@ -72,7 +72,7 @@ public class MatriculaController {
         model.addAttribute("matricula", dto);
         model.addAttribute("usuarios", usuarioService.listarEntidades());
         model.addAttribute("cursos", cursoService.listarCursos());
-        return "formmatricula";
+        return "admin/formmatricula";
     }
 
     // Excluir matrícula
