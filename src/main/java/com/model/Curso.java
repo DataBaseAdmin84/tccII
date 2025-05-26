@@ -5,6 +5,11 @@ import jakarta.persistence.*;
 @Entity
 public class Curso {
 
+    public String getProfessorNome() {
+        return professor != null ? professor.getNomeCompleto() : "";
+    }
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -48,3 +53,4 @@ public class Curso {
         this.descricao = descricao;
     }
 }
+
