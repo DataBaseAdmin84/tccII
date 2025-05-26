@@ -109,7 +109,7 @@ public class AlunoController {
         model.addAttribute("matricula", new MatriculaDTO());
         model.addAttribute("usuarios", usuarioService.buscarTodos());
         model.addAttribute("cursos", cursoService.listarTodos());
-        return "aluno/formmatricula";
+        return "admin/formmatricula";
     }
     @GetMapping("/aluno/matriculados")
     public String listarMeusCursos(Model model, HttpSession session) {
