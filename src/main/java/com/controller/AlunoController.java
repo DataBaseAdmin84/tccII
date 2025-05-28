@@ -105,12 +105,22 @@ public class AlunoController {
         return "aluno/matriculados";
     }
     @GetMapping("/matriculas/novo")
-    public String novaMatriculaForm(Model model) {
-        model.addAttribute("matricula", new MatriculaDTO());
-        model.addAttribute("usuarios", usuarioService.buscarTodos());
+    public String novaMatriculaForm(Model model, HttpSession session, RedirectAttributes redirect) {
+        Usuario aluno = (Usuario) session.getAttribute("usuarioLogado");
+        if (aluno == null) {
+            redirect.addFlashAttribute("erro", "Sessão expirada.");
+            return "redirect:/";
+        }
+
+        MatriculaDTO dto = new MatriculaDTO();
+        dto.setUsuarioId(aluno.getId());
+
+        model.addAttribute("matricula", dto);
         model.addAttribute("cursos", cursoService.listarTodos());
-        return "admin/formmatricula";
+
+        return "aluno/formmatricula"; // ← correto
     }
+
     @GetMapping("/aluno/matriculados")
     public String listarMeusCursos(Model model, HttpSession session) {
         Usuario aluno = (Usuario) session.getAttribute("usuarioLogado");
@@ -120,10 +130,22 @@ public class AlunoController {
         }
 
         model.addAttribute("matriculas", matriculaService.buscarMatriculasDoAluno(aluno));
-        return "aluno/matriculados";    }
+        return "aluno/matriculados";
+    }
+    @PostMapping("/matriculas/salvar")
+    public String salvarMatriculaAluno(@ModelAttribute MatriculaDTO dto, HttpSession session, RedirectAttributes redirect) {
+        Usuario aluno = (Usuario) session.getAttribute("usuarioLogado");
+        if (aluno == null) {
+            redirect.addFlashAttribute("erro", "Sessão expirada.");
+            return "redirect:/";
+        }
 
+        dto.setUsuarioId(aluno.getId()); // força o ID correto
+        matriculaService.salvarMatricula(dto);
+        redirect.addFlashAttribute("msg", "Matrícula realizada com sucesso!");
 
-
+        return "redirect:/aluno/matriculados";
+    }
 
 }
     
