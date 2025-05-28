@@ -5,35 +5,33 @@
       layout:decorate="~{base}">
 
 <head>
-    <meta charset="UTF-8">
     <title>Nova Matrícula</title>
 </head>
 
 <body>
-<div layout:fragment="conteudo" class="container mt-5">
+<section layout:fragment="conteudo">
 
-    <div class="card shadow p-4">
-        <h2 class="text-center text-success">Nova Matrícula</h2>
-        <form th:action="@{/aluno/matriculas/salvar}" method="post" th:object="${matricula}">
-            <input type="hidden" th:field="*{usuarioId}" />
+    <h2 class="text-center text-success">Nova Matrícula</h2>
 
-            <div class="mb-3">
-                <label for="curso" class="form-label fw-bold">Curso:</label>
-                <select id="curso" th:field="*{cursoId}" class="form-select" required>
-                    <option value="" disabled selected>Selecione um curso</option>
-                    <option th:each="curso : ${cursos}"
-                            th:value="${curso.id}"
-                            th:text="${curso.nome}"></option>
-                </select>
-            </div>
+    <form th:action="@{/aluno/matriculas/salvar}" method="post" th:object="${matricula}">
+        <input type="hidden" th:field="*{usuarioId}" />
 
-            <div class="d-flex justify-content-between mt-4">
-                <button type="submit" class="btn btn-success w-100 me-2">Salvar Matrícula</button>
-                <a th:href="@{/aluno/matriculados}" class="btn btn-danger w-100 ms-2">Cancelar</a>
-            </div>
-        </form>
-    </div>
+        <div class="mb-3">
+            <label for="curso" class="form-label fw-bold">Curso:</label>
+            <select id="curso" th:field="*{cursoId}" class="form-select" required>
+                <option value="" disabled selected>Selecione um curso</option>
+                <option th:each="curso : ${cursos}"
+                        th:value="${curso.id}"
+                        th:text="${curso.nome}"></option>
+            </select>
+        </div>
 
-</div>
+        <div class="d-flex justify-content-between mt-4">
+            <button type="submit" class="btn btn-success w-100 me-2">Salvar Matrícula</button>
+            <a th:href="@{/aluno/matriculados}" class="btn btn-danger w-100 ms-2">Cancelar</a>
+        </div>
+    </form>
+
+</section>
 </body>
 </html>
