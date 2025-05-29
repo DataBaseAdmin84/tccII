@@ -12,7 +12,14 @@
 <div class="container">
     <section layout:fragment="conteudo">
         <!-- Aqui o conteúdo dos HTMLs filhos será inserido -->
+        <h1 th:text="${title} ?: 'Bem-vindo à Plataforma TCC'">Bem-vindo à Plataforma TCC</h1>
+        <p>Esta é a página base. O conteúdo específico será inserido aqui.</p>
+        <div th:replace="${content}"></div>
+
     </section>
+    <footer layout:fragment="rodape">
+        <p>&copy; 2023 Plataforma TCC. Todos os direitos reservados.</p>
+    </footer>
 </div>
 
 </body>

@@ -12,7 +12,7 @@
 <section layout:fragment="conteudo">
 
     <h2 class="text-center text-success">Nova Matrícula</h2>
-
+    <p class="text-center text-secondary">Preencha os dados abaixo para realizar uma nova matrícula.</p>
     <form th:action="@{/aluno/matriculas/salvar}" method="post" th:object="${matricula}">
         <input type="hidden" th:field="*{usuarioId}" />
 
