@@ -1,20 +1,22 @@
 package com.controller;
 
 import com.dto.CursoDTO;
-import com.model.Curso;
 import com.model.Usuario;
 import com.service.CursoService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 public class ProfessorController {
@@ -39,15 +41,33 @@ public class ProfessorController {
         return "professor/formcurso";
     }
 
-    // Salvar novo curso (com DTO)
+    // Salvar novo curso com upload de PDF
     @PostMapping("/professor/curso/salvar")
-    public String salvarCurso(@ModelAttribute("curso") CursoDTO dto, HttpSession session) {
+    public String salvarCurso(@ModelAttribute("curso") CursoDTO dto,
+                              @RequestParam("arquivoPdf") MultipartFile arquivo,
+                              HttpSession session) {
+
         Usuario professor = (Usuario) session.getAttribute("usuarioLogado");
+
         if (professor == null || professor.getId() == null) {
             return "redirect:/";
         }
 
-        cursoService.salvarCurso(dto, professor);
+        try {
+            if (!arquivo.isEmpty()) {
+                String nomeArquivo = UUID.randomUUID() + "_" + arquivo.getOriginalFilename();
+                Path destino = Paths.get("uploads/pdfs", nomeArquivo);
+                Files.createDirectories(destino.getParent());
+                Files.copy(arquivo.getInputStream(), destino);
+                dto.setUrlPdf("/arquivos/pdfs/" + nomeArquivo);
+            }
+
+            cursoService.salvarCurso(dto, professor);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         return "redirect:/professor/home";
     }
 
@@ -86,16 +106,13 @@ public class ProfessorController {
         return "redirect:/professor/home";
     }
 
-
-
-    // Painel redirecionado (botão Voltar)
+    // Painel alternativo
     @GetMapping("/professor/painel")
     public String painelProfessor(HttpSession session, Model model) {
         Usuario professor = (Usuario) session.getAttribute("usuarioLogado");
         if (professor == null) return "redirect:/";
 
         List<CursoDTO> cursos = cursoService.listarCursosPorProfessor(professor);
-
         model.addAttribute("cursos", cursos);
         return "professor/painel";
     }

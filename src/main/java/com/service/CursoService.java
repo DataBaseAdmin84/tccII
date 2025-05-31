@@ -23,6 +23,8 @@ public class CursoService {
 
         curso.setNome(dto.getNome());
         curso.setDescricao(dto.getDescricao());
+        curso.setUrlVideo(dto.getUrlVideo());
+        curso.setUrlPdf(dto.getUrlPdf());
         curso.setProfessor(professor);
 
         curso = cursoRepository.save(curso);
@@ -50,11 +52,11 @@ public class CursoService {
         dto.setId(curso.getId());
         dto.setNome(curso.getNome());
         dto.setDescricao(curso.getDescricao());
-        dto.setProfessorId(curso.getProfessor().getId()); // <<< ESSA LINHA É ESSENCIAL
-
+        dto.setUrlVideo(curso.getUrlVideo());
+        dto.setUrlPdf(curso.getUrlPdf());
+        dto.setProfessorId(curso.getProfessor().getId());
         return dto;
     }
-
 
     public List<Curso> listarTodos() {
         return cursoRepository.findAll();
@@ -90,5 +92,4 @@ public class CursoService {
 
         cursoRepository.deleteById(id);
     }
-
 }

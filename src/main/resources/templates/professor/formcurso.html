@@ -12,7 +12,10 @@
             <h4 class="mb-0">Cadastrar Novo Curso</h4>
         </div>
         <div class="card-body">
-            <form th:action="@{/professor/curso/salvar}" th:object="${curso}" method="post">
+
+            <!-- FORMULÁRIO CORRETO -->
+            <form th:action="@{/professor/curso/salvar}" th:object="${curso}" method="post" enctype="multipart/form-data">
+
                 <input type="hidden" th:field="*{id}"/>
 
                 <div class="mb-3">
@@ -26,28 +29,26 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">URL do Conteúdo</label>
-                    <input type="text" th:field="*{urlConteudo}" class="form-control" placeholder="https://..."/>
-                </div>
-
-                <div class="mb-3">
                     <label class="form-label">URL do Vídeo</label>
                     <input type="text" th:field="*{urlVideo}" class="form-control" placeholder="https://..."/>
                 </div>
-
-                Se quiser usar futuramente -->
 
                 <div class="mb-3">
                     <label class="form-label">Link do PDF</label>
                     <input type="text" name="urlPdf" class="form-control" placeholder="https://..."/>
                 </div>
 
+                <div class="mb-3">
+                    <label class="form-label">PDF do Curso</label>
+                    <input type="file" name="arquivoPdf" class="form-control" accept=".pdf"/>
+                </div>
 
                 <div class="text-end">
                     <a th:href="@{/professor/home}" class="btn btn-secondary">Cancelar</a>
                     <button type="submit" class="btn btn-success">Salvar Curso</button>
                 </div>
             </form>
+
         </div>
     </div>
 </div>

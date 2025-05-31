@@ -11,6 +11,17 @@ public class CursoDTO {
     private String urlConteudo;
     private String urlVideo;
 
+    private String urlPdf;
+
+    public String getUrlPdf() {
+        return urlPdf;
+    }
+
+    public void setUrlPdf(String urlPdf) {
+        this.urlPdf = urlPdf;
+    }
+
+
     // Getters e Setters
 
     public Long getId() {
