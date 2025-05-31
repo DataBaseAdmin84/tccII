@@ -1,8 +1,10 @@
-# Default ignored files
+# Build directories
+/target/
+**/target/
+
+# Outras regras que você já tem
 /shelf/
 /.idea/workspace.xml
-# Environment-dependent path to Maven home directory
 /mavenHomeManager.xml
 **/*.class
 *.class
-/target
