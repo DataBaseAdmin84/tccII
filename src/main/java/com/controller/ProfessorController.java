@@ -71,6 +71,7 @@ public class ProfessorController {
         return "redirect:/professor/home";
     }
 
+
     // Editar curso
     @GetMapping("/professor/curso/editar/{id}")
     public String editarCurso(@PathVariable Long id, Model model, HttpSession session) {
