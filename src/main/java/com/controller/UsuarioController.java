@@ -2,7 +2,7 @@ package com.controller;
 
 import com.dto.LoginDTO;
 import com.dto.UsuarioDTO;
-import com.model.Perfil;
+import com.enums.PerfilUsuario;
 import com.model.Usuario;
 import com.service.UsuarioService;
 import jakarta.servlet.http.HttpSession;
@@ -37,24 +37,30 @@ public class UsuarioController {
             if (usuario.getPerfil() == null) {
                 model.addAttribute("erro", "Usuário sem perfil definido.");
                 return "login";
-            }
+            } else if (usuario.getPerfil().equals(PerfilUsuario.PROFESSOR.getCodigo())) {
+                return "redirect:/professor/home";
+            } else if (usuario.getPerfil().equals(PerfilUsuario.ALUNO.getCodigo())) {
+                return "redirect:/aluno/home";
+            } else {
+                model.addAttribute("erro", "Perfil de usuário desconhecido.");
+                return "login";
 
-            switch (usuario.getPerfil()) {
-                case ADMIN:
-                    return "redirect:/home";
-                case PROFESSOR:
-                    return "redirect:/professor/home";
-                case ALUNO:
-                    return "redirect:/aluno/home";
-                default:
-                    model.addAttribute("erro", "Perfil desconhecido");
-                    return "login";
             }
-        } else {
-            model.addAttribute("erro", "Login ou senha inválidos");
-            return "login";
         }
+        return "redirect:/logi";
     }
+
+//            if (usuario.getPerfil() == null) {
+//                model.addAttribute("erro", "Usuário sem perfil definido.");
+//                return "login";
+//            }
+
+
+//        else {
+//            model.addAttribute("erro", "Login ou senha inválidos");
+//            return "login";
+//        }
+ //   }
 
     @GetMapping("/home")
     public String mostrarHome() {
@@ -65,7 +71,7 @@ public class UsuarioController {
     public String listarUsuarios(Model model, HttpSession session) {
         Usuario usuarioLogado = (Usuario) session.getAttribute("usuarioLogado");
 
-        if (usuarioLogado == null || usuarioLogado.getPerfil() != Perfil.ADMIN) {
+        if (usuarioLogado == null || usuarioLogado.getPerfil() == null) {
             return "redirect:/";
         }
 

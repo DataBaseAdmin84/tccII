@@ -112,9 +112,6 @@ public class UsuarioService {
         usuario.setDataInclusao(new Date());
         usuarioRepository.save(usuario);
     }
-    public List<Usuario> listarPorPerfil(com.model.Perfil perfil) {
-        return usuarioRepository.findByPerfil(perfil);
-    }
 
     public Usuario buscarEntidadePorId(Long id) {
         return usuarioRepository.findById(id)

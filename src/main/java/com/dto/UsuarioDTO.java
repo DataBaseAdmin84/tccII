@@ -1,6 +1,5 @@
 package com.dto;
 
-import com.model.Perfil;
 import com.model.Usuario;
 
 public class UsuarioDTO {
@@ -11,7 +10,7 @@ public class UsuarioDTO {
     private String email;
     private String login;
     private String senha;
-    private Perfil perfil;
+    private Integer perfil;
     private String tipoUsuario;
 
     public Long getId() {
@@ -62,11 +61,11 @@ public class UsuarioDTO {
         this.senha = senha;
     }
 
-    public Perfil getPerfil() {
+    public Integer getPerfil() {
         return perfil;
     }
 
-    public void setPerfil(Perfil perfil) {
+    public void setPerfil(Integer perfil) {
         this.perfil = perfil;
     }
 
