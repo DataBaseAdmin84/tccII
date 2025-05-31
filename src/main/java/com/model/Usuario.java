@@ -28,9 +28,8 @@ public class Usuario {
     @Column(name = "DATA_INCLUSAO")
     private Date dataInclusao;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "PERFIL")
-    private Perfil perfil;
+    private Integer perfil;
 
     @Column(name = "TIPO_USUARIO", nullable = false)
     private String tipoUsuario;
@@ -85,11 +84,10 @@ public class Usuario {
         this.dataInclusao = dataInclusao;
     }
 
-    public Perfil getPerfil() {
+    public Integer getPerfil() {
         return perfil;
     }
-
-    public void setPerfil(Perfil perfil) {
+    public void setPerfil(Integer perfil) {
         this.perfil = perfil;
     }
 
@@ -98,6 +96,7 @@ public class Usuario {
     }
 
     public void setTipoUsuario(String tipoUsuario) {
-        this.tipoUsuario = tipoUsuario;
-    }
+        this.tipoUsuario = tipoUsuario; }
+
 }
+

@@ -53,20 +53,7 @@ public class ProfessorController {
             return "redirect:/";
         }
 
-        try {
-            if (!arquivo.isEmpty()) {
-                String nomeArquivo = UUID.randomUUID() + "_" + arquivo.getOriginalFilename();
-                Path destino = Paths.get("uploads/pdfs", nomeArquivo);
-                Files.createDirectories(destino.getParent());
-                Files.copy(arquivo.getInputStream(), destino);
-                dto.setUrlPdf("/arquivos/pdfs/" + nomeArquivo);
-            }
 
-            cursoService.salvarCurso(dto, professor);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
         return "redirect:/professor/home";
     }

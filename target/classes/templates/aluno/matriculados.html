@@ -80,10 +80,11 @@
 <body>
 
 <div class="container">
-    <h2>Lista de Matrículas</h2>
+    <h2>Lista de Matrículas</h2> <!-- aqui que começa o erro de rota -->
 
     <!-- Botões Nova Matrícula e Voltar -->
     <div>
+        <p th:if="${msg}" th:text="${msg}" class="msg"></p>
         <a th:href="@{/aluno/matriculas/novo}" class="btn">Nova Matrícula</a>
         <a th:href="@{/aluno/home}" class="btn btn-danger">Voltar</a>
 

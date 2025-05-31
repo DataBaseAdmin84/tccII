@@ -1,15 +1,17 @@
+C:\Users\hanni\IdeaProjects\tccII\src\main\java\com\enums\PerfilUsuario.java
 C:\Users\hanni\IdeaProjects\tccII\src\main\java\com\repository\UsuarioRepository.java
 C:\Users\hanni\IdeaProjects\tccII\src\main\java\com\model\Usuario.java
+C:\Users\hanni\IdeaProjects\tccII\src\main\java\com\service\S3Service.java
 C:\Users\hanni\IdeaProjects\tccII\src\main\java\com\repository\MatriculaRepository.java
 C:\Users\hanni\IdeaProjects\tccII\src\main\java\com\service\CursoService.java
 C:\Users\hanni\IdeaProjects\tccII\src\main\java\com\repository\AulaRepository.java
 C:\Users\hanni\IdeaProjects\tccII\src\main\java\com\service\UsuarioService.java
 C:\Users\hanni\IdeaProjects\tccII\src\main\java\com\dto\AulaDTO.java
 C:\Users\hanni\IdeaProjects\tccII\src\main\java\com\service\MatriculaService.java
+C:\Users\hanni\IdeaProjects\tccII\src\main\java\com\model\Arquivo.java
 C:\Users\hanni\IdeaProjects\tccII\src\main\java\com\repository\CursoRepository.java
 C:\Users\hanni\IdeaProjects\tccII\src\main\java\com\controller\AulaController.java
 C:\Users\hanni\IdeaProjects\tccII\src\main\java\com\controller\ProfessorController.java
-C:\Users\hanni\IdeaProjects\tccII\src\main\java\com\model\Perfil.java
 C:\Users\hanni\IdeaProjects\tccII\src\main\java\com\model\Curso.java
 C:\Users\hanni\IdeaProjects\tccII\src\main\java\com\model\Matricula.java
 C:\Users\hanni\IdeaProjects\tccII\src\main\java\com\controller\CustomErrorController.java
@@ -26,3 +28,4 @@ C:\Users\hanni\IdeaProjects\tccII\src\main\java\com\dto\LoginDTO.java
 C:\Users\hanni\IdeaProjects\tccII\src\main\java\com\dto\MatriculaDTO.java
 C:\Users\hanni\IdeaProjects\tccII\src\main\java\com\controller\UsuarioController.java
 C:\Users\hanni\IdeaProjects\tccII\src\main\java\com\controller\CursoController.java
+C:\Users\hanni\IdeaProjects\tccII\src\main\java\com\controller\UploadController.java

@@ -38,6 +38,7 @@
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            text-decoration: none;
         }
 
         .msg {
@@ -56,16 +57,24 @@
     <thead>
     <tr>
         <th>Nome</th>
-        <th>Ação</th>
+        <th>Ações</th>
     </tr>
     </thead>
     <tbody>
     <tr th:each="curso : ${cursos}">
         <td th:text="${curso.nome}">Nome do curso</td>
         <td>
-            <form th:action="@{/aluno/matricular/{id}(id=${curso.id})}" method="post">
-                <button type="submit" class="btn">Matricular-se</button>
-            </form>
+            <!-- Se já estiver matriculado, mostrar botão "Ver Aulas" -->
+            <span th:if="${cursosMatriculados.contains(curso.id)}">
+                <a th:href="@{/aulas/curso/{id}(id=${curso.id})}" class="btn">Ver Aulas</a>
+            </span>
+
+            <!-- Se ainda não estiver matriculado, mostrar botão "Matricular-se" -->
+            <span th:unless="${cursosMatriculados.contains(curso.id)}">
+                <form th:action="@{/aluno/matricular/{id}(id=${curso.id})}" method="post">
+                    <button type="submit" class="btn">Matricular-se</button>
+                </form>
+            </span>
         </td>
     </tr>
     </tbody>

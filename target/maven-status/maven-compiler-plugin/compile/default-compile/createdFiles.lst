@@ -1,11 +1,14 @@
 com\model\Aula.class
 com\Main.class
+com\controller\UploadController.class
 com\controller\MatriculaController.class
 com\model\Curso.class
 com\dto\AulaDTO.class
 com\dto\MatriculaDTO.class
 com\controller\AdminController.class
 com\model\Usuario.class
+com\enums\PerfilUsuario.class
+com\model\Arquivo.class
 com\controller\AlunoController.class
 com\dto\LoginDTO.class
 com\service\AulaService.class
@@ -23,7 +26,6 @@ com\service\CursoService.class
 com\repository\UsuarioRepository.class
 com\repository\MatriculaRepository.class
 com\controller\ProfessorController.class
-com\controller\UsuarioController$1.class
-com\model\Perfil.class
+com\service\S3Service.class
 com\model\Matricula.class
 com\dto\CursoDTO.class

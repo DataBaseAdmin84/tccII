@@ -2,10 +2,9 @@ package com.controller;
 
 import com.dto.MatriculaDTO;
 import com.dto.UsuarioDTO;
+import com.enums.PerfilUsuario;
 import com.model.Curso;
-import com.model.Perfil;
 import com.model.Usuario;
-import com.model.Matricula;
 import com.service.CursoService;
 import com.service.MatriculaService;
 import com.service.UsuarioService;
@@ -42,7 +41,7 @@ public class AlunoController {
     // Salvar novo aluno
     @PostMapping("/salvar")
     public String salvarAluno(@ModelAttribute("aluno") UsuarioDTO dto) {
-        dto.setPerfil(Perfil.ALUNO);
+        dto.setPerfil(PerfilUsuario.ALUNO.getCodigo());
         usuarioService.salvarUsuario(dto);
         return "redirect:/usuarios";
     }
