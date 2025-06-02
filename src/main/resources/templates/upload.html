@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Upload de Arquivo</title>
+</head>
+<body>
+<h2>Enviar Arquivo para o S3</h2>
+<form method="post" action="/upload" enctype="multipart/form-data">
+    <input type="file" name="arquivoPdf" required>
+    <button type="submit">Enviar</button>
+</form>
+</body>
+</html>
