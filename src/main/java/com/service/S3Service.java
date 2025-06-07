@@ -15,6 +15,7 @@ import java.io.IOException;
 @Service
 public class S3Service {
 
+
     private final S3Client s3Client;
     private final String bucketName = "cursostcc"; // Nome do seu bucket
 
@@ -46,4 +47,8 @@ public class S3Service {
         }
         return convFile;
     }
+    public String uploadArquivo(MultipartFile arquivo) throws IOException {
+        return uploadFile(arquivo, null);
+    }
+
 }

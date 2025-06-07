@@ -42,7 +42,7 @@ public class AlunoController {
     @PostMapping("/salvar")
     public String salvarAluno(@ModelAttribute("aluno") UsuarioDTO dto) {
         dto.setPerfil(PerfilUsuario.ALUNO.getCodigo());
-        usuarioService.salvarUsuario(dto);
+//        usuarioService.salvarUsuario(dto);
         return "redirect:/usuarios";
     }
 

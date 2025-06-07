@@ -18,7 +18,7 @@ public class UsuarioService {
     private UsuarioRepository usuarioRepository;
 
     // Salvar um novo usuário
-    public UsuarioDTO salvarUsuario(UsuarioDTO dto) {
+    public void validar(UsuarioDTO dto) {
         if (dto.getId() == null) {
             if (usuarioRepository.existsByLogin(dto.getLogin())) {
                 throw new RuntimeException("Já existe um usuário com este login.");
@@ -28,22 +28,10 @@ public class UsuarioService {
             }
         }
 
-        Usuario usuario = new Usuario();
 
         if (dto.getId() != null) {
-            usuario = usuarioRepository.findById(dto.getId()).orElse(new Usuario());
+            var usuario = usuarioRepository.findById(dto.getId()).orElse(new Usuario());
         }
-
-        usuario.setNomeCompleto(dto.getNomeCompleto());
-        usuario.setEmail(dto.getEmail());
-        usuario.setLogin(dto.getLogin());
-        usuario.setSenha(dto.getSenha());
-        usuario.setDataInclusao(new Date());
-
-        Usuario salvo = usuarioRepository.save(usuario);
-        dto.setId(salvo.getId());
-
-        return dto;
     }
 
     // Listar todos usuários como DTO (para telas tipo listar usuários)
@@ -99,19 +87,19 @@ public class UsuarioService {
         }
     }
 
-    // Salvar usuário (sem DTO)
-    public void salvar(Usuario usuario) {
-        if (usuario.getId() == null) {
-            if (usuarioRepository.existsByLogin(usuario.getLogin())) {
-                throw new RuntimeException("Já existe um usuário com este login.");
-            }
-            if (usuarioRepository.existsByEmail(usuario.getEmail())) {
-                throw new RuntimeException("Já existe um usuário com este e-mail.");
-            }
-        }
-        usuario.setDataInclusao(new Date());
-        usuarioRepository.save(usuario);
-    }
+//    // Salvar usuário (sem DTO)
+//    public void salvar(Usuario usuario) {
+//        if (usuario.getId() == null) {
+//            if (usuarioRepository.existsByLogin(usuario.getLogin())) {
+//                throw new RuntimeException("Já existe um usuário com este login.");
+//            }
+//            if (usuarioRepository.existsByEmail(usuario.getEmail())) {
+//                throw new RuntimeException("Já existe um usuário com este e-mail.");
+//            }
+//        }
+//        usuario.setDataInclusao(new Date());
+//        usuarioRepository.save(usuario);
+//    }
 
     public Usuario buscarEntidadePorId(Long id) {
         return usuarioRepository.findById(id)

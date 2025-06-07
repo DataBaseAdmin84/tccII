@@ -38,10 +38,14 @@ public class ProfessorController {
     @GetMapping("/professor/curso/novo")
     public String exibirFormularioCurso(Model model) {
         model.addAttribute("curso", new CursoDTO());
+        model.addAttribute("titulo", "Novo Curso");
+        model.addAttribute("descricao", "Preencha os dados do curso");
+        model.addAttribute("acao", "Salvar");
+        model.addAttribute("botao", "Salvar Curso");
+        model.addAttribute("arquivoPdf", "Selecione um arquivo PDF (opcional)");
         return "professor/formcurso";
     }
 
-    // Salvar novo curso com upload de PDF
     @PostMapping("/professor/curso/salvar")
     public String salvarCurso(@ModelAttribute("curso") CursoDTO dto,
                               @RequestParam("arquivoPdf") MultipartFile arquivo,
@@ -53,10 +57,28 @@ public class ProfessorController {
             return "redirect:/";
         }
 
+        try {
+            if (!arquivo.isEmpty()) {
+                // Salvar arquivo no S3 e obter URL
+                String nomeArquivo = arquivo.getOriginalFilename();
+                String s3Url = "https://s3.us-east-2.amazonaws.com/cursosctcc/" + nomeArquivo;
 
+                // Define a URL no DTO
+//                dto.setUrlPdf(s3Url);
+            }
+
+            // Salva o curso com todos os dados preenchidos
+            cursoService.salvarCurso(dto, professor);
+
+        } catch (Exception e) {
+            e.printStackTrace(); // Você pode adicionar log melhor aqui
+        }
 
         return "redirect:/professor/home";
     }
+
+
+
 
 
     // Editar curso
@@ -104,4 +126,5 @@ public class ProfessorController {
         model.addAttribute("cursos", cursos);
         return "professor/painel";
     }
+
 }

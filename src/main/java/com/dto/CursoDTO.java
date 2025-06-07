@@ -4,25 +4,7 @@ public class CursoDTO {
 
     private Long id;
     private String nome;
-    private String descricao;
     private Long professorId;
-    private String professorNome;
-
-    private String urlConteudo;
-    private String urlVideo;
-
-    private String urlPdf;
-
-    public String getUrlPdf() {
-        return urlPdf;
-    }
-
-    public void setUrlPdf(String urlPdf) {
-        this.urlPdf = urlPdf;
-    }
-
-
-    // Getters e Setters
 
     public Long getId() {
         return id;
@@ -40,43 +22,11 @@ public class CursoDTO {
         this.nome = nome;
     }
 
-    public String getDescricao() {
-        return descricao;
-    }
-
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
-
     public Long getProfessorId() {
         return professorId;
     }
 
     public void setProfessorId(Long professorId) {
         this.professorId = professorId;
-    }
-
-    public String getProfessorNome() {
-        return professorNome;
-    }
-
-    public void setProfessorNome(String professorNome) {
-        this.professorNome = professorNome;
-    }
-
-    public String getUrlConteudo() {
-        return urlConteudo;
-    }
-
-    public void setUrlConteudo(String urlConteudo) {
-        this.urlConteudo = urlConteudo;
-    }
-
-    public String getUrlVideo() {
-        return urlVideo;
-    }
-
-    public void setUrlVideo(String urlVideo) {
-        this.urlVideo = urlVideo;
     }
 }
