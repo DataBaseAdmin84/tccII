@@ -54,18 +54,6 @@ public class UsuarioController {
         return "redirect:/logi";
     }
 
-//            if (usuario.getPerfil() == null) {
-//                model.addAttribute("erro", "Usuário sem perfil definido.");
-//                return "login";
-//            }
-
-
-//        else {
-//            model.addAttribute("erro", "Login ou senha inválidos");
-//            return "login";
-//        }
- //   }
-
     @GetMapping("/home")
     public String mostrarHome() {
         return "home";
@@ -92,11 +80,13 @@ public class UsuarioController {
     @PostMapping("/cadastrousuario")
     public String salvar(@ModelAttribute UsuarioDTO usuarioDTO, Model model) {
         try {
+            String email = usuarioDTO.getEmail();
+            if(usuarioService.validar(email)) {
+                model.addAttribute("erro", "Email já esta sendo usado por outro aluno.");
+                return "erro";
+            }
             Usuario usuario = usuarioDTO.create();
             usuario.setDataInclusao(new Date());
-
-            usuario.setEmail(null);
-
 
             usuarioRepository.save(usuario);
             model.addAttribute("sucesso", "Usuário cadastrado com sucesso!");
@@ -112,9 +102,8 @@ public class UsuarioController {
             }
 
         } catch (RuntimeException e) {
-            model.addAttribute("erro", e.getMessage());
-            model.addAttribute("message", "Seu texto ou variável aqui");
-            return "cadastrousuario";
+            model.addAttribute("erro", "Erro ao salvar o usuario.");
+            return "erro";
         }
     }
 

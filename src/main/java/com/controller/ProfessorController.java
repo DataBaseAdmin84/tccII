@@ -11,12 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
-import java.util.UUID;
 
 @Controller
 public class ProfessorController {
@@ -34,19 +29,18 @@ public class ProfessorController {
         return "professor/home";
     }
 
-    // Formulário de novo curso
+
     @GetMapping("/professor/curso/novo")
     public String exibirFormularioCurso(Model model) {
-        model.addAttribute("curso", new CursoDTO());
+        CursoDTO curso = new CursoDTO();
+        model.addAttribute("curso", curso);
         model.addAttribute("titulo", "Novo Curso");
-        model.addAttribute("descricao", "Preencha os dados do curso");
+        model.addAttribute("descricao", "Preencha os dados do curso abaixo:");
         model.addAttribute("acao", "Salvar");
-        model.addAttribute("botao", "Salvar Curso");
-        model.addAttribute("arquivoPdf", "Selecione um arquivo PDF (opcional)");
         return "professor/formcurso";
     }
 
-    @PostMapping("/professor/curso/salvar")
+    @PostMapping("/salvar")
     public String salvarCurso(@ModelAttribute("curso") CursoDTO dto,
                               @RequestParam("arquivoPdf") MultipartFile arquivo,
                               HttpSession session) {
@@ -63,15 +57,15 @@ public class ProfessorController {
                 String nomeArquivo = arquivo.getOriginalFilename();
                 String s3Url = "https://s3.us-east-2.amazonaws.com/cursosctcc/" + nomeArquivo;
 
-                // Define a URL no DTO
-//                dto.setUrlPdf(s3Url);
+
+                dto.setUrlPdf(s3Url);
             }
 
-            // Salva o curso com todos os dados preenchidos
+
             cursoService.salvarCurso(dto, professor);
 
         } catch (Exception e) {
-            e.printStackTrace(); // Você pode adicionar log melhor aqui
+            e.printStackTrace();
         }
 
         return "redirect:/professor/home";
@@ -79,18 +73,15 @@ public class ProfessorController {
 
 
 
-
-
-    // Editar curso
     @GetMapping("/professor/curso/editar/{id}")
     public String editarCurso(@PathVariable Long id, Model model, HttpSession session) {
         Usuario professor = (Usuario) session.getAttribute("usuarioLogado");
         CursoDTO curso = cursoService.buscarPorId(id);
 
-        // verifica se o curso pertence a esse professor
-        if (!curso.getProfessorId().equals(professor.getId())) {
-            return "redirect:/professor/home";
-        }
+//        // verifica se o curso pertence a esse professor
+//        if (!curso.getProfessorId().equals(professor.getId())) {
+//            return "redirect:/professor/home";
+//        }
 
         model.addAttribute("curso", curso);
         return "professor/formcurso";

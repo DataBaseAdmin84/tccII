@@ -4,7 +4,24 @@ public class CursoDTO {
 
     private Long id;
     private String nome;
-    private Long professorId;
+    private String descricao;
+    private String professorNome;
+
+    public String getProfessorNome() {
+        return professorNome;
+    }
+
+    public void setProfessorNome(String professorNome) {
+        this.professorNome = professorNome;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
+    }
 
     public Long getId() {
         return id;
@@ -22,11 +39,6 @@ public class CursoDTO {
         this.nome = nome;
     }
 
-    public Long getProfessorId() {
-        return professorId;
-    }
-
-    public void setProfessorId(Long professorId) {
-        this.professorId = professorId;
+    public void setUrlPdf(String s3Url) {
     }
 }

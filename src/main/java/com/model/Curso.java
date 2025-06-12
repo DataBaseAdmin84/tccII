@@ -8,30 +8,65 @@ import java.util.List;
 public class Curso {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
+    @SequenceGenerator(name = "HIBERNATE_SEQUENCE", sequenceName = "HIBERNATE_SEQUENCE", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "HIBERNATE_SEQUENCE")
     private Long id;
 
     @Column(nullable = false, length = 200)
     private String nome;
 
-    @ManyToOne
-    @JoinColumn(name = "professor_id", nullable = false)
-    private Usuario professor;
-
-    @OneToMany
-    @JoinColumn(name = "arquivo_id")
-    private List<Arquivo> arquivos;
-
-    public List<Arquivo> getArquivos() {
-        return arquivos;
-    }
-
-    public void setArquivos(List<Arquivo> arquivos) {
-        this.arquivos = arquivos;
-    }
-
     public Long getId() {
         return id;
+    }
+
+    @Column(length = 500)
+    private String descricao;
+
+    @Column(length = 500)
+    private String urlImagem;
+
+    @Column
+    private String lista;
+
+    @OneToMany(mappedBy = "curso")
+    private List<Usuario> usuarios;
+
+    @OneToMany
+    private  List<Matricula> matriculas;
+
+    public String getLista() {
+        return lista;
+    }
+
+    public List<Usuario> getUsuarios() {
+        return usuarios;
+    }
+
+    public List<Matricula> getMatriculas() {
+        return matriculas;
+    }
+
+    public void setMatriculas(List<Matricula> matriculas) {
+        this.matriculas = matriculas;
+    }
+
+    public void setUsuarios(List<Usuario> usuarios) {
+        this.usuarios = usuarios;
+    }
+
+    public void setLista(String lista) {
+        this.lista = lista;
+    }
+
+// criar um list de usuarios
+    // criar um list de matriculas
+    public void setUrlImagem(String urlImagem) {
+        this.urlImagem = urlImagem;
+    }
+
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
     }
 
     public void setId(Long id) {
@@ -46,12 +81,12 @@ public class Curso {
         this.nome = nome;
     }
 
-    public Usuario getProfessor() {
-        return professor;
+    public String getDescricao() {
+        return descricao;
     }
 
-    public void setProfessor(Usuario professor) {
-        this.professor = professor;
+    public String getUrlImagem() {
+        return urlImagem;
     }
 
 }
