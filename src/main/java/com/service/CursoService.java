@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,19 +18,17 @@ public class CursoService {
     @Autowired
     private CursoRepository cursoRepository;
 
-    public CursoDTO salvarCurso(CursoDTO dto, Usuario professor) {
+    public void salvarCurso(CursoDTO dto, Usuario professor) {
         Curso curso = (dto.getId() != null) ?
                 cursoRepository.findById(dto.getId()).orElse(new Curso()) : new Curso();
 
         curso.setNome(dto.getNome());
-        curso.setDescricao(dto.getDescricao());
-        curso.setUrlVideo(dto.getUrlVideo());
-        curso.setUrlPdf(dto.getUrlPdf());
-        curso.setProfessor(professor);
+//       curso.setUrlVideo(dto.getUrlVideo());
+//        curso.setUrlPdf(dto.getUrlPdf());
+//        curso.setProfessor(professor);
 
         curso = cursoRepository.save(curso);
         dto.setId(curso.getId());
-        return dto;
     }
 
     public List<CursoDTO> listarCursos() {
@@ -37,9 +36,8 @@ public class CursoService {
             CursoDTO dto = new CursoDTO();
             dto.setId(curso.getId());
             dto.setNome(curso.getNome());
-            dto.setDescricao(curso.getDescricao());
-            dto.setProfessorId(curso.getProfessor().getId());
-            dto.setProfessorNome(curso.getProfessor().getNomeCompleto());
+//            dto.setProfessorId(curso.getProfessor().getId());
+//            dto.setProfessorNome(curso.getProfessor().getNomeCompleto());
             return dto;
         }).collect(Collectors.toList());
     }
@@ -51,10 +49,9 @@ public class CursoService {
         CursoDTO dto = new CursoDTO();
         dto.setId(curso.getId());
         dto.setNome(curso.getNome());
-        dto.setDescricao(curso.getDescricao());
-        dto.setUrlVideo(curso.getUrlVideo());
-        dto.setUrlPdf(curso.getUrlPdf());
-        dto.setProfessorId(curso.getProfessor().getId());
+//        dto.setUrlVideo(curso.getUrlVideo());
+//        dto.setUrlPdf(curso.getUrlPdf());
+//        dto.setProfessorId(curso.getProfessor().getId());
         return dto;
     }
 
@@ -63,15 +60,18 @@ public class CursoService {
     }
 
     public List<CursoDTO> listarCursosPorProfessor(Usuario professor) {
-        return cursoRepository.findByProfessor(professor).stream().map(curso -> {
-            CursoDTO dto = new CursoDTO();
-            dto.setId(curso.getId());
-            dto.setNome(curso.getNome());
-            dto.setDescricao(curso.getDescricao());
-            dto.setProfessorId(professor.getId());
-            dto.setProfessorNome(professor.getNomeCompleto());
-            return dto;
-        }).collect(Collectors.toList());
+//        return cursoRepository.findByProfessor(professor).stream().map(curso -> {
+//            CursoDTO dto = new CursoDTO();
+//            dto.setId(curso.getId());
+//            dto.setNome(curso.getNome());
+//            dto.setProfessorId(professor.getId());
+////            dto.setProfessorNome(professor.getNomeCompleto());
+//
+////            dto.setUrlVideo(curso.getUrlVideo());
+////            dto.setUrlPdf(curso.getUrlPdf());
+//            return dto;
+//        }).collect(Collectors.toList());
+        return new ArrayList<>();
     }
 
     public void excluirPorId(Long id) {
@@ -86,9 +86,9 @@ public class CursoService {
         Curso curso = cursoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Curso não encontrado"));
 
-        if (!curso.getProfessor().getId().equals(professor.getId())) {
-            throw new RuntimeException("Curso não pertence ao professor logado");
-        }
+//        if (!curso.getProfessor().getId().equals(professor.getId())) {
+//            throw new RuntimeException("Curso não pertence ao professor logado");
+//        }
 
         cursoRepository.deleteById(id);
     }

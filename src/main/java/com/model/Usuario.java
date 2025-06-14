@@ -1,40 +1,47 @@
 package com.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.Date;
 
 @Entity
-@Table(name = "USUARIO") // Nome da tabela em maiúsculo para compatibilidade com Oracle
+@Table(name = "USUARIO")
 public class Usuario {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
+    @SequenceGenerator(name = "HIBERNATE_SEQUENCE", sequenceName = "HIBERNATE_SEQUENCE", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "HIBERNATE_SEQUENCE")
     private Long id;
 
-    @Column(name = "NOME_COMPLETO")
+    @NotNull
+    @Column(name = "NOME_COMPLETO", length = 200)
     private String nomeCompleto;
 
-    @Column(name = "EMAIL")
+    @NotNull
+    @Column(name = "EMAIL", length = 200)
     private String email;
 
-    @Column(name = "LOGIN")
+    @NotNull
+    @Column(name = "LOGIN", length = 200)
     private String login;
 
-    @Column(name = "SENHA")
+    @NotNull
+    @Column(name = "SENHA", length = 150)
     private String senha;
 
+    @NotNull
     @Column(name = "DATA_INCLUSAO")
     private Date dataInclusao;
 
+    @NotNull
     @Column(name = "PERFIL")
     private Integer perfil;
 
-    @Column(name = "TIPO_USUARIO", nullable = false)
-    private String tipoUsuario;
-
-    // Getters e Setters
+    @ManyToOne
+    @JoinColumn(name = "curso_id" )
+    private  Curso curso;
 
     public Long getId() {
         return id;
@@ -90,13 +97,6 @@ public class Usuario {
     public void setPerfil(Integer perfil) {
         this.perfil = perfil;
     }
-
-    public String getTipoUsuario() {
-        return tipoUsuario;
-    }
-
-    public void setTipoUsuario(String tipoUsuario) {
-        this.tipoUsuario = tipoUsuario; }
 
 }
 

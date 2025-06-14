@@ -8,7 +8,6 @@ public class MatriculaDTO {
     private Long cursoId;
     private Date dataMatricula;
 
-    // Getters e Setters
     public Long getId() {
         return id;
     }

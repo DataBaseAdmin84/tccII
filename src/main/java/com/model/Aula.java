@@ -19,7 +19,6 @@ public class Aula {
     @Column(nullable = false)
     private String urlConteudo;
 
-    private String urlVideo;
 
     @ManyToOne
     @JoinColumn(name = "curso_id", nullable = false)
@@ -29,7 +28,6 @@ public class Aula {
     @JoinColumn(name = "professor_id", nullable = false)
     private Usuario professor;
 
-    // Getters e Setters
     public Long getId() {
         return id;
     }
@@ -60,14 +58,6 @@ public class Aula {
 
     public void setUrlConteudo(String urlConteudo) {
         this.urlConteudo = urlConteudo;
-    }
-
-    public String getUrlVideo() {
-        return urlVideo;
-    }
-
-    public void setUrlVideo(String urlVideo) {
-        this.urlVideo = urlVideo;
     }
 
     public Curso getCurso() {

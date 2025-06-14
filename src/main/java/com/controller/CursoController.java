@@ -2,19 +2,28 @@ package com.controller;
 
 import com.dto.CursoDTO;
 import com.enums.PerfilUsuario;
+import com.model.Curso;
 import com.model.Usuario;
+import com.repository.CursoRepository;
 import com.service.CursoService;
+import com.service.S3Service;
 import com.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
 public class CursoController {
+
+    @Autowired
+    private CursoRepository cursoRepository;
 
     @Autowired
     private CursoService cursoService;
@@ -22,18 +31,20 @@ public class CursoController {
     @Autowired
     private UsuarioService usuarioService;
 
-    @GetMapping("/curso/novo")
-    public String novoCursoForm(Model model) {
-        model.addAttribute("curso", new CursoDTO());
-        model.addAttribute("professores", PerfilUsuario.PROFESSOR.getCodigo());
-        return "formcurso";
-    }
+    @Autowired
+    private S3Service s3Service;
 
-    @PostMapping("/curso/salvar")
-    public String salvarCurso(@ModelAttribute CursoDTO cursoDTO,
-                              @RequestParam("professorId") Long professorId) {
-        Usuario professor = usuarioService.buscarEntidadePorId(professorId);
-        cursoService.salvarCurso(cursoDTO, professor);
+    @PostMapping("/curso/novo")
+    public String salvar(@ModelAttribute CursoDTO cursoDTO,
+                              @RequestParam("arquivoPdf") MultipartFile arquivoPdf) throws IOException {
+        Curso curso = new Curso();
+        curso.setNome(cursoDTO.getNome());
+        curso.setDescricao(cursoDTO.getDescricao());
+        curso.setUrlImagem(cursoDTO.getDescricao());
+        cursoRepository.save(curso);
+        curso.setMatriculas(new ArrayList<>());
+        curso.setMatriculas(new ArrayList<>());
+        //TODO salvar o list de matricula e salvar o list de usuario.
         return "redirect:/cursos";
     }
 

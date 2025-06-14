@@ -4,6 +4,7 @@ import com.dto.LoginDTO;
 import com.dto.UsuarioDTO;
 import com.enums.PerfilUsuario;
 import com.model.Usuario;
+import com.repository.UsuarioRepository;
 import com.service.UsuarioService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,9 @@ public class UsuarioController {
 
     @Autowired
     private UsuarioService usuarioService;
+
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     @GetMapping("/")
     public String mostrarLogin(Model model) {
@@ -50,18 +54,6 @@ public class UsuarioController {
         return "redirect:/logi";
     }
 
-//            if (usuario.getPerfil() == null) {
-//                model.addAttribute("erro", "Usuário sem perfil definido.");
-//                return "login";
-//            }
-
-
-//        else {
-//            model.addAttribute("erro", "Login ou senha inválidos");
-//            return "login";
-//        }
- //   }
-
     @GetMapping("/home")
     public String mostrarHome() {
         return "home";
@@ -86,20 +78,32 @@ public class UsuarioController {
     }
 
     @PostMapping("/cadastrousuario")
-    public String salvarUsuario(@ModelAttribute UsuarioDTO usuarioDTO, Model model) {
+    public String salvar(@ModelAttribute UsuarioDTO usuarioDTO, Model model) {
         try {
-            Usuario usuario = usuarioDTO.get();
+            String email = usuarioDTO.getEmail();
+            if(usuarioService.validar(email)) {
+                model.addAttribute("erro", "Email já esta sendo usado por outro aluno.");
+                return "erro";
+            }
+            Usuario usuario = usuarioDTO.create();
             usuario.setDataInclusao(new Date());
 
-            usuarioService.salvar(usuario);
+            usuarioRepository.save(usuario);
             model.addAttribute("sucesso", "Usuário cadastrado com sucesso!");
-            model.addAttribute("usuario", new UsuarioDTO());
-            return "cadastrousuario";
+
+            if(usuario.getPerfil().equals(PerfilUsuario.PROFESSOR.getCodigo())){
+                return "professor/home";
+
+            } else if (usuario.getPerfil().equals(PerfilUsuario.ALUNO.getCodigo())) {
+                return "aluno/home";
+
+            } else {
+                return "templates/erro";
+            }
 
         } catch (RuntimeException e) {
-            model.addAttribute("erro", e.getMessage());
-            model.addAttribute("usuario", usuarioDTO);
-            return "cadastrousuario";
+            model.addAttribute("erro", "Erro ao salvar o usuario.");
+            return "erro";
         }
     }
 

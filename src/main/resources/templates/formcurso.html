@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="pt-br">
 <head>
     <meta charset="UTF-8">
@@ -84,8 +84,7 @@
 <body>
 <div class="form-container">
     <h2>Cadastro de Curso</h2>
-    <form th:action="@{/curso/salvar}" method="post" th:object="${curso}">
-        <!-- CAMPO ESSENCIAL PARA EDIÇÃO -->
+    <form th:action="@{/professor/curso/salvar}" method="post" th:object="${curso}" enctype="multipart/form-data">
         <input type="hidden" th:field="*{id}">
 
         <label for="nome">Nome do Curso:</label>
@@ -94,17 +93,14 @@
         <label for="descricao">Descrição:</label>
         <textarea id="descricao" th:field="*{descricao}" required></textarea>
 
-        <label for="professor">Professor:</label>
-        <select id="professor" th:field="*{professorId}" required>
-            <option value="">Selecione um professor</option>
-            <th:block th:each="professor : ${professores}">
-                <option th:value="${professor.id}" th:text="${professor.nomeCompleto}"></option>
-            </th:block>
-        </select>
+        <label for="arquivoPdf" th:text="${arquivoPdf}">Selecione um arquivo PDF (opcional):</label>
+        <input type="file" id="arquivoPdf" name="arquivoPdf" accept="application/pdf">
+        <input type="hidden" name="professorId" th:value="${#httpServletRequest.remoteUser}" />
+
 
         <div class="btn-group">
-            <button type="submit" class="btn btn-salvar">Salvar Curso</button>
-            <a th:href="@{/admin/cursos}" class="btn btn-voltar">Voltar</a>
+            <button type="submit" class="btn btn-salvar" th:text="${botao}">Salvar Curso</button>
+            <a th:href="@{/professor/home}" class="btn btn-voltar">Voltar</a>
         </div>
     </form>
 </div>
