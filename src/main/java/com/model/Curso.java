@@ -29,18 +29,11 @@ public class Curso {
     @Column
     private String lista;
 
-    @OneToMany(mappedBy = "curso")
-    private List<Usuario> usuarios;
-
     @OneToMany
     private  List<Matricula> matriculas;
 
     public String getLista() {
         return lista;
-    }
-
-    public List<Usuario> getUsuarios() {
-        return usuarios;
     }
 
     public List<Matricula> getMatriculas() {
@@ -51,16 +44,10 @@ public class Curso {
         this.matriculas = matriculas;
     }
 
-    public void setUsuarios(List<Usuario> usuarios) {
-        this.usuarios = usuarios;
-    }
-
     public void setLista(String lista) {
         this.lista = lista;
     }
 
-// criar um list de usuarios
-    // criar um list de matriculas
     public void setUrlImagem(String urlImagem) {
         this.urlImagem = urlImagem;
     }

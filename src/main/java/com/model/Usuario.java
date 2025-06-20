@@ -39,10 +39,6 @@ public class Usuario {
     @Column(name = "PERFIL")
     private Integer perfil;
 
-    @ManyToOne
-    @JoinColumn(name = "curso_id" )
-    private  Curso curso;
-
     public Long getId() {
         return id;
     }
