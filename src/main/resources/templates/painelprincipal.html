@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Administração</title>
+    <!-- Inclui Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Define a fonte Inter para todo o corpo */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* Fundo cinza claro para o corpo, similar ao do login */
+        }
+        /* Estilo para rolagem suave em âncoras internas */
+        html {
+            scroll-behavior: smooth;
+        }
+        /* Estilo para o modal de confirmação */
+        .modal {
+            display: none; /* Escondido por padrão */
+            position: fixed; /* Posição fixa na tela */
+            z-index: 1000; /* Acima de outros elementos */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto; /* Permite rolagem se o conteúdo for muito grande */
+            background-color: rgba(0,0,0,0.4); /* Fundo semi-transparente */
+            display: flex; /* Usa flexbox para centralizar */
+            justify-content: center; /* Centraliza horizontalmente */
+            align-items: center; /* Centraliza verticalmente */
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto; /* Centraliza o modal */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; /* Largura padrão */
+            max-width: 500px; /* Largura máxima */
+            border-radius: 0.75rem; /* Bordas arredondadas */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra */
+            text-align: center;
+        }
+        .modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem; /* Espaçamento entre os botões */
+            margin-top: 1.5rem;
+        }
+        .modal-buttons button {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .modal-buttons .confirm-btn {
+            background-color: #ef4444; /* Vermelho para ações de perigo */
+            color: white;
+        }
+        .modal-buttons .confirm-btn:hover {
+            background-color: #dc2626;
+        }
+        .modal-buttons .cancel-btn {
+            background-color: #6b7280; /* Cinza */
+            color: white;
+        }
+        .modal-buttons .cancel-btn:hover {
+            background-color: #4b5563;
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+<!-- Componente de Cabeçalho (Header) -->
+<header class="bg-white shadow-md p-4 flex justify-between items-center fixed top-0 w-full z-10 rounded-b-lg">
+    <!-- Logo ou Nome do Aplicativo -->
+    <div class="flex items-center space-x-2">
+        <svg class="w-8 h-8 text-green-600" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+            <path d="M10 2a8 8 0 100 16 8 8 0 000-16zm-3 9l3 3 5-5-1.5-1.5L10 11l-3-3z"></path>
+        </svg>
+        <h1 class="text-2xl font-bold text-gray-800">Tcc - Escola</h1>
+    </div>
+    <!-- Avatar do Usuário (oculto o nome em telas muito pequenas) -->
+    <div class="flex items-center space-x-2 cursor-pointer">
+        <img th:src="@{|https://placehold.co/40x40/4CAF50/ffffff?text=${usuarioLogado.inicial}|}"
+             alt="Avatar do Usuário"
+             class="w-10 h-10 rounded-full border-2 border-green-500">
+        <span class="font-medium text-gray-700 hidden sm:block">Olá, [[${usuarioLogado.nomeCompleto}]]!</span>
+    </div>
+    </div>
+</header>
+
+<!-- Conteúdo Principal (Sidebar e Área de Conteúdo) -->
+<div class="flex flex-1 pt-20"> <!-- Adiciona padding-top para compensar o header fixo -->
+    <!-- Overlay para o menu mobile -->
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-20 md:hidden hidden"></div>
+
+    <!-- Barra Lateral (Sidebar) - Oculta em mobile por padrão, visível em md: -->
+    <aside id="sidebar" class="fixed md:static inset-y-0 left-0 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out w-64 bg-gray-800 text-white p-4 flex-shrink-0 z-30 rounded-tr-lg rounded-br-lg">
+        <nav class="space-y-2">
+            <a href="#dashboard" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-green-700 transition duration-200 ease-in-out">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
+                </svg>
+                <span>Painel</span>
+            </a>
+            <a href="#courses" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-green-700 transition duration-200 ease-in-out">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 10a2 2 0 00-2-2H7a2 2 0 00-2 2v2a2 2 0 002 2h3a2 2 0 002-2v-2z"></path>
+                    <path fill-rule="evenodd" d="M16 4h-1V3a1 1 0 00-2 0v1H7V3a1 1 0 00-2 0v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2zm-2 5a2 2 0 11-4 0v-2a2 2 0 114 0v2z" clip-rule="evenodd"></path>
+                </svg>
+                <span>Cursos</span>
+            </a>
+            <a href="#classes" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-green-700 transition duration-200 ease-in-out">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm0 10V6h12l.002 8H4z"></path>
+                    <path d="M7 8h10a1 1 0 00.992-.857l.008-.143V6a1 1 0 00-1-1H7a1 1 0 00-1 1v2a1 1 0 001 1z"></path>
+                </svg>
+                <span>Aulas</span>
+            </a>
+            <a href="#settings" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-green-700 transition duration-200 ease-in-out">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" d="M11.49 3.17c-.381-1.46-2.099-1.46-2.48 0L8.232 5.385A2.003 2.003 0 016.93 6.082l-2.673-.594c-1.429-.317-1.785 1.587-.69 2.5l1.536 1.343a2.003 2.003 0 010 2.474l-1.536 1.343c-1.096.913-.74 2.81.69 2.5l2.673-.594a2.003 2.003 0 011.302.697l.788 2.057c.381 1.46 2.099 1.46 2.48 0l.788-2.057a2.003 2.003 0 011.302-.697l2.673.594c1.429.317 1.785-1.587.69-2.5l-1.536-1.343a2.003 2.003 0 010-2.474l1.536-1.343c1.096-.913.74-2.81-.69-2.5l-2.673.594a2.003 2.003 0 01-1.302-.697L11.49 3.17z" clip-rule="evenodd"></path>
+                </svg>
+                <span>Configurações</span>
+            </a>
+            <a href="#" id="logout-button" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-green-700 transition duration-200 ease-in-out">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clip-rule="evenodd"></path>
+                </svg>
+                <span>Sair</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Área de Conteúdo Principal -->
+    <main class="flex-1 p-6 md:p-8 space-y-8 overflow-y-auto">
+        <!-- Seção do Painel (Dashboard) com vídeo de apresentação -->
+        <section id="dashboard" class="bg-white p-6 rounded-lg shadow-md flex flex-col md:flex-row justify-center items-center gap-6">
+            <div class="w-full md:w-1/2 rounded-lg shadow-xl overflow-hidden aspect-video">
+                <!-- Exemplo de vídeo, substituir por URL real -->
+                <iframe
+                        class="w-full h-full"
+                        src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1"
+                        title="Vídeo de Apresentação de Aula"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen>
+                </iframe>
+            </div>
+            <div class="w-full md:w-1/2 text-center md:text-left">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">Bem-vindo ao Painel de Aulas!</h2>
+                <p class="text-gray-600 mb-4">Assista ao vídeo de apresentação para ter uma visão geral de como nosso sistema funciona e o que você pode encontrar aqui. Aprenda sobre a interação com cursos e o gerenciamento de suas aulas.</p>
+                <a href="#courses" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-200 ease-in-out">
+                    Explorar Cursos
+                    <svg class="ml-3 -mr-1 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                </a>
+            </div>
+        </section>
+
+        <!-- Seção de Cursos -->
+        <section id="courses" class="bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Gerenciamento de Cursos</h2>
+            <div class="overflow-x-auto rounded-lg shadow">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nome do Curso</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Instrutor</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Inscritos</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
+                    </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                    <!-- Linha de dados de exemplo -->
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Introdução ao Desenvolvimento Web</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Prof. Carlos Lima</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                                        Lançado
+                                    </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">150</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-left text-sm font-medium">
+                            <a href="#" class="text-green-600 hover:text-green-900 mr-3">Ver</a>
+                            <button onclick="showConfirmationModal('Arquivar Curso', 'Tem certeza que deseja arquivar o curso de Desenvolvimento Web?', () => console.log('Curso de Desenvolvimento Web arquivado.'))" class="text-red-600 hover:text-red-900">Arquivar</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Design de UI/UX para Iniciantes</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Dra. Sofia Martins</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                        Ativo
+                                    </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">80</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-left text-sm font-medium">
+                            <a href="#" class="text-green-600 hover:text-green-900 mr-3">Ver</a>
+                            <button onclick="showConfirmationModal('Arquivar Curso', 'Tem certeza que deseja arquivar o curso de UI/UX?', () => console.log('Curso de UI/UX arquivado.'))" class="text-red-600 hover:text-red-900">Arquivar</button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Seção de Aulas -->
+        <section id="classes" class="bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Gerenciamento de Aulas</h2>
+            <div class="overflow-x-auto rounded-lg shadow">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Título da Aula</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Curso</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Duração</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data de Criação</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
+                    </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                    <!-- Linha de dados de exemplo -->
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Fundamentos de HTML5</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Introdução ao Desenvolvimento Web</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">45 min</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2025-06-01</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-left text-sm font-medium">
+                            <a href="#" class="text-green-600 hover:text-green-900 mr-3">Detalhes</a>
+                            <button onclick="showConfirmationModal('Desativar Aula', 'Tem certeza que deseja desativar a aula de HTML5?', () => console.log('Aula de HTML5 desativada.'))" class="text-red-600 hover:text-red-900">Desativar</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Introdução ao Figma</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Design de UI/UX para Iniciantes</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">60 min</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-left text-sm font-medium">
+                            <a href="#" class="text-green-600 hover:text-green-900 mr-3">Detalhes</a>
+                            <button onclick="showConfirmationModal('Desativar Aula', 'Tem certeza que deseja desativar a aula de Figma?', () => console.log('Aula de Figma desativada.'))" class="text-red-600 hover:text-red-900">Desativar</button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        <!-- Seção de Configurações -->
+        <section id="settings" class="bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Configurações do Aplicativo</h2>
+            <div class="space-y-6">
+                <!-- Configuração Geral -->
+                <div class="bg-gray-50 p-4 rounded-lg shadow-sm">
+                    <h3 class="text-lg font-semibold text-gray-700 mb-2">Configurações Gerais</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="appName" class="block text-sm font-medium text-gray-700">Nome do Aplicativo</label>
+                            <input type="text" id="appName" name="appName" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm p-2" value="Seu Aplicativo">
+                        </div>
+                        <div>
+                            <label for="adminEmail" class="block text-sm font-medium text-gray-700">Email do Administrador</label>
+                            <input type="email" id="adminEmail" name="adminEmail" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm p-2" value="admin@example.com">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Configuração de Notificações -->
+                <div class="bg-gray-50 p-4 rounded-lg shadow-sm">
+                    <h3 class="text-lg font-semibold text-gray-700 mb-2">Preferências de Notificação</h3>
+                    <div class="flex items-center">
+                        <input id="emailNotifications" name="emailNotifications" type="checkbox" class="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded" checked>
+                        <label for="emailNotifications" class="ml-2 block text-sm text-gray-900">Receber notificações por email</label>
+                    </div>
+                    <div class="flex items-center mt-2">
+                        <input id="pushNotifications" name="pushNotifications" type="checkbox" class="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded">
+                        <label for="pushNotifications" class="ml-2 block text-sm text-gray-900">Receber notificações push</label>
+                    </div>
+                </div>
+
+                <!-- Botão de Salvar -->
+                <div class="flex justify-end">
+                    <button type="button" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-200 ease-in-out">
+                        Salvar Configurações
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<!-- Rodapé (Footer) -->
+<footer class="bg-gray-800 text-white p-4 text-center text-sm mt-auto rounded-t-lg">
+    <p>&copy; 2025 Seu Aplicativo. Todos os direitos reservados.</p>
+</footer>
+
+<!-- Script JavaScript para funcionalidade do menu mobile e modal -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebar-overlay');
+        const confirmationModal = document.getElementById('confirmation-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalMessage = document.getElementById('modal-message');
+        const confirmActionBtn = document.getElementById('confirm-action-btn');
+        const cancelActionBtn = document.getElementById('cancel-action-btn');
+
+        let currentActionCallback = null;
+
+        // Função para mostrar o modal de confirmação
+        window.showConfirmationModal = (title, message, callback) => {
+            modalTitle.textContent = title;
+            modalMessage.textContent = message;
+            currentActionCallback = callback; // Armazena a função de callback
+            confirmationModal.style.display = 'flex'; // Torna o modal visível
+        };
+
+        // Event listener para o botão de confirmar do modal
+        confirmActionBtn.addEventListener('click', () => {
+            if (currentActionCallback) {
+                currentActionCallback(); // Executa o callback
+            }
+            confirmationModal.style.display = 'none'; // Esconde o modal
+        });
+
+        // Event listener para o botão de cancelar do modal
+        cancelActionBtn.addEventListener('click', () => {
+            confirmationModal.style.display = 'none'; // Esconde o modal
+        });
+
+        // Event listener para fechar o modal clicando fora dele
+        confirmationModal.addEventListener('click', (e) => {
+            if (e.target === confirmationModal) {
+                confirmationModal.style.display = 'none';
+            }
+        });
+
+
+        // Funcionalidade do menu mobile
+        mobileMenuButton.addEventListener('click', () => {
+            sidebar.classList.toggle('-translate-x-full');
+            sidebarOverlay.classList.toggle('hidden');
+        });
+
+        sidebarOverlay.addEventListener('click', () => {
+            sidebar.classList.add('-translate-x-full');
+            sidebarOverlay.classList.add('hidden');
+        });
+
+        // Esconder sidebar ao clicar em um link da navegação (para mobile)
+        const navLinks = sidebar.querySelectorAll('a');
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth < 768) { // Apenas para telas pequenas (md: breakpoint)
+                    sidebar.classList.add('-translate-x-full');
+                    sidebarOverlay.classList.add('hidden');
+                }
+            });
+        });
+
+        // Adiciona funcionalidade de "Sair" (apenas loga no console por enquanto)
+        const logoutButton = document.getElementById('logout-button');
+        if (logoutButton) {
+            logoutButton.addEventListener('click', (e) => {
+                e.preventDefault(); // Impede a navegação padrão
+                showConfirmationModal('Confirmar Saída', 'Tem certeza que deseja sair do aplicativo?', () => {
+                    console.log('Usuário saiu.');
+                    // Aqui você adicionaria a lógica real de logout, como redirecionar para a página de login
+                    // window.location.href = '/login';
+                });
+            });
+        }
+    });
+</script>
+</body>
+</html>

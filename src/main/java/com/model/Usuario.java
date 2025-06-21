@@ -39,6 +39,9 @@ public class Usuario {
     @Column(name = "PERFIL")
     private Integer perfil;
 
+    @Transient
+    private String inicial;
+
     public Long getId() {
         return id;
     }
@@ -94,5 +97,14 @@ public class Usuario {
         this.perfil = perfil;
     }
 
+    public String getInicial() {
+        if(!nomeCompleto.isEmpty())
+            return nomeCompleto.substring(0, 2).toUpperCase();
+        else return "";
+    }
+
+    public void setInicial(String inicial) {
+        this.inicial = inicial;
+    }
 }
 
