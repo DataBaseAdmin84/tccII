@@ -24,36 +24,6 @@ public class UsuarioController {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    @GetMapping("/")
-    public String mostrarLogin(Model model) {
-        model.addAttribute("login", new LoginDTO());
-        return "login";
-    }
-
-    @PostMapping("/login")
-    public String autenticar(@ModelAttribute("login") LoginDTO loginDTO, Model model, HttpSession session) {
-        Optional<Usuario> usuarioOpt = usuarioService.autenticar(loginDTO.getLogin(), loginDTO.getSenha());
-
-        if (usuarioOpt.isPresent()) {
-            Usuario usuario = usuarioOpt.get();
-            session.setAttribute("usuarioLogado", usuario);
-
-            if (usuario.getPerfil() == null) {
-                model.addAttribute("erro", "Usuário sem perfil definido.");
-                return "login";
-            } else if (usuario.getPerfil().equals(PerfilUsuario.PROFESSOR.getCodigo())) {
-                return "redirect:/professor/home";
-            } else if (usuario.getPerfil().equals(PerfilUsuario.ALUNO.getCodigo())) {
-                return "redirect:/aluno/home";
-            } else {
-                model.addAttribute("erro", "Perfil de usuário desconhecido.");
-                return "login";
-
-            }
-        }
-        return "redirect:/logi";
-    }
-
     @GetMapping("/home")
     public String mostrarHome() {
         return "home";
