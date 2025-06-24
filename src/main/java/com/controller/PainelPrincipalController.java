@@ -1,7 +1,6 @@
 package com.controller;
 
 
-import com.model.Usuario;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

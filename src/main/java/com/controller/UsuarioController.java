@@ -1,8 +1,6 @@
 package com.controller;
 
-import com.dto.LoginDTO;
 import com.dto.UsuarioDTO;
-import com.enums.PerfilUsuario;
 import com.model.Usuario;
 import com.repository.UsuarioRepository;
 import com.service.UsuarioService;
@@ -10,10 +8,12 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.Date;
-import java.util.Optional;
 
 @Controller
 public class UsuarioController {
@@ -48,7 +48,7 @@ public class UsuarioController {
     }
 
     @PostMapping("/cadastrousuario")
-    public String salvar(@ModelAttribute UsuarioDTO usuarioDTO, Model model) {
+    public String salvar(@ModelAttribute UsuarioDTO usuarioDTO, Model model, HttpSession session) {
         try {
             String email = usuarioDTO.getEmail();
             if(usuarioService.validar(email)) {
@@ -59,17 +59,9 @@ public class UsuarioController {
             usuario.setDataInclusao(new Date());
 
             usuarioRepository.save(usuario);
+            session.setAttribute("usuarioLogado", usuario);
             model.addAttribute("sucesso", "Usuário cadastrado com sucesso!");
-
-            if(usuario.getPerfil().equals(PerfilUsuario.PROFESSOR.getCodigo())){
-                return "professor/home";
-
-            } else if (usuario.getPerfil().equals(PerfilUsuario.ALUNO.getCodigo())) {
-                return "aluno/home";
-
-            } else {
-                return "templates/erro";
-            }
+            return "redirect:/painelprincipal";
 
         } catch (RuntimeException e) {
             model.addAttribute("erro", "Erro ao salvar o usuario.");
