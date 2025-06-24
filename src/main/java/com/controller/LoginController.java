@@ -33,20 +33,10 @@ public class LoginController {
         if (usuarioOpt.isPresent()) {
             Usuario usuario = usuarioOpt.get();
             session.setAttribute("usuarioLogado", usuario);
-
-            if (usuario.getPerfil() == null) {
-                model.addAttribute("erro", "Usuário sem perfil definido.");
-                return "login";
-            } else if (usuario.getPerfil().equals(PerfilUsuario.PROFESSOR.getCodigo())) {
-                return "redirect:/painelprincipal";
-            } else if (usuario.getPerfil().equals(PerfilUsuario.ALUNO.getCodigo())) {
-                return "redirect:/painelprincipal";
-            } else {
-                model.addAttribute("erro", "Perfil de usuário desconhecido.");
-                return "login";
-
-            }
+            return "redirect:/painelprincipal";
         }
+
+        model.addAttribute("erro", "Credenciais inválidas. Tente novamente.");
         return "redirect:/login";
     }
 }
