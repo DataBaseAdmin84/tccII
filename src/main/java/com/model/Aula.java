@@ -7,26 +7,21 @@ import jakarta.persistence.*;
 public class Aula {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
+    @SequenceGenerator(name = "HIBERNATE_SEQUENCE", sequenceName = "HIBERNATE_SEQUENCE", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "HIBERNATE_SEQUENCE")
     private Long id;
 
-    @Column(nullable = false)
-    private String titulo;
-
-    @Column(nullable = false)
-    private String descricao;
-
-    @Column(nullable = false)
-    private String urlConteudo;
-
-
     @ManyToOne
-    @JoinColumn(name = "curso_id", nullable = false)
+    @JoinColumn(name = "ID_CURSO")
     private Curso curso;
 
-    @ManyToOne
-    @JoinColumn(name = "professor_id", nullable = false)
-    private Usuario professor;
+    @Column(name = "DESCRICAO", nullable = false)
+    private String descricao;
+
+    //TODO ADICIONAR ARQUIVOS
+    //List arquivos
+
 
     public Long getId() {
         return id;
@@ -34,14 +29,6 @@ public class Aula {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getTitulo() {
-        return titulo;
-    }
-
-    public void setTitulo(String titulo) {
-        this.titulo = titulo;
     }
 
     public String getDescricao() {
@@ -52,27 +39,11 @@ public class Aula {
         this.descricao = descricao;
     }
 
-    public String getUrlConteudo() {
-        return urlConteudo;
-    }
-
-    public void setUrlConteudo(String urlConteudo) {
-        this.urlConteudo = urlConteudo;
-    }
-
     public Curso getCurso() {
         return curso;
     }
 
     public void setCurso(Curso curso) {
         this.curso = curso;
-    }
-
-    public Usuario getProfessor() {
-        return professor;
-    }
-
-    public void setProfessor(Usuario professor) {
-        this.professor = professor;
     }
 }

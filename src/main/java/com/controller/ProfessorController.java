@@ -58,7 +58,7 @@ public class ProfessorController {
                 String s3Url = "https://s3.us-east-2.amazonaws.com/cursosctcc/" + nomeArquivo;
 
 
-                dto.setUrlPdf(s3Url);
+                //dto.setUrlPdf(s3Url);
             }
 
 

@@ -1,5 +1,6 @@
 package com.service;
 
+import com.dataUtil.DataUtils;
 import com.dto.CursoDTO;
 import com.model.Curso;
 import com.model.Usuario;
@@ -22,7 +23,7 @@ public class CursoService {
         Curso curso = (dto.getId() != null) ?
                 cursoRepository.findById(dto.getId()).orElse(new Curso()) : new Curso();
 
-        curso.setNome(dto.getNome());
+        //curso.setNome(dto.getNome());
 //       curso.setUrlVideo(dto.getUrlVideo());
 //        curso.setUrlPdf(dto.getUrlPdf());
 //        curso.setProfessor(professor);
@@ -35,9 +36,9 @@ public class CursoService {
         return cursoRepository.findAll().stream().map(curso -> {
             CursoDTO dto = new CursoDTO();
             dto.setId(curso.getId());
-            dto.setNome(curso.getNome());
-//            dto.setProfessorId(curso.getProfessor().getId());
-//            dto.setProfessorNome(curso.getProfessor().getNomeCompleto());
+            dto.setTitulo(curso.getTitulo());
+            dto.setProfessorNome(curso.getProfessor().getNomeCompleto());
+            dto.setData(DataUtils.dateToString(curso.getData()));
             return dto;
         }).collect(Collectors.toList());
     }
@@ -48,10 +49,10 @@ public class CursoService {
 
         CursoDTO dto = new CursoDTO();
         dto.setId(curso.getId());
-        dto.setNome(curso.getNome());
-//        dto.setUrlVideo(curso.getUrlVideo());
-//        dto.setUrlPdf(curso.getUrlPdf());
-//        dto.setProfessorId(curso.getProfessor().getId());
+        dto.setTitulo(curso.getTitulo());
+        dto.setDescricao(curso.getDescricao());
+        dto.setProfessorNome(curso.getProfessor().getNomeCompleto());
+        dto.setData(DataUtils.dateToString(curso.getData()));
         return dto;
     }
 

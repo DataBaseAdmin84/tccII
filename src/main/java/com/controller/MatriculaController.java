@@ -65,7 +65,7 @@ public class MatriculaController {
             dto.setUsuarioId(matricula.getUsuario().getId());
         }
         if (matricula.getCurso() != null) {
-            dto.setCursoId(matricula.getCurso().getId());
+           // dto.setCursoId(matricula.getCurso().getId());
         }
         dto.setDataMatricula(matricula.getDataMatricula());
 

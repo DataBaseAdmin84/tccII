@@ -1,5 +1,6 @@
 package com.controller;
 
+import com.dataUtil.DataUtils;
 import com.dto.CursoDTO;
 import com.enums.PerfilUsuario;
 import com.model.Curso;
@@ -8,6 +9,7 @@ import com.repository.CursoRepository;
 import com.service.CursoService;
 import com.service.S3Service;
 import com.service.UsuarioService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,6 +18,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
+import java.net.http.HttpClient;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,17 +38,36 @@ public class CursoController {
     @Autowired
     private S3Service s3Service;
 
+    @GetMapping("/curso/novo")
+    public String exibirFormularioCurso(Model model, HttpSession session) {
+        if(session.getAttribute("usuarioLogado") == null) {
+            model.addAttribute("erro", "Você precisa estar logado como professor para criar um curso.");
+            return "redirect:/";
+        }else{
+            Usuario usuario = (Usuario) session.getAttribute("usuarioLogado");
+            if (usuario.getPerfil() != PerfilUsuario.PROFESSOR.getCodigo()) {
+                model.addAttribute("erro", "Acesso negado. Apenas professores podem criar cursos.");
+                return "redirect:/erro";
+            }
+            CursoDTO curso = new CursoDTO();
+            model.addAttribute("curso", curso);
+        }
+        return "curso/formcurso";
+    }
+
     @PostMapping("/curso/novo")
-    public String salvar(@ModelAttribute CursoDTO cursoDTO,
-                              @RequestParam("arquivoPdf") MultipartFile arquivoPdf) throws IOException {
+    public String salvar(@ModelAttribute CursoDTO cursoDTO, HttpSession session) throws IOException, ParseException {
+        var professor = (Usuario) session.getAttribute("usuarioLogado");
+        if (professor == null || professor.getPerfil() != PerfilUsuario.PROFESSOR.getCodigo()) {
+            cursoDTO.setErro("Você precisa estar logado como professor para criar um curso.");
+            return ("redirect:/erro");
+        }
         Curso curso = new Curso();
-        curso.setNome(cursoDTO.getNome());
+        curso.setTitulo(cursoDTO.getTitulo());
+        curso.setData(DataUtils.stringToDate(cursoDTO.getData()));
         curso.setDescricao(cursoDTO.getDescricao());
-        curso.setUrlImagem(cursoDTO.getDescricao());
+        curso.setProfessor(professor);
         cursoRepository.save(curso);
-        curso.setMatriculas(new ArrayList<>());
-        curso.setMatriculas(new ArrayList<>());
-        //TODO salvar o list de matricula e salvar o list de usuario.
         return "redirect:/cursos";
     }
 
@@ -52,7 +75,7 @@ public class CursoController {
     public String listarCursos(Model model) {
         List<CursoDTO> cursos = cursoService.listarCursos();
         model.addAttribute("cursos", cursos);
-        return "admin/cursos";
+        return "curso/cursos";
     }
 
     @GetMapping("/curso/editar/{id}")

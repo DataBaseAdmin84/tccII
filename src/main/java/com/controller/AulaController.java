@@ -1,14 +1,10 @@
 package com.controller;
 
 import com.model.Aula;
-import com.model.Curso;
 import com.model.Usuario;
-import com.repository.CursoRepository;
 import com.service.AulaService;
 import com.service.CursoService;
-import com.service.UsuarioService;
 import jakarta.servlet.http.HttpSession;
-import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -19,20 +15,16 @@ public class AulaController {
 
     private final AulaService aulaService;
     private final CursoService cursoService;
-    private final UsuarioService usuarioService;
-    private final CursoRepository cursoRepository;
 
-    public AulaController(AulaService aulaService, CursoService cursoService, UsuarioService usuarioService, CursoRepository cursoRepository) {
+    public AulaController(AulaService aulaService, CursoService cursoService) {
         this.aulaService = aulaService;
         this.cursoService = cursoService;
-        this.usuarioService = usuarioService;
-        this.cursoRepository = cursoRepository;
     }
 
     @GetMapping("/professor")
     public String listarAulasProfessor(Model model, HttpSession session) {
         Usuario professor = (Usuario) session.getAttribute("usuarioLogado");
-        model.addAttribute("aulas", aulaService.listarPorProfessor(professor.getId()));
+        //model.addAttribute("aulas", aulaService.listarPorProfessor(professor.getId()));
         return "professor/aulas";
     }
 
@@ -47,7 +39,6 @@ public class AulaController {
     @PostMapping("/professor/salvar")
     public String salvarAula(@ModelAttribute Aula aula, HttpSession session) {
         Usuario professor = (Usuario) session.getAttribute("usuarioLogado");
-        aula.setProfessor(professor);
         aulaService.salvar(aula);
         return "redirect:/aulas/professor";
     }

@@ -39,10 +39,10 @@ public class AulaService {
         return aulaRepository.findByCursoIdOrderByIdAsc(cursoId);
     }
 
-    public List<Aula> listarPorProfessor(Long professorId) {
-        Usuario professor = usuarioRepository.findById(professorId).orElseThrow(() -> new RuntimeException("Professor não encontrado"));
-        return aulaRepository.findByProfessor(professor);
-    }
+//    public List<Aula> listarPorProfessor(Long professorId) {
+////        Usuario professor = usuarioRepository.findById(professorId).orElseThrow(() -> new RuntimeException("Professor não encontrado"));
+////        return aulaRepository.findByProfessor(professor);
+//    }
 
     public Aula buscarPorId(Long id) {
         return aulaRepository.findById(id).orElse(null);

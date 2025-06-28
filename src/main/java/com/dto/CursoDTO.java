@@ -1,11 +1,20 @@
 package com.dto;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.util.Date;
+
 public class CursoDTO {
 
     private Long id;
-    private String nome;
     private String descricao;
+
+   // @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private String data;
+
+    private String titulo;
     private String professorNome;
+    private String erro;
 
     public String getProfessorNome() {
         return professorNome;
@@ -31,14 +40,27 @@ public class CursoDTO {
         this.id = id;
     }
 
-    public String getNome() {
-        return nome;
+    public String getData() {
+        return data;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    public void setData(String data) {
+        this.data = data;
     }
 
-    public void setUrlPdf(String s3Url) {
+    public String getTitulo() {
+        return titulo;
+    }
+
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
+    }
+
+    public String getErro() {
+        return erro;
+    }
+
+    public void setErro(String erro) {
+        this.erro = erro;
     }
 }

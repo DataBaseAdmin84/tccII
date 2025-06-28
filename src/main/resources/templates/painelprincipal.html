@@ -99,12 +99,6 @@
     <!-- Barra Lateral (Sidebar) - Oculta em mobile por padrão, visível em md: -->
     <aside id="sidebar" class="fixed md:static inset-y-0 left-0 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out w-64 bg-gray-800 text-white p-4 flex-shrink-0 z-30 rounded-tr-lg rounded-br-lg">
         <nav class="space-y-2">
-            <a href="#dashboard" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-green-700 transition duration-200 ease-in-out">
-                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
-                </svg>
-                <span>Painel</span>
-            </a>
             <a href="#courses" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-green-700 transition duration-200 ease-in-out">
                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                     <path d="M12 10a2 2 0 00-2-2H7a2 2 0 00-2 2v2a2 2 0 002 2h3a2 2 0 002-2v-2z"></path>
@@ -150,10 +144,10 @@
                 </iframe>
             </div>
             <div class="w-full md:w-1/2 text-center md:text-left">
-                <h2 class="text-3xl font-bold text-gray-800 mb-4">Bem-vindo ao Painel de Aulas!</h2>
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">Bem-vindo ao Tcc Escola Online!</h2>
                 <p class="text-gray-600 mb-4">Assista ao vídeo de apresentação para ter uma visão geral de como nosso sistema funciona e o que você pode encontrar aqui. Aprenda sobre a interação com cursos e o gerenciamento de suas aulas.</p>
-                <a href="#courses" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-200 ease-in-out">
-                    Explorar Cursos
+                <a th:if="${usuarioLogado.perfil == 2}" th:href="@{/curso/novo}" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-200 ease-in-out">
+                    Cadastrar novo Curso.
                     <svg class="ml-3 -mr-1 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
                 </a>
             </div>
@@ -360,15 +354,14 @@
             });
         });
 
-        // Adiciona funcionalidade de "Sair" (apenas loga no console por enquanto)
+        //Funcionalidade de "Sair"
         const logoutButton = document.getElementById('logout-button');
         if (logoutButton) {
             logoutButton.addEventListener('click', (e) => {
-                e.preventDefault(); // Impede a navegação padrão
+                e.preventDefault();
                 showConfirmationModal('Confirmar Saída', 'Tem certeza que deseja sair do aplicativo?', () => {
-                    console.log('Usuário saiu.');
-                    // Aqui você adicionaria a lógica real de logout, como redirecionar para a página de login
-                    // window.location.href = '/login';
+                    console.log('Até a próxima.');
+                    window.location.href = '/usuario/logout';
                 });
             });
         }
