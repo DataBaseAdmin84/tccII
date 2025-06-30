@@ -1,6 +1,9 @@
 package com.dto;
 
+import com.dataUtil.DataUtils;
+import com.model.Curso;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.thymeleaf.util.DateUtils;
 
 import java.util.Date;
 
@@ -62,5 +65,17 @@ public class CursoDTO {
 
     public void setErro(String erro) {
         this.erro = erro;
+    }
+
+    public static CursoDTO toDto(Curso curso){
+        var dto = new CursoDTO();
+        dto.setId(curso.getId());
+        dto.setTitulo(curso.getTitulo());
+        dto.setDescricao(curso.getDescricao());
+        dto.setData(DataUtils.dateToString(curso.getData()));
+        if(curso.getProfessor() != null) {
+            dto.setProfessorNome(curso.getProfessor().getNomeCompleto());
+        }
+        return dto;
     }
 }

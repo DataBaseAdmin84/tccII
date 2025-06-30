@@ -33,27 +33,17 @@ public class CursoService {
     }
 
     public List<CursoDTO> listarCursos() {
-        return cursoRepository.findAll().stream().map(curso -> {
-            CursoDTO dto = new CursoDTO();
-            dto.setId(curso.getId());
-            dto.setTitulo(curso.getTitulo());
-            dto.setProfessorNome(curso.getProfessor().getNomeCompleto());
-            dto.setData(DataUtils.dateToString(curso.getData()));
-            return dto;
-        }).collect(Collectors.toList());
+        return cursoRepository.findAll()
+                .stream()
+                .map(CursoDTO::toDto)
+                .collect(Collectors.toList());
     }
 
     public CursoDTO buscarPorId(Long id) {
         Curso curso = cursoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Curso não encontrado"));
 
-        CursoDTO dto = new CursoDTO();
-        dto.setId(curso.getId());
-        dto.setTitulo(curso.getTitulo());
-        dto.setDescricao(curso.getDescricao());
-        dto.setProfessorNome(curso.getProfessor().getNomeCompleto());
-        dto.setData(DataUtils.dateToString(curso.getData()));
-        return dto;
+        return CursoDTO.toDto(curso);
     }
 
     public List<Curso> listarTodos() {
