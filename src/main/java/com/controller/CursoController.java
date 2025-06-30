@@ -1,6 +1,5 @@
 package com.controller;
 
-import com.dataUtil.DataUtils;
 import com.dto.CursoDTO;
 import com.enums.PerfilUsuario;
 import com.model.Curso;
@@ -13,14 +12,14 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
-import java.net.http.HttpClient;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -64,7 +63,8 @@ public class CursoController {
         }
         Curso curso = new Curso();
         curso.setTitulo(cursoDTO.getTitulo());
-        curso.setData(DataUtils.stringToDate(cursoDTO.getData()));
+        //TODO AJUSTAR
+        //curso.setData(DataUtils.localDateToDate(cursoDTO.getData()));
         curso.setDescricao(cursoDTO.getDescricao());
         curso.setProfessor(professor);
         cursoRepository.save(curso);
@@ -79,18 +79,21 @@ public class CursoController {
     }
 
     @GetMapping("/curso/editar/{id}")
-    public String editarCurso(@PathVariable Long id, Model model) {
-        CursoDTO cursoDTO = cursoService.buscarPorId(id);
-        model.addAttribute("curso", cursoDTO);
-        model.addAttribute("professores", PerfilUsuario.PROFESSOR.getCodigo());
-        return "formcurso";
+    public String editar(@PathVariable Long id, Model model) {
+        var curso = cursoRepository.findById(id);
+        if(curso.isPresent()){}
+        model.addAttribute("curso", curso);
+        //TODO AJUDAR DATA
+//        var dataFormatada = DataUtils.formatarData(curso.get().getData(), "yyyy-MM-dd");
+//        curso.setData(DataUtils.formatarData(curso.getData(), "yyyy-MM-dd"));se
+
+        return "curso/formcurso";
     }
 
     @GetMapping("/curso/excluir/{id}")
-    public String excluirCurso(@PathVariable Long id, RedirectAttributes redirect) {
+    public String excluir(@PathVariable Long id, RedirectAttributes redirect) {
         try {
             cursoService.excluirPorId(id);
-            redirect.addFlashAttribute("msg", "Curso excluído com sucesso!");
         } catch (RuntimeException e) {
             redirect.addFlashAttribute("erro", e.getMessage());
         }

@@ -32,7 +32,7 @@ public class AulaController {
     public String formNovaAula(Model model, HttpSession session) {
         Usuario professor = (Usuario) session.getAttribute("usuarioLogado");
         model.addAttribute("aula", new Aula());
-        model.addAttribute("cursos", cursoService.listarCursosPorProfessor(professor));
+       // model.addAttribute("cursos", cursoService.listarCursosPorProfessor(professor));
         return "professor/aula-form";
     }
 
