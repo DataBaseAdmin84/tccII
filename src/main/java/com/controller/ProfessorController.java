@@ -24,8 +24,8 @@ public class ProfessorController {
     public String listarCursosDoProfessor(HttpSession session, Model model) {
         Usuario professor = (Usuario) session.getAttribute("usuarioLogado");
         if (professor == null) return "redirect:/";
-        List<CursoDTO> cursos = cursoService.listarCursosPorProfessor(professor);
-        model.addAttribute("cursos", cursos);
+        //List<CursoDTO> cursos = cursoService.listarCursosPorProfessor(professor);
+       // model.addAttribute("cursos", cursos);
         return "professor/home";
     }
 
@@ -98,7 +98,7 @@ public class ProfessorController {
         }
 
         try {
-            cursoService.excluirCursoSePertencerAoProfessor(id, professor);
+           // cursoService.excluirCursoSePertencerAoProfessor(id, professor);
             redirect.addFlashAttribute("msg", "Curso excluído com sucesso!");
         } catch (Exception e) {
             redirect.addFlashAttribute("erro", "Erro ao excluir curso: " + e.getMessage());
@@ -113,8 +113,8 @@ public class ProfessorController {
         Usuario professor = (Usuario) session.getAttribute("usuarioLogado");
         if (professor == null) return "redirect:/";
 
-        List<CursoDTO> cursos = cursoService.listarCursosPorProfessor(professor);
-        model.addAttribute("cursos", cursos);
+        //List<CursoDTO> cursos = cursoService.listarCursosPorProfessor(professor);
+        //model.addAttribute("cursos", cursos);
         return "professor/painel";
     }
 

@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Lista de Cursos</title>
+    <title>Cursos</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -12,7 +12,7 @@
         }
 
         .container {
-            max-width: 900px;
+            max-width: 1000px; /* Increased max-width for more content */
             margin: 50px auto;
             background-color: white;
             padding: 30px;
@@ -23,6 +23,7 @@
         h2 {
             text-align: center;
             color: #4CAF50;
+            margin-bottom: 30px;
         }
 
         .mensagem {
@@ -46,8 +47,10 @@
             color: white;
             text-decoration: none;
             border-radius: 6px;
-            margin-bottom: 15px;
             font-weight: bold;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
         }
 
         .btn:hover {
@@ -62,69 +65,283 @@
             background-color: #c9302c;
         }
 
+        .btn-search {
+            background-color: #007bff; /* Blue for search */
+        }
+
+        .btn-search:hover {
+            background-color: #0056b3;
+        }
+
+        .top-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .filter-form {
+            background-color: #e9ecef;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr auto; /* Three columns for inputs, one for button */
+            gap: 15px;
+            align-items: end; /* Align items to the bottom */
+        }
+
+        .filter-form label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .filter-form input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            box-sizing: border-box; /* Include padding and border in the element's total width and height */
+        }
+
+        .filter-form .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        .filter-form button {
+            align-self: flex-end; /* Align the button to the bottom of its grid cell */
+            padding: 10px 20px;
+        }
+
+
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
 
         th, td {
             padding: 12px;
             text-align: left;
-            border-bottom: 1px solid #ddd;
+            border-bottom: 1px solid #dee2e6;
         }
 
         th {
             background-color: #e8f5e9;
+            font-weight: bold;
+            color: #333;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
         }
 
         .actions a {
-            margin-right: 10px;
-            color: #4CAF50;
+            margin-right: 12px;
+            color: #007bff;
             text-decoration: none;
             font-weight: bold;
+            transition: color 0.2s ease;
         }
 
         .actions a:hover {
             text-decoration: underline;
+            color: #0056b3;
+        }
+
+        .toggle-aulas {
+            cursor: pointer;
+            color: #007bff;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .toggle-aulas:hover {
+            text-decoration: underline;
+        }
+
+        .aulas-section {
+            padding: 15px;
+            background-color: #f2f2f2;
+            border-top: 1px solid #e0e0e0;
+            border-bottom: 1px solid #e0e0e0;
+            margin-top: 5px;
+            display: none; /* Hidden by default */
+        }
+
+        .aula-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px dashed #ccc;
+        }
+
+        .aula-item:last-child {
+            border-bottom: none;
+        }
+
+        .aula-item .aula-actions a {
+            margin-left: 10px;
+            color: #dc3545; /* Red for delete */
+        }
+        .aula-item .aula-actions a:hover {
+            color: #c82333;
+        }
+
+        .add-aula-form {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 1px solid #ddd;
+        }
+
+        .add-aula-form input[type="text"] {
+            flex-grow: 1;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .add-aula-form button {
+            padding: 8px 15px;
+            background-color: #28a745; /* Green for add */
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .add-aula-form button:hover {
+            background-color: #218838;
         }
     </style>
 </head>
 <body>
 <div class="container">
-    <h2>Lista de Cursos</h2>
+    <h2>Cursos</h2>
 
-    <!-- Mensagens -->
     <div th:if="${msg}" class="mensagem sucesso" th:text="${msg}"></div>
     <div th:if="${erro}" class="mensagem erro" th:text="${erro}"></div>
 
-    <!-- Botões Novo Curso e Voltar -->
-    <div style="margin-bottom: 20px;">
+    <div class="top-controls">
         <a th:href="@{/curso/novo}" class="btn">Novo Curso</a>
-        <a th:href="@{/admin/home}" class="btn btn-voltar">Voltar</a>
+        <a th:href="@{/painelprincipal}" class="btn btn-voltar">Voltar</a>
     </div>
+
+    <form th:action="@{/cursos}" method="get" class="filter-form">
+        <div class="form-group">
+            <label for="titulo">Título do Curso:</label>
+            <input type="text" id="titulo" name="titulo" th:value="${tituloQuery}" placeholder="Pesquisar por título">
+        </div>
+        <div class="form-group">
+            <label for="descricao">Descrição do Curso:</label>
+            <input type="text" id="descricao" name="descricao" th:value="${descricaoQuery}" placeholder="Pesquisar por descrição">
+        </div>
+        <div class="form-group">
+            <label for="professor">Nome do Professor:</label>
+            <input type="text" id="professor" name="professor" th:value="${professorQuery}" placeholder="Pesquisar por professor">
+        </div>
+        <button type="submit" class="btn btn-search">Filtrar Cursos</button>
+    </form>
 
     <table>
         <thead>
         <tr>
-            <th>Nome</th>
+            <th>Título</th>
             <th>Descrição</th>
             <th>Professor</th>
-            <th>Ações</th>
+            <th style="width: 200px;">Ações</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="curso : ${cursos}">
-            <td th:text="${curso.titulo}">Nome</td>
-            <td th:text="${curso.descricao}">Descrição</td>
-            <td th:text="${curso.professorNome}">Professor</td>
+            <td th:text="${curso.titulo}">Nome do Curso</td>
+            <td th:text="${curso.descricao}">Descrição do Curso</td>
+            <td th:text="${curso.professorNome}">Nome do Professor</td>
             <td class="actions">
                 <a th:href="@{'/curso/editar/' + ${curso.id}}">Editar</a>
                 <a th:href="@{'/curso/excluir/' + ${curso.id}}">Excluir</a>
-            </td>
+                <span class="toggle-aulas" th:data-curso-id="${curso.id}">Aulas &#9660;</span> </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(cursos)}">
+            <td colspan="4" style="text-align: center;">Nenhum curso encontrado com os filtros aplicados.</td>
         </tr>
         </tbody>
     </table>
+
+    <div th:each="curso : ${cursos}" th:id="'aulas-section-' + ${curso.id}" class="aulas-section">
+        <h4>Aulas do Curso: <span th:text="${curso.titulo}"></span></h4>
+        <div class="aulas-list" th:id="'aulas-list-' + ${curso.id}">
+            <div th:if="${!#lists.isEmpty(curso.aulas)}" th:each="aula : ${curso.aulas}" class="aula-item">
+                <span th:text="${aula.descricao}">Descrição da Aula</span>
+                <div class="aula-actions">
+                    <a href="#" th:onclick="'excluirAula(' + ${aula.id} + ', ' + ${curso.id} + ')'">Excluir</a>
+                </div>
+            </div>
+            <div th:if="${#lists.isEmpty(curso.aulas)}" style="font-style: italic;">Nenhuma aula cadastrada para este curso.</div>
+        </div>
+
+        <form class="add-aula-form" th:action="@{'/aula/novo'}" method="post">
+            <input type="hidden" name="idCurso" th:value="${curso.id}">
+            <input type="text" name="descricao" placeholder="Nova descrição da aula" required>
+            <button type="submit">Adicionar Aula</button>
+        </form>
+    </div>
+
 </div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+
+    // Function to toggle aula section visibility
+    document.querySelectorAll('.toggle-aulas').forEach(button => {
+        button.addEventListener('click', function() {
+            const cursoId = this.dataset.cursoId;
+            const aulasSection = document.getElementById('aulas-section-' + cursoId);
+            const arrow = this; // The span itself
+
+            if (aulasSection.style.display === 'block' || aulasSection.style.display === '') {
+                aulasSection.style.display = 'none';
+                arrow.innerHTML = 'Aulas &#9660;'; // Down arrow
+            } else {
+                aulasSection.style.display = 'block';
+                arrow.innerHTML = 'Aulas &#9650;'; // Up arrow
+                // Optional: Fetch aulas dynamically if not pre-loaded
+                // loadAulasForCurso(cursoId);
+            }
+        });
+    });
+
+    // JavaScript function to handle aula deletion
+    function excluirAula(aulaId, cursoId) {
+        if (confirm('Tem certeza que deseja excluir esta aula?')) {
+            // Send an AJAX request to delete the aula
+            fetch('/aula/excluir/' + aulaId, {
+                method: 'POST' // Or DELETE if your backend supports it directly
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Reload the page or remove the aula from the DOM
+                    window.location.reload(); // Simple reload for demonstration
+                    // Or, if you want a smoother UX:
+                    // const aulaItem = document.querySelector(`#aulas-list-${cursoId} .aula-item span[data-aula-id="${aulaId}"]`).closest('.aula-item');
+                    // if (aulaItem) aulaItem.remove();
+                } else {
+                    alert('Erro ao excluir a aula.');
+                }
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                alert('Erro na comunicação com o servidor.');
+            });
+        }
+    }
+
+    /*]]>*/
+</script>
 </body>
 </html>

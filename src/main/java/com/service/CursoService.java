@@ -42,7 +42,6 @@ public class CursoService {
     public CursoDTO buscarPorId(Long id) {
         Curso curso = cursoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Curso não encontrado"));
-
         return CursoDTO.toDto(curso);
     }
 
@@ -50,20 +49,6 @@ public class CursoService {
         return cursoRepository.findAll();
     }
 
-    public List<CursoDTO> listarCursosPorProfessor(Usuario professor) {
-//        return cursoRepository.findByProfessor(professor).stream().map(curso -> {
-//            CursoDTO dto = new CursoDTO();
-//            dto.setId(curso.getId());
-//            dto.setNome(curso.getNome());
-//            dto.setProfessorId(professor.getId());
-////            dto.setProfessorNome(professor.getNomeCompleto());
-//
-////            dto.setUrlVideo(curso.getUrlVideo());
-////            dto.setUrlPdf(curso.getUrlPdf());
-//            return dto;
-//        }).collect(Collectors.toList());
-        return new ArrayList<>();
-    }
 
     public void excluirPorId(Long id) {
         try {
@@ -71,16 +56,5 @@ public class CursoService {
         } catch (DataIntegrityViolationException e) {
             throw new RuntimeException("Não é possível excluir este curso. Existem matrículas vinculadas a ele.");
         }
-    }
-
-    public void excluirCursoSePertencerAoProfessor(Long id, Usuario professor) {
-        Curso curso = cursoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Curso não encontrado"));
-
-//        if (!curso.getProfessor().getId().equals(professor.getId())) {
-//            throw new RuntimeException("Curso não pertence ao professor logado");
-//        }
-
-        cursoRepository.deleteById(id);
     }
 }

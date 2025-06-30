@@ -146,8 +146,8 @@
             <div class="w-full md:w-1/2 text-center md:text-left">
                 <h2 class="text-3xl font-bold text-gray-800 mb-4">Bem-vindo ao Tcc Escola Online!</h2>
                 <p class="text-gray-600 mb-4">Assista ao vídeo de apresentação para ter uma visão geral de como nosso sistema funciona e o que você pode encontrar aqui. Aprenda sobre a interação com cursos e o gerenciamento de suas aulas.</p>
-                <a th:if="${usuarioLogado.perfil == 2}" th:href="@{/curso/novo}" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-200 ease-in-out">
-                    Cadastrar novo Curso.
+                <a th:if="${usuarioLogado.perfil == 2}" th:href="@{/cursos}" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-200 ease-in-out">
+                    Cursos
                     <svg class="ml-3 -mr-1 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
                 </a>
             </div>
