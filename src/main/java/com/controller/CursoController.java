@@ -1,5 +1,6 @@
 package com.controller;
 
+import com.dataUtil.DataUtils;
 import com.dto.CursoDTO;
 import com.enums.PerfilUsuario;
 import com.model.Curso;
@@ -63,8 +64,7 @@ public class CursoController {
         }
         Curso curso = new Curso();
         curso.setTitulo(cursoDTO.getTitulo());
-        //TODO AJUSTAR
-        //curso.setData(DataUtils.localDateToDate(cursoDTO.getData()));
+        curso.setData(DataUtils.localDateToDate(cursoDTO.getData()));
         curso.setDescricao(cursoDTO.getDescricao());
         curso.setProfessor(professor);
         cursoRepository.save(curso);
@@ -81,12 +81,9 @@ public class CursoController {
     @GetMapping("/curso/editar/{id}")
     public String editar(@PathVariable Long id, Model model) {
         var curso = cursoRepository.findById(id);
-        if(curso.isPresent()){}
-        model.addAttribute("curso", curso);
-        //TODO AJUDAR DATA
-//        var dataFormatada = DataUtils.formatarData(curso.get().getData(), "yyyy-MM-dd");
-//        curso.setData(DataUtils.formatarData(curso.getData(), "yyyy-MM-dd"));se
-
+        var cursoDto = CursoDTO.toDto(curso.orElseThrow(() ->
+                new RuntimeException("Curso não encontrado.")));
+        model.addAttribute("curso", cursoDto);
         return "curso/formcurso";
     }
 

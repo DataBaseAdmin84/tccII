@@ -2,6 +2,7 @@ package com.dto;
 
 import com.dataUtil.DataUtils;
 import com.model.Curso;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -11,6 +12,8 @@ public class CursoDTO {
 
     private Long id;
     private String descricao;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate data;
     private String titulo;
     private String professorNome;
@@ -79,7 +82,6 @@ public class CursoDTO {
         dto.setTitulo(curso.getTitulo());
         dto.setDescricao(curso.getDescricao());
         dto.setData(DataUtils.dateToLocalDate(curso.getData()));
-        dto.setData(LocalDate.now());
         if(curso.getProfessor() != null) {
             dto.setProfessorNome(curso.getProfessor().getNomeCompleto());
         }
