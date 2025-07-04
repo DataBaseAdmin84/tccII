@@ -27,16 +27,20 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public String autenticar(@ModelAttribute("login") LoginDTO loginDTO, Model model, HttpSession session) {
+    public String login(@ModelAttribute("login") LoginDTO loginDTO, Model model, HttpSession session) {
         Optional<Usuario> usuarioOpt = usuarioService.autenticar(loginDTO.getLogin(), loginDTO.getSenha());
-
-        if (usuarioOpt.isPresent()) {
-            Usuario usuario = usuarioOpt.get();
-            session.setAttribute("usuarioLogado", usuario);
-            return "redirect:/painelprincipal";
+        try {
+            if (usuarioOpt.isPresent()) {
+                Usuario usuario = usuarioOpt.get();
+                session.setAttribute("usuarioLogado", usuario);
+                return "redirect:/painelprincipal";
+            }else{
+                model.addAttribute("erro", "Credenciais inválidas. Tente novamente.");
+                return "erro";
+            }
+        } catch (Exception e) {
+            model.addAttribute("erro", "Erro no login: " + e.getMessage());
+            return "erro";
         }
-
-        model.addAttribute("erro", "Credenciais inválidas. Tente novamente.");
-        return "redirect:/login";
     }
 }
