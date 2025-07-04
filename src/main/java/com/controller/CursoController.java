@@ -60,9 +60,15 @@ public class CursoController {
         var professor = (Usuario) session.getAttribute("usuarioLogado");
         if (professor == null || professor.getPerfil() != PerfilUsuario.PROFESSOR.getCodigo()) {
             cursoDTO.setErro("Você precisa estar logado como professor para criar um curso.");
-            return ("redirect:/erro");
+            return "redirect:/erro";
         }
-        Curso curso = new Curso();
+        Curso curso;
+        if (cursoDTO.getId() != null) {
+            curso = cursoRepository.findById(cursoDTO.getId())
+                    .orElse(new Curso());
+        } else {
+            curso = new Curso();
+        }
         curso.setTitulo(cursoDTO.getTitulo());
         curso.setData(DataUtils.localDateToDate(cursoDTO.getData()));
         curso.setDescricao(cursoDTO.getDescricao());
