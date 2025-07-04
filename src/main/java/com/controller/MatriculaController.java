@@ -36,7 +36,6 @@ public class MatriculaController {
     public String novaMatricula(Model model) {
         model.addAttribute("matricula", new MatriculaDTO());
         model.addAttribute("usuarios", usuarioService.listarEntidades()); // Certo: listarEntidades()
-        model.addAttribute("cursos", cursoService.listarCursos());
         return "admin/formmatricula";
     }
 
@@ -71,7 +70,6 @@ public class MatriculaController {
 
         model.addAttribute("matricula", dto);
         model.addAttribute("usuarios", usuarioService.listarEntidades());
-        model.addAttribute("cursos", cursoService.listarCursos());
         return "admin/formmatricula";
     }
 
