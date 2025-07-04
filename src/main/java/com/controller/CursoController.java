@@ -3,6 +3,7 @@ package com.controller;
 import com.dataUtil.DataUtils;
 import com.dto.CursoDTO;
 import com.enums.PerfilUsuario;
+import com.filtro.FiltroCurso;
 import com.model.Curso;
 import com.model.Usuario;
 import com.repository.CursoRepository;
@@ -73,8 +74,11 @@ public class CursoController {
 
     @GetMapping("/cursos")
     public String listarCursos(Model model) {
-        List<CursoDTO> cursos = cursoService.listarCursos();
-        model.addAttribute("cursos", cursos);
+        var filtro = new FiltroCurso();
+        filtro.preencheFiltro(model);
+
+        var cursos = cursoRepository.findAll(filtro.toSpecification());
+      //  model.addAttribute("cursos", C);
         return "curso/cursos";
     }
 

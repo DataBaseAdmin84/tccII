@@ -32,13 +32,6 @@ public class CursoService {
         dto.setId(curso.getId());
     }
 
-    public List<CursoDTO> listarCursos() {
-        return cursoRepository.findAll()
-                .stream()
-                .map(CursoDTO::toDto)
-                .collect(Collectors.toList());
-    }
-
     public CursoDTO buscarPorId(Long id) {
         Curso curso = cursoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Curso não encontrado"));
