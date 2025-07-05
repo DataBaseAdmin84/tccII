@@ -35,14 +35,14 @@ public class UsuarioController {
             String senha = usuarioDTO.getSenha();
 
             // Verifica se já existe usuário com o mesmo email e senha
-            boolean existe = usuarioRepository.existsByEmailAndSenha(email, senha);
+            boolean existe = usuarioRepository.existsByEmail(email);
             if (existe) {
-                model.addAttribute("erro", "E-mail e senha já estão sendo usados por outro usuário.");
+                model.addAttribute("erro", "E-mail já esta sendo usado por outro usuário.");
                 model.addAttribute("usuario", usuarioDTO);
                 return "cadastrousuario";
             }
 
-            if (usuarioService.validarEmail(email, senha)) {
+            if (usuarioService.validarEmail(email)) {
                 model.addAttribute("erro", "Email já está sendo usado por outro usuário.");
                 model.addAttribute("usuario", usuarioDTO);
                 return "cadastrousuario";
