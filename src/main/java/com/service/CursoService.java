@@ -19,29 +19,16 @@ public class CursoService {
     @Autowired
     private CursoRepository cursoRepository;
 
-    public void salvarCurso(CursoDTO dto, Usuario professor) {
-        Curso curso = (dto.getId() != null) ?
-                cursoRepository.findById(dto.getId()).orElse(new Curso()) : new Curso();
-
-        //curso.setNome(dto.getNome());
-//       curso.setUrlVideo(dto.getUrlVideo());
-//        curso.setUrlPdf(dto.getUrlPdf());
-//        curso.setProfessor(professor);
-
-        curso = cursoRepository.save(curso);
-        dto.setId(curso.getId());
-    }
-
     public CursoDTO buscarPorId(Long id) {
         Curso curso = cursoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Curso não encontrado"));
         return CursoDTO.toDto(curso);
     }
 
-    public List<Curso> listarTodos() {
-        return cursoRepository.findAll();
+    public void removerCursosPorProfessor(Usuario usuario) {
+        List<Curso> cursos = cursoRepository.findByProfessor(usuario);
+        cursoRepository.deleteAll(cursos);
     }
-
 
     public void excluirPorId(Long id) {
         try {

@@ -40,39 +40,6 @@ public class ProfessorController {
         return "professor/formcurso";
     }
 
-    @PostMapping("/salvar")
-    public String salvarCurso(@ModelAttribute("curso") CursoDTO dto,
-                              @RequestParam("arquivoPdf") MultipartFile arquivo,
-                              HttpSession session) {
-
-        Usuario professor = (Usuario) session.getAttribute("usuarioLogado");
-
-        if (professor == null || professor.getId() == null) {
-            return "redirect:/";
-        }
-
-        try {
-            if (!arquivo.isEmpty()) {
-                // Salvar arquivo no S3 e obter URL
-                String nomeArquivo = arquivo.getOriginalFilename();
-                String s3Url = "https://s3.us-east-2.amazonaws.com/cursosctcc/" + nomeArquivo;
-
-
-                //dto.setUrlPdf(s3Url);
-            }
-
-
-            cursoService.salvarCurso(dto, professor);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return "redirect:/professor/home";
-    }
-
-
-
     @GetMapping("/professor/curso/editar/{id}")
     public String editarCurso(@PathVariable Long id, Model model, HttpSession session) {
         Usuario professor = (Usuario) session.getAttribute("usuarioLogado");

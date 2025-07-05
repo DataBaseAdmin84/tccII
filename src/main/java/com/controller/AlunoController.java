@@ -3,7 +3,6 @@ package com.controller;
 import com.dto.MatriculaDTO;
 import com.dto.UsuarioDTO;
 import com.enums.PerfilUsuario;
-import com.model.Curso;
 import com.model.Usuario;
 import com.service.CursoService;
 import com.service.MatriculaService;
@@ -14,9 +13,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/aluno")
@@ -52,29 +48,6 @@ public class AlunoController {
         return "aluno/home";
     }
 
-    // Listar todos os cursos disponíveis + cursos já matriculados
-    @GetMapping("/cursos")
-    public String listarCursos(Model model, HttpSession session, RedirectAttributes redirect) {
-        Usuario aluno = (Usuario) session.getAttribute("usuarioLogado");
-        if (aluno == null) {
-            redirect.addFlashAttribute("erro", "Sessão expirada. Faça login novamente.");
-            return "redirect:/";
-        }
-
-        List<Curso> cursos = cursoService.listarTodos();
-
-        // Lista de IDs dos cursos em que o aluno já está matriculado
-        List<Long> cursosMatriculados = matriculaService.buscarMatriculasPorAluno(aluno.getId())
-                .stream()
-                .map(m -> m.getCurso().getId())
-                .collect(Collectors.toList());
-
-        model.addAttribute("cursos", cursos);
-        model.addAttribute("cursosMatriculados", cursosMatriculados);
-
-        return "aluno/cursos";
-    }
-
     // Matricular o aluno em um curso específico
     @PostMapping("/matricular/{id}")
     public String matricular(@PathVariable Long id, HttpSession session, RedirectAttributes redirect) {
@@ -103,23 +76,6 @@ public class AlunoController {
         model.addAttribute("matriculas", matriculaService.buscarMatriculasPorAluno(aluno.getId()));
         return "aluno/matriculados";
     }
-    @GetMapping("/matriculas/novo")
-    public String novaMatriculaForm(Model model, HttpSession session, RedirectAttributes redirect) {
-        Usuario aluno = (Usuario) session.getAttribute("usuarioLogado");
-        if (aluno == null) {
-            redirect.addFlashAttribute("erro", "Sessão expirada.");
-            return "redirect:/";
-        }
-
-        MatriculaDTO dto = new MatriculaDTO();
-        dto.setUsuarioId(aluno.getId());
-
-        model.addAttribute("matricula", dto);
-        model.addAttribute("cursos", cursoService.listarTodos());
-
-        return "aluno/formmatricula"; // ← correto
-    }
-
     @GetMapping("/aluno/matriculados")
     public String listarMeusCursos(Model model, HttpSession session) {
         Usuario aluno = (Usuario) session.getAttribute("usuarioLogado");

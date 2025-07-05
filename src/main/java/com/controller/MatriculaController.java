@@ -1,7 +1,6 @@
 package com.controller;
 
 import com.dto.MatriculaDTO;
-import com.model.Matricula;
 import com.service.CursoService;
 import com.service.MatriculaService;
 import com.service.UsuarioService;
@@ -31,13 +30,13 @@ public class MatriculaController {
         return "admin/matriculas";
     }
 
-    // Formulário de nova matrícula
-    @GetMapping("/novo")
-    public String novaMatricula(Model model) {
-        model.addAttribute("matricula", new MatriculaDTO());
-        model.addAttribute("usuarios", usuarioService.listarEntidades()); // Certo: listarEntidades()
-        return "admin/formmatricula";
-    }
+//    // Formulário de nova matrícula
+//    @GetMapping("/novo")
+//    public String novaMatricula(Model model) {
+//        model.addAttribute("matricula", new MatriculaDTO());
+//        model.addAttribute("usuarios", usuarioService.listarEntidades()); // Certo: listarEntidades()
+//        return "admin/formmatricula";
+//    }
 
     @PostMapping("/salvar")
     public String salvarMatricula(@ModelAttribute MatriculaDTO matriculaDTO, RedirectAttributes redirect) {
@@ -48,30 +47,30 @@ public class MatriculaController {
 
 
 
-    // Editar matrícula
-    @GetMapping("/editar/{id}")
-    public String editarMatricula(@PathVariable Long id, Model model) {
-        Matricula matricula = matriculaService.buscarPorId(id);
-
-        if (matricula == null) {
-            return "redirect:/matriculas"; // Se não encontrar, redireciona
-        }
-
-        MatriculaDTO dto = new MatriculaDTO();
-        dto.setId(matricula.getId());
-
-        if (matricula.getUsuario() != null) {
-            dto.setUsuarioId(matricula.getUsuario().getId());
-        }
-        if (matricula.getCurso() != null) {
-           // dto.setCursoId(matricula.getCurso().getId());
-        }
-        dto.setDataMatricula(matricula.getDataMatricula());
-
-        model.addAttribute("matricula", dto);
-        model.addAttribute("usuarios", usuarioService.listarEntidades());
-        return "admin/formmatricula";
-    }
+//    // Editar matrícula
+//    @GetMapping("/editar/{id}")
+//    public String editarMatricula(@PathVariable Long id, Model model) {
+//        Matricula matricula = matriculaService.buscarPorId(id);
+//
+//        if (matricula == null) {
+//            return "redirect:/matriculas"; // Se não encontrar, redireciona
+//        }
+//
+//        MatriculaDTO dto = new MatriculaDTO();
+//        dto.setId(matricula.getId());
+//
+//        if (matricula.getUsuario() != null) {
+//            dto.setUsuarioId(matricula.getUsuario().getId());
+//        }
+//        if (matricula.getCurso() != null) {
+//           // dto.setCursoId(matricula.getCurso().getId());
+//        }
+//        dto.setDataMatricula(matricula.getDataMatricula());
+//
+//        model.addAttribute("matricula", dto);
+//        model.addAttribute("usuarios", usuarioService.listarEntidades());
+//        return "admin/formmatricula";
+//    }
 
     // Excluir matrícula
     @GetMapping("/excluir/{id}")

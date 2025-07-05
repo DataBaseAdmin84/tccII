@@ -10,4 +10,5 @@ import java.util.List;
 
 @Repository
 public interface CursoRepository extends JpaRepository<Curso, Long>, JpaSpecificationExecutor<Curso> {
+    List<Curso> findByProfessor(Usuario professor);
 }

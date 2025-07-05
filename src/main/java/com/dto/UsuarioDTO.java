@@ -1,5 +1,7 @@
 package com.dto;
 
+import com.dataUtil.DataUtils;
+import com.model.Curso;
 import com.model.Usuario;
 
 public class UsuarioDTO {
@@ -60,18 +62,25 @@ public class UsuarioDTO {
     }
 
 
-    public boolean isPresent() {
-        return id != null && id > 0;
+    public static Usuario toModel(UsuarioDTO usuarioDto){
+        var usuario = new Usuario();
+        usuario.setId(usuarioDto.getId());
+        usuario.setEmail(usuarioDto.getEmail());
+        usuario.setLogin(usuarioDto.getLogin());
+        usuario.setSenha(usuarioDto.getSenha());
+        usuario.setPerfil(usuarioDto.getPerfil());
+        usuario.setNomeCompleto(usuarioDto.getNomeCompleto());
+        return usuario;
     }
 
-    public Usuario create() {
-        Usuario usuario = new Usuario();
-        usuario.setId(this.id);
-        usuario.setNomeCompleto(this.nomeCompleto);
-        usuario.setEmail(this.email);
-        usuario.setLogin(this.login);
-        usuario.setSenha(this.senha);
-        usuario.setPerfil(this.perfil);
-        return usuario;
+    public static UsuarioDTO toDto(Usuario usuario){
+        var dto = new UsuarioDTO();
+        dto.setId(usuario.getId());
+        dto.setEmail(usuario.getEmail());
+        dto.setLogin(usuario.getLogin());
+        dto.setSenha(usuario.getSenha());
+        dto.setPerfil(usuario.getPerfil());
+        dto.setNomeCompleto(usuario.getNomeCompleto());
+        return dto;
     }
 }

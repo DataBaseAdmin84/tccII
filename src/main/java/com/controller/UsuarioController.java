@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.Date;
+import java.util.Optional;
 
 @Controller
 public class UsuarioController {
@@ -24,38 +25,15 @@ public class UsuarioController {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    @GetMapping("/home")
-    public String mostrarHome() {
-        return "home";
-    }
-
-    @GetMapping("/usuarios")
-    public String listarUsuarios(Model model, HttpSession session) {
-        Usuario usuarioLogado = (Usuario) session.getAttribute("usuarioLogado");
-
-        if (usuarioLogado == null || usuarioLogado.getPerfil() == null) {
-            return "redirect:/";
-        }
-
-        model.addAttribute("usuarios", usuarioService.listarTodos());
-        return "usuarios";
-    }
-
-    @GetMapping("/cadastrousuario")
-    public String exibirFormularioCadastro(Model model) {
-        model.addAttribute("usuario", new UsuarioDTO());
-        return "cadastrousuario";
-    }
-
     @PostMapping("/cadastrousuario")
     public String salvar(@ModelAttribute UsuarioDTO usuarioDTO, Model model, HttpSession session) {
         try {
             String email = usuarioDTO.getEmail();
-            if(usuarioService.validar(email)) {
-                model.addAttribute("erro", "Email já esta sendo usado por outro aluno.");
+            if(usuarioService.validarEmail(email)) {
+                model.addAttribute("erro", "Email já esta sendo usado por outro usuário.");
                 return "erro";
             }
-            Usuario usuario = usuarioDTO.create();
+            Usuario usuario = UsuarioDTO.toModel(usuarioDTO);
             usuario.setDataInclusao(new Date());
 
             usuarioRepository.save(usuario);
@@ -63,33 +41,46 @@ public class UsuarioController {
             model.addAttribute("sucesso", "Usuário cadastrado com sucesso!");
             return "redirect:/painelprincipal";
 
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             model.addAttribute("erro", "Erro ao salvar o usuario.");
             return "erro";
         }
     }
 
     @GetMapping("/usuario/editar/{id}")
-    public String editarUsuario(@PathVariable Long id, Model model) {
+    public String editar(@PathVariable Long id, Model model) {
         try {
-            UsuarioDTO usuarioDTO = usuarioService.buscarPorId(id);
-            model.addAttribute("usuario", usuarioDTO);
+            Optional<Usuario> usuario = usuarioRepository.findById(id);
+            if(usuario.isPresent()){
+                var dto = UsuarioDTO.toDto(usuario.get());
+                model.addAttribute("usuario", dto);
+            }
             return "cadastrousuario";
         } catch (RuntimeException e) {
-            return "redirect:/usuarios";
+            model.addAttribute("erro", "Erro ao editar Usuário.");
+            return "erro";
         }
     }
 
     @GetMapping("/usuario/novo")
-    public String novoUsuario(Model model) {
+    public String novo(Model model) {
         model.addAttribute("usuario", new UsuarioDTO());
-        return "formusuario";
+        return "cadastrousuario";
     }
 
     @GetMapping("/usuario/excluir/{id}")
-    public String excluirUsuario(@PathVariable Long id) {
-        usuarioService.excluirPorId(id);
-        return "redirect:/usuarios";
+    public String excluir(@PathVariable Long id, HttpSession session) {
+        try {
+            var usuarioOpt = usuarioRepository.findById(id);
+            if(usuarioOpt.isPresent()){
+                usuarioService.removeVincululos(usuarioOpt.get());
+                usuarioRepository.deleteById(id);
+                session.invalidate();
+            }
+            return "redirect:/";
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @GetMapping("/logout")

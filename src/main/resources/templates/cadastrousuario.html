@@ -57,6 +57,8 @@
 
         <div class="text-center mt-4">
             <button type="submit" class="btn btn-success btn-lg">Cadastrar Usuário</button>
+            <a th:if="${usuario.id != null}" th:href="@{'/usuario/excluir/' + ${usuario.id}}" class="btn btn-danger btn-lg"
+               onclick="return confirm('Tem certeza que deseja excluir este usuário?');">Excluir Usuário</a>
         </div>
     </form>
 </div>

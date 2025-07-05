@@ -27,11 +27,6 @@ public class AdminController {
         model.addAttribute("matriculas", matriculaService.buscarTodas());
         return "admin/matriculas"; // templates/admin/matriculas-admin.html
     }
-    @GetMapping("/admin/cursos")
-    public String listarCursosAdmin(Model model) {
-        model.addAttribute("cursos", cursoService.listarTodos()); //
-        return "admin/cursos"; // corresponde a templates/admin/cursos.html
-    }
     @GetMapping("/admin/matriculas/novo")
     public String novaMatriculaForm(Model model) {
         // adiciona atributos se necessário
