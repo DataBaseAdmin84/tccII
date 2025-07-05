@@ -20,12 +20,13 @@ public class UsuarioService {
     @Autowired
     private CursoService cursoService;
 
-    public boolean validarEmail(String dto) {
-        return usuarioRepository.existsByEmail(dto);
+    public boolean validarEmail(String email) {
+        return usuarioRepository.existsByEmail(email);
     }
 
-    public Optional<Usuario> autenticar(String login, String senha) {
-        return usuarioRepository.findByLoginAndSenha(login, senha);
+    public Optional<Usuario> autenticar(String login) {
+        List<Usuario> usuarios = usuarioRepository.findByLogin(login);
+        return usuarios.stream().findFirst();
     }
 
     public void removeVincululos(Usuario usuario){
