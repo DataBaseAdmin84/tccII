@@ -28,7 +28,7 @@ public class LoginController {
 
     @PostMapping("/login")
     public String login(@ModelAttribute("login") LoginDTO loginDTO, Model model, HttpSession session) {
-        Optional<Usuario> usuarioOpt = usuarioService.autenticar(loginDTO.getLogin(), loginDTO.getSenha());
+        Optional<Usuario> usuarioOpt = usuarioService.autenticar(loginDTO.getLogin());
         try {
             if (usuarioOpt.isPresent()) {
                 Usuario usuario = usuarioOpt.get();
