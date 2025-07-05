@@ -15,12 +15,6 @@ public class AdminController {
     @Autowired
     private CursoService cursoService;
 
-    // Página inicial do admin
-    @GetMapping("/admin/home")
-    public String exibirHomeAdmin() {
-        return "home"; // templates/admin/home.html
-    }
-
     // Listar todas as matrículas (admin)
     @GetMapping("/admin/matriculas")
     public String listarMatriculasAdmin(Model model) {
