@@ -57,7 +57,7 @@ public class AlunoController {
             return "redirect:/";
         }
 
-        matriculaService.matricularAlunoEmCurso(aluno.getId(), id);
+       // matriculaService.matricularAlunoEmCurso(aluno.getId(), id);
         redirect.addFlashAttribute("msg", "Matrícula realizada com sucesso!");
 
         // Redireciona direto para a tela de aulas do curso matriculado
@@ -73,7 +73,7 @@ public class AlunoController {
             return "redirect:/";
         }
 
-        model.addAttribute("matriculas", matriculaService.buscarMatriculasPorAluno(aluno.getId()));
+        //model.addAttribute("matriculas", matriculaService.buscarMatriculasPorAluno(aluno.getId()));
         return "aluno/matriculados";
     }
     @GetMapping("/aluno/matriculados")
@@ -87,20 +87,20 @@ public class AlunoController {
         model.addAttribute("matriculas", matriculaService.buscarMatriculasDoAluno(aluno));
         return "aluno/matriculados";
     }
-    @PostMapping("/matriculas/salvar")
-    public String salvarMatriculaAluno(@ModelAttribute MatriculaDTO dto, HttpSession session, RedirectAttributes redirect) {
-        Usuario aluno = (Usuario) session.getAttribute("usuarioLogado");
-        if (aluno == null) {
-            redirect.addFlashAttribute("erro", "Sessão expirada.");
-            return "redirect:/";
-        }
-
-        dto.setUsuarioId(aluno.getId()); // força o ID correto
-        matriculaService.salvarMatricula(dto);
-        redirect.addFlashAttribute("msg", "Matrícula realizada com sucesso!");
-
-        return "redirect:/aluno/matriculados";
-    }
+//    @PostMapping("/matriculas/salvar")
+//    public String salvarMatriculaAluno(@ModelAttribute MatriculaDTO dto, HttpSession session, RedirectAttributes redirect) {
+//        Usuario aluno = (Usuario) session.getAttribute("usuarioLogado");
+//        if (aluno == null) {
+//            redirect.addFlashAttribute("erro", "Sessão expirada.");
+//            return "redirect:/";
+//        }
+//
+//        dto.setUsuarioId(aluno.getId()); // força o ID correto
+//        matriculaService.salvarMatricula(dto);
+//        redirect.addFlashAttribute("msg", "Matrícula realizada com sucesso!");
+//
+//        return "redirect:/aluno/matriculados";
+//    }
 
 }
     

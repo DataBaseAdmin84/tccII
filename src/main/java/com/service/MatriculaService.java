@@ -1,6 +1,7 @@
 package com.service;
 
 import com.dto.MatriculaDTO;
+import com.filtro.FiltroMatricula;
 import com.model.Curso;
 import com.model.Matricula;
 import com.model.Usuario;
@@ -12,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class MatriculaService {
@@ -26,16 +26,18 @@ public class MatriculaService {
     @Autowired
     private CursoRepository cursoRepository;
 
-    // Lista todas as matrículas
-    public List<Matricula> listarMatriculas() {
-        return matriculaRepository.findAll();
+    public void salvarMatricula(Long idUsuario, Long idCurso){
+        var dto = new MatriculaDTO();
+        dto.setCursoId(idCurso);
+        dto.setUsuarioId(idUsuario);
+        dto.setDataMatricula(new Date());
+        salvarMatricula(dto);
     }
 
-    // Salva nova matrícula ou atualiza matrícula existente
-    public void salvarMatricula(MatriculaDTO dto) {
+    private void salvarMatricula(MatriculaDTO dto) {
         Matricula matricula = new Matricula();
 
-        if (dto.getId() != null) { // Se tem ID, é edição
+        if (dto.getId() != null) {
             matricula = matriculaRepository.findById(dto.getId())
                     .orElseThrow(() -> new RuntimeException("Matrícula não encontrada"));
         }
@@ -49,46 +51,29 @@ public class MatriculaService {
         matricula.setUsuario(usuario);
         matricula.setCurso(curso);
 
-        // Apenas no caso de novo cadastro definir a data atual
         if (dto.getId() == null) {
             matricula.setDataMatricula(new Date());
         }
-
         matriculaRepository.save(matricula);
     }
 
-    // Buscar matrícula por ID (para edição)
-    public Matricula buscarPorId(Long id) {
-        return matriculaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Matrícula não encontrada"));
+    public List<Matricula> buscarMatriculasPorAluno(Long idUsuario) {
+        var filtro = new FiltroMatricula();
+        filtro.setIdUsuario(idUsuario);
+        return matriculaRepository.findAll(filtro.toSpecification());
     }
 
-    // Excluir matrícula
-    public void excluirMatricula(Long id) {
-        matriculaRepository.deleteById(id);
-    }
+    public void excluirPorUsuarioCurso(Long idCurso, Long idUsuario){
+        var filtro = new FiltroMatricula();
+        filtro.setIdCurso(idCurso);
+        filtro.setIdUsuario(idUsuario);
 
+        List<Matricula> matriculas = matriculaRepository.findAll(filtro.toSpecification());
 
-    public void matricularAlunoEmCurso(Long alunoId, Long cursoId) {
-        Optional<Usuario> alunoOpt = usuarioRepository.findById(alunoId);
-        Optional<Curso> cursoOpt = cursoRepository.findById(cursoId);
-
-        if (alunoOpt.isPresent() && cursoOpt.isPresent()) {
-            Matricula matricula = new Matricula();
-            matricula.setUsuario(alunoOpt.get());
-            matricula.setCurso(cursoOpt.get());
-            matricula.setDataMatricula(new Date());
-
-            matriculaRepository.save(matricula);
-        } else {
-            throw new RuntimeException("Aluno ou curso não encontrado");
+        for(Matricula mat : matriculas){
+            matriculaRepository.deleteById(mat.getId());
         }
     }
-
-    public List<Matricula> buscarMatriculasPorAluno(Long alunoId) {
-        return matriculaRepository.findByUsuarioId(alunoId);
-    }
-
 
     public Object buscarTodas() {
         return matriculaRepository.findAll();

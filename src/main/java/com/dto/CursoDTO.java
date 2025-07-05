@@ -17,7 +17,9 @@ public class CursoDTO {
     private LocalDate data;
     private String titulo;
     private String professorNome;
+    private Integer perfil;
     private String erro;
+    private boolean matriculado;
     private List<AulaDTO> aulas = new ArrayList<>();
 
     public String getProfessorNome() {
@@ -74,6 +76,22 @@ public class CursoDTO {
 
     public void setData(LocalDate data) {
         this.data = data;
+    }
+
+    public Integer getPerfil() {
+        return perfil;
+    }
+
+    public void setPerfil(Integer perfil) {
+        this.perfil = perfil;
+    }
+
+    public boolean isMatriculado() {
+        return matriculado;
+    }
+
+    public void setMatriculado(boolean matriculado) {
+        this.matriculado = matriculado;
     }
 
     public static CursoDTO toDto(Curso curso){

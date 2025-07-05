@@ -8,13 +8,14 @@ import com.model.Curso;
 import com.model.Usuario;
 import com.repository.CursoRepository;
 import com.service.CursoService;
-import com.service.S3Service;
-import com.service.UsuarioService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
@@ -29,12 +30,6 @@ public class CursoController {
 
     @Autowired
     private CursoService cursoService;
-
-    @Autowired
-    private UsuarioService usuarioService;
-
-    @Autowired
-    private S3Service s3Service;
 
     @GetMapping("/curso/novo")
     public String exibirFormularioCurso(Model model, HttpSession session) {
@@ -76,15 +71,20 @@ public class CursoController {
     }
 
     @GetMapping("/cursos")
-    public String listarCursos(CursoDTO dto, Model model) {
+    public String listarCursos(CursoDTO dto, Model model, HttpSession session) {
         var filtro = new FiltroCurso();
         filtro.preencheFiltro(dto);//metodo para preencher o filtro criteriaBuilder (implementação filtro dafault do Spring boot)
+        var usuario = (Usuario) session.getAttribute("usuarioLogado");
 
         var cursos = cursoRepository.findAll(filtro.toSpecification());
         var listCurso = new ArrayList<CursoDTO>();
         for(Curso curso : cursos){
-            listCurso.add(CursoDTO.toDto(curso));
+            var c = CursoDTO.toDto(curso);
+            c.setMatriculado(cursoService.possuiMatricula(curso, usuario.getId()));
+            listCurso.add(c);
         }
+        model.addAttribute("usuarioLogado", usuario);
+        model.addAttribute("perfil", usuario.getPerfil());
         model.addAttribute("cursos", listCurso);
         return "curso/cursos";
     }

@@ -29,7 +29,7 @@ public class UsuarioController {
     public String salvar(@ModelAttribute UsuarioDTO usuarioDTO, Model model, HttpSession session) {
         try {
             String email = usuarioDTO.getEmail();
-            if(usuarioService.validarEmail(email)) {
+            if(usuarioDTO.getId() == null && usuarioService.validarEmail(email)) {
                 model.addAttribute("erro", "Email já esta sendo usado por outro usuário.");
                 return "erro";
             }

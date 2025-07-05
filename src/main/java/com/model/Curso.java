@@ -36,6 +36,13 @@ public class Curso {
     @OneToMany(mappedBy = "curso", cascade = CascadeType.ALL)
     private List<Aula> aulas = new ArrayList<>();
 
+    @ManyToMany
+    @JoinTable(
+            name = "MATRICULA",
+            joinColumns = @JoinColumn(name = "ID_CURSO"),
+            inverseJoinColumns = @JoinColumn(name = "ID_ALUNO")
+    )
+    private List<Usuario> alunos = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -83,5 +90,13 @@ public class Curso {
 
     public void setAulas(List<Aula> aulas) {
         this.aulas = aulas;
+    }
+
+    public List<Usuario> getAlunos() {
+        return alunos;
+    }
+
+    public void setAlunos(List<Usuario> alunos) {
+        this.alunos = alunos;
     }
 }
