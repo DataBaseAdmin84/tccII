@@ -73,6 +73,14 @@
             background-color: #0056b3;
         }
 
+        .btn-associate { /* New style for associate button */
+            background-color: #28a745;
+        }
+
+        .btn-associate:hover {
+            background-color: #218838;
+        }
+
         .top-controls {
             display: flex;
             justify-content: space-between;
@@ -228,7 +236,7 @@
     <div th:if="${erro}" class="mensagem erro" th:text="${erro}"></div>
 
     <div class="top-controls">
-        <a th:href="@{/curso/novo}" class="btn">Novo Curso</a>
+        <a th:if="${perfil == 2}" th:href="@{/curso/novo}" class="btn">Novo Curso</a>
         <a th:href="@{/painelprincipal}" class="btn btn-voltar">Voltar</a>
     </div>
 
@@ -254,8 +262,7 @@
             <th>Título</th>
             <th>Descrição</th>
             <th>Professor</th>
-            <th style="width: 200px;">Ações</th>
-        </tr>
+            <th style="width: 250px;">Ações</th> </tr>
         </thead>
         <tbody>
         <tr th:each="curso : ${cursos}">
@@ -263,9 +270,23 @@
             <td th:text="${curso.descricao}">Descrição do Curso</td>
             <td th:text="${curso.professorNome}">Nome do Professor</td>
             <td class="actions">
+            <span th:if="${perfil == 2}">
                 <a th:href="@{'/curso/editar/' + ${curso.id}}">Editar</a>
                 <a th:href="@{'/curso/excluir/' + ${curso.id}}">Excluir</a>
-                <span class="toggle-aulas" th:data-curso-id="${curso.id}">Aulas &#9660;</span> </td>
+            </span>
+
+                <span th:if="${perfil != 2}">
+                <form th:if="${curso.matriculado}" th:action="@{'/matricula/excluir/' + ${curso.id}}" method="get" style="display: inline;">
+                    <button type="submit" class="btn btn-danger">Remover Matrícula</button>
+                </form>
+                <form th:unless="${curso.matriculado}" th:action="@{'/matricula/novo'}" method="post" style="display: inline;">
+                    <input type="hidden" name="cursoId" th:value="${curso.id}" />
+                    <button type="submit" class="btn btn-primary">Inscrever-se</button>
+                </form>
+            </span>
+
+                <span class="toggle-aulas" th:data-curso-id="${curso.id}">Aulas &#9660;</span>
+            </td>
         </tr>
         <tr th:if="${#lists.isEmpty(cursos)}">
             <td colspan="4" style="text-align: center;">Nenhum curso encontrado com os filtros aplicados.</td>
@@ -279,13 +300,13 @@
             <div th:if="${!#lists.isEmpty(curso.aulas)}" th:each="aula : ${curso.aulas}" class="aula-item">
                 <span th:text="${aula.descricao}">Descrição da Aula</span>
                 <div class="aula-actions">
-                    <a href="#" th:onclick="'excluirAula(' + ${aula.id} + ', ' + ${curso.id} + ')'">Excluir</a>
+                    <a th:if="${perfil == 1}" href="#" th:onclick="'excluirAula(' + ${aula.id} + ', ' + ${curso.id} + ')'">Excluir</a>
                 </div>
             </div>
             <div th:if="${#lists.isEmpty(curso.aulas)}" style="font-style: italic;">Nenhuma aula cadastrada para este curso.</div>
         </div>
 
-        <form class="add-aula-form" th:action="@{'/aula/novo'}" method="post">
+        <form th:if="${perfil == 1}" class="add-aula-form" th:action="@{'/aula/novo'}" method="post">
             <input type="hidden" name="idCurso" th:value="${curso.id}">
             <input type="text" name="descricao" placeholder="Nova descrição da aula" required>
             <button type="submit">Adicionar Aula</button>

@@ -3,7 +3,9 @@ package com.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "USUARIO")
@@ -38,6 +40,9 @@ public class Usuario {
     @NotNull
     @Column(name = "PERFIL")
     private Integer perfil;
+
+    @ManyToMany(mappedBy = "alunos")
+    private List<Curso> cursos = new ArrayList<>();
 
     @Transient
     private String inicial;
@@ -105,6 +110,14 @@ public class Usuario {
 
     public void setInicial(String inicial) {
         this.inicial = inicial;
+    }
+
+    public List<Curso> getCursos() {
+        return cursos;
+    }
+
+    public void setCursos(List<Curso> cursos) {
+        this.cursos = cursos;
     }
 }
 
