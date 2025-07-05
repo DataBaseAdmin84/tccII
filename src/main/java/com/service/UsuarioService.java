@@ -20,8 +20,8 @@ public class UsuarioService {
     @Autowired
     private CursoService cursoService;
 
-    public boolean validarEmail(String dto) {
-        return usuarioRepository.existsByEmail(dto);
+    public boolean validarEmail(String email, String senha) {
+        return usuarioRepository.existsByEmailAndSenha(email, senha);
     }
 
     public Optional<Usuario> autenticar(String login, String senha) {
