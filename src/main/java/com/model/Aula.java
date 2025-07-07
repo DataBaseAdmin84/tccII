@@ -2,6 +2,8 @@ package com.model;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "AULA")
 public class Aula {
@@ -19,9 +21,13 @@ public class Aula {
     @Column(name = "DESCRICAO", nullable = false)
     private String descricao;
 
-    //TODO ADICIONAR ARQUIVOS
-    //List arquivos
-
+    @ManyToMany
+    @JoinTable(
+            name = "AULA_ARQUIVO",
+            joinColumns = @JoinColumn(name = "ID_AULA"),
+            inverseJoinColumns = @JoinColumn(name = "ID_ARQUIVO")
+    )
+    private List<Arquivo> arquivos;
 
     public Long getId() {
         return id;
@@ -45,5 +51,13 @@ public class Aula {
 
     public void setCurso(Curso curso) {
         this.curso = curso;
+    }
+
+    public List<Arquivo> getArquivos() {
+        return arquivos;
+    }
+
+    public void setArquivos(List<Arquivo> arquivos) {
+        this.arquivos = arquivos;
     }
 }

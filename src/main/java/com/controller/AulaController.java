@@ -1,5 +1,6 @@
 package com.controller;
 
+import com.dto.AulaDTO;
 import com.model.Aula;
 import com.model.Usuario;
 import com.service.AulaService;
@@ -10,7 +11,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/aulas")
 public class AulaController {
 
     private final AulaService aulaService;
@@ -21,32 +21,10 @@ public class AulaController {
         this.cursoService = cursoService;
     }
 
-    @GetMapping("/professor")
+    @PostMapping("/aula/novo")
     public String listarAulasProfessor(Model model, HttpSession session) {
         Usuario professor = (Usuario) session.getAttribute("usuarioLogado");
-        //model.addAttribute("aulas", aulaService.listarPorProfessor(professor.getId()));
-        return "professor/aulas";
-    }
-
-    @GetMapping("/professor/nova")
-    public String formNovaAula(Model model, HttpSession session) {
-        Usuario professor = (Usuario) session.getAttribute("usuarioLogado");
-        model.addAttribute("aula", new Aula());
-       // model.addAttribute("cursos", cursoService.listarCursosPorProfessor(professor));
-        return "professor/aula-form";
-    }
-
-    @PostMapping("/professor/salvar")
-    public String salvarAula(@ModelAttribute Aula aula, HttpSession session) {
-        Usuario professor = (Usuario) session.getAttribute("usuarioLogado");
-        aulaService.salvar(aula);
-        return "redirect:/aulas/professor";
-    }
-
-    @GetMapping("/curso/{id}")
-    public String listarAulasCurso(@PathVariable Long id, Model model) {
-        model.addAttribute("aulas", aulaService.listarPorCurso(id));
-        model.addAttribute("cursoId", id);
-        return "aluno/aulas";
+        model.addAttribute("aulas", new AulaDTO());
+        return "preparacaoaula";
     }
 }

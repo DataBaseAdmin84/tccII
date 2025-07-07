@@ -3,12 +3,15 @@ package com.model;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "ARQUIVO")
 public class Arquivo {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
+    @SequenceGenerator(name = "HIBERNATE_SEQUENCE", sequenceName = "HIBERNATE_SEQUENCE", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "HIBERNATE_SEQUENCE")
     private Long id;
 
     @Column(nullable = false, length = 200)
@@ -25,6 +28,9 @@ public class Arquivo {
 
     @Column(nullable = false)
     private LocalDate dataUpload;
+
+    @ManyToMany(mappedBy = "arquivos")
+    private List<Aula> aulas;
 
     public Long getId() {
         return id;
@@ -72,5 +78,13 @@ public class Arquivo {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public List<Aula> getAulas() {
+        return aulas;
+    }
+
+    public void setAulas(List<Aula> aulas) {
+        this.aulas = aulas;
     }
 }

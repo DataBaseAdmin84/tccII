@@ -73,12 +73,26 @@
             background-color: #0056b3;
         }
 
-        .btn-associate { /* New style for associate button */
-            background-color: #28a745;
+        .btn-danger { /* For 'Remover Matrícula' */
+            background-color: #dc3545;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-weight: normal;
+        }
+        .btn-danger:hover {
+            background-color: #c82333;
         }
 
-        .btn-associate:hover {
-            background-color: #218838;
+        .btn-primary { /* For 'Inscrever-se' */
+            background-color: #007bff;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-weight: normal;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
         }
 
         .top-controls {
@@ -194,9 +208,11 @@
         .aula-item .aula-actions a {
             margin-left: 10px;
             color: #dc3545; /* Red for delete */
+            text-decoration: none; /* Ensure no underline by default */
         }
         .aula-item .aula-actions a:hover {
             color: #c82333;
+            text-decoration: underline; /* Add underline on hover */
         }
 
         .add-aula-form {
@@ -306,7 +322,7 @@
             <div th:if="${#lists.isEmpty(curso.aulas)}" style="font-style: italic;">Nenhuma aula cadastrada para este curso.</div>
         </div>
 
-        <form th:if="${perfil == 1}" class="add-aula-form" th:action="@{'/aula/novo'}" method="post">
+        <form th:if="${perfil == 2}" class="add-aula-form" th:action="@{'/aula/novo'}" method="post">
             <input type="hidden" name="idCurso" th:value="${curso.id}">
             <input type="text" name="descricao" placeholder="Nova descrição da aula" required>
             <button type="submit">Adicionar Aula</button>
@@ -325,10 +341,18 @@
             const aulasSection = document.getElementById('aulas-section-' + cursoId);
             const arrow = this; // The span itself
 
-            if (aulasSection.style.display === 'block' || aulasSection.style.display === '') {
+            if (aulasSection.style.display === 'block') {
                 aulasSection.style.display = 'none';
                 arrow.innerHTML = 'Aulas &#9660;'; // Down arrow
             } else {
+                // Hide all other open aula sections when a new one is opened
+                document.querySelectorAll('.aulas-section').forEach(section => {
+                    if (section.id !== 'aulas-section-' + cursoId) {
+                        section.style.display = 'none';
+                        // Also reset the arrow for the other sections
+                        document.querySelector(`.toggle-aulas[data-curso-id="${section.id.replace('aulas-section-', '')}"]`).innerHTML = 'Aulas &#9660;';
+                    }
+                });
                 aulasSection.style.display = 'block';
                 arrow.innerHTML = 'Aulas &#9650;'; // Up arrow
                 // Optional: Fetch aulas dynamically if not pre-loaded
@@ -346,11 +370,16 @@
             })
             .then(response => {
                 if (response.ok) {
-                    // Reload the page or remove the aula from the DOM
-                    window.location.reload(); // Simple reload for demonstration
-                    // Or, if you want a smoother UX:
-                    // const aulaItem = document.querySelector(`#aulas-list-${cursoId} .aula-item span[data-aula-id="${aulaId}"]`).closest('.aula-item');
-                    // if (aulaItem) aulaItem.remove();
+                    // Remove the aula from the DOM after successful deletion
+                    const aulasList = document.getElementById('aulas-list-' + cursoId);
+                    const aulaItemToRemove = aulasList.querySelector(`[th-data-aula-id="${aulaId}"]`); // Using a custom data attribute for finding
+                    if (aulaItemToRemove) {
+                        aulaItemToRemove.remove();
+                    }
+                    // If no more aulas, display "Nenhuma aula..." message
+                    if (aulasList.children.length === 0 || aulasList.children.length === 1 && aulasList.children[0].style.fontStyle === 'italic') { // Check if only the "no aulas" message remains
+                        aulasList.innerHTML = '<div style="font-style: italic;">Nenhuma aula cadastrada para este curso.</div>';
+                    }
                 } else {
                     alert('Erro ao excluir a aula.');
                 }
