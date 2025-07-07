@@ -29,32 +29,24 @@ public class UsuarioController {
     public String salvar(@ModelAttribute UsuarioDTO usuarioDTO, Model model, HttpSession session) {
         try {
             String email = usuarioDTO.getEmail();
-            if(usuarioDTO.getId() == null && usuarioService.validarEmail(email)) {
+            if(usuarioService.validarEmail(email)) {
                 model.addAttribute("erro", "Email já esta sendo usado por outro usuário.");
                 return "erro";
             }
-
-            String senha = usuarioDTO.getSenha();
-            // Verifica se já existe usuário com o mesmo email e senha
-            boolean existe = usuarioRepository.existsByEmail(email);
-            if (usuarioDTO.getId() == null && existe) {
-                model.addAttribute("erro", "E-mail já esta sendo usado por outro usuário.");
-                model.addAttribute("usuario", usuarioDTO);
-                return "cadastrousuario";
-            }
-
             Usuario usuario = UsuarioDTO.toModel(usuarioDTO);
             usuario.setDataInclusao(new Date());
+
             usuarioRepository.save(usuario);
             session.setAttribute("usuarioLogado", usuario);
             model.addAttribute("sucesso", "Usuário cadastrado com sucesso!");
             return "redirect:/painelprincipal";
 
         } catch (Exception e) {
-            model.addAttribute("erro", "Erro ao salvar o usuário.");
+            model.addAttribute("erro", "Erro ao salvar o usuario.");
             return "erro";
         }
     }
+
     @GetMapping("/usuario/editar/{id}")
     public String editar(@PathVariable Long id, Model model) {
         try {
