@@ -24,6 +24,10 @@ public class UsuarioService {
         return usuarioRepository.existsByEmail(email);
     }
 
+    public boolean validarLogin(String login) {
+        return usuarioRepository.findByLogin(login).isEmpty();
+    }
+
     public Optional<Usuario> autenticar(String login) {
         List<Usuario> usuarios = usuarioRepository.findByLogin(login);
         return usuarios.stream().findFirst();
