@@ -322,9 +322,9 @@
             <div th:if="${#lists.isEmpty(curso.aulas)}" style="font-style: italic;">Nenhuma aula cadastrada para este curso.</div>
         </div>
 
-        <form th:if="${perfil == 2}" class="add-aula-form" th:action="@{'/aula/novo'}" method="post">
+        <form th:if="${perfil == 2}" class="add-aula-form" th:action="@{'/aula/novo'}" method="get">
             <input type="hidden" name="idCurso" th:value="${curso.id}">
-            <input type="text" name="descricao" placeholder="Nova descrição da aula" required>
+            <input type="text" name="descricao" placeholder="Nova descrição da aula">
             <button type="submit">Adicionar Aula</button>
         </form>
     </div>
