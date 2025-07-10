@@ -51,7 +51,7 @@ public class AulaController {
 
             aulaRepository.save(aula);
             model.addAttribute("aula", aula);
-            return "redirect:/curso/preparacaoaula/";
+            return "redirect:/cursos";
 
         } catch (Exception e) {
             model.addAttribute("erro", "Erro ao preencher formulário de aula "+e.getLocalizedMessage());

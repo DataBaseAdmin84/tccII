@@ -1,6 +1,7 @@
 package com.dto;
 
 import com.dataUtil.DataUtils;
+import com.model.Aula;
 import com.model.Curso;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -104,7 +105,12 @@ public class CursoDTO {
             dto.setProfessorNome(curso.getProfessor().getNomeCompleto());
         }
         if(curso.getAulas() != null && !curso.getAulas().isEmpty()) {
-            //implementar preenchimento de aulas.
+            List<AulaDTO> aulas = new ArrayList<>();
+            for(Aula aula : curso.getAulas()){
+                var aulaDTO = AulaDTO.toDto(aula);
+                aulas.add(aulaDTO);
+            }
+            dto.setAulas(aulas);
         }
         return dto;
     }

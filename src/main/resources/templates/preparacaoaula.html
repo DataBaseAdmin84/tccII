@@ -468,9 +468,8 @@
 
     <div class="lesson-details">
         <form id="aulaDetailsForm" th:action="@{/aula/salvar}" method="post">
-            <!--<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />-->
             <input type="hidden" name="id" th:value="${aula.id}">
-            <input type="hidden" name="idCurso" th:value="${idCurso}">
+            <input type="hidden" name="idCurso" th:value="${aula.idCurso}">
 
             <div class="form-group">
                 <label for="tituloAula">Título da Aula:</label>

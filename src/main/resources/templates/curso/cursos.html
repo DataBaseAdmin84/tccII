@@ -205,6 +205,17 @@
             border-bottom: none;
         }
 
+        .aula-description-link { /* New style for clickable aula description */
+            color: #007bff;
+            text-decoration: none;
+            font-weight: normal;
+        }
+
+        .aula-description-link:hover { /* Hover effect for clickable aula description */
+            text-decoration: underline;
+            color: #0056b3;
+        }
+
         .aula-item .aula-actions a {
             margin-left: 10px;
             color: #dc3545; /* Red for delete */
@@ -314,7 +325,7 @@
         <h4>Aulas do Curso: <span th:text="${curso.titulo}"></span></h4>
         <div class="aulas-list" th:id="'aulas-list-' + ${curso.id}">
             <div th:if="${!#lists.isEmpty(curso.aulas)}" th:each="aula : ${curso.aulas}" class="aula-item">
-                <span th:text="${aula.descricao}">Descrição da Aula</span>
+                <a th:href="@{'/aula/editar/' + ${aula.id}}" th:text="${aula.descricao}" class="aula-description-link">Descrição da Aula</a>
                 <div class="aula-actions">
                     <a th:if="${perfil == 1}" href="#" th:onclick="'excluirAula(' + ${aula.id} + ', ' + ${curso.id} + ')'">Excluir</a>
                 </div>
@@ -377,8 +388,8 @@
                         aulaItemToRemove.remove();
                     }
                     // If no more aulas, display "Nenhuma aula..." message
-                    if (aulasList.children.length === 0 || aulasList.children.length === 1 && aulasList.children[0].style.fontStyle === 'italic') { // Check if only the "no aulas" message remains
-                        aulasList.innerHTML = '<div style="font-style: italic;">Nenhuma aula cadastrada para este curso.</div>';
+                    if (aulasList.children.length === 0 || (aulasList.children.length === 1 && aulasList.children[0].classList.contains('no-aulas-message'))) { // Check if only the "no aulas" message remains
+                        aulasList.innerHTML = '<div style="font-style: italic;" class="no-aulas-message">Nenhuma aula cadastrada para este curso.</div>';
                     }
                 } else {
                     alert('Erro ao excluir a aula.');
