@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Preparação de Aula</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Estilos Gerais */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Topo da Página */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 20px;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.2em;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header h1 .edit-icon {
+            font-size: 0.7em;
+            color: #7f8c8d;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .header h1 .edit-icon:hover {
+            color: #3498db;
+        }
+
+        .breadcrumb {
+            font-size: 0.9em;
+            color: #7f8c8d;
+            margin-bottom: 15px;
+        }
+
+        .breadcrumb a {
+            color: #3498db;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.2s ease, color 0.2s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-success {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #218838;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+
+        /* Detalhes da Aula */
+        .lesson-details {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        .lesson-details label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .lesson-details input[type="text"],
+        .lesson-details textarea {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 1em;
+        }
+
+        .lesson-details textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .lesson-details .actions {
+            text-align: right;
+            margin-top: 20px;
+            display: flex; /* Use flex for button alignment */
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        /* Seção de Materiais */
+        .materials-section {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            padding: 25px;
+            border-radius: 8px;
+            position: relative; /* For the floating add button */
+        }
+
+        .materials-section h3 {
+            color: #2c3e50;
+            font-size: 1.6em;
+            margin-top: 0;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #eee;
+        }
+
+        .btn-add-material {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 2em;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            position: fixed; /* Fixed position on the screen */
+            bottom: 30px;
+            right: 30px;
+            z-index: 100; /* Ensure it's above other content */
+        }
+
+        .material-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+            min-height: 150px; /* Ensure space even if no materials */
+        }
+
+        .material-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #ffffff;
+            border: 1px solid #dee2e6;
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s ease;
+        }
+
+        .material-item:hover {
+            border-color: #a7d9ff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .material-info {
+            display: flex;
+            align-items: center;
+            flex-grow: 1;
+        }
+
+        .material-info .icon {
+            font-size: 1.8em;
+            margin-right: 15px;
+            color: #3498db;
+            width: 30px; /* Fixed width for icons */
+            text-align: center;
+        }
+
+        .material-info .details {
+            flex-grow: 1;
+        }
+
+        .material-info .details h4 {
+            margin: 0;
+            font-size: 1.1em;
+            color: #2c3e50;
+        }
+
+        .material-info .details p {
+            margin: 5px 0 0;
+            font-size: 0.85em;
+            color: #7f8c8d;
+        }
+
+        .material-actions a {
+            color: #6c757d;
+            margin-left: 15px;
+            font-size: 1.1em;
+            transition: color 0.2s ease;
+        }
+
+        .material-actions a:hover {
+            color: #007bff;
+        }
+
+        .material-actions .delete-btn {
+            color: #dc3545;
+        }
+
+        .material-actions .delete-btn:hover {
+            color: #c82333;
+        }
+
+        .no-materials {
+            text-align: center;
+            padding: 30px;
+            color: #7f8c8d;
+            font-style: italic;
+            border: 1px dashed #e9ecef;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1000; /* Sit on top, higher than other elements */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0,0,0,0.6); /* Black w/ more opacity */
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+            width: 80%;
+            max-width: 600px; /* Slightly larger for modals */
+            position: relative;
+        }
+
+        .close-button {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            cursor: pointer;
+        }
+
+        .close-button:hover,
+        .close-button:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .modal-content h3 {
+            margin-top: 0;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .modal-content label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .modal-content input[type="text"],
+        .modal-content input[type="url"],
+        .modal-content input[type="file"],
+        .modal-content textarea {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 1em;
+        }
+
+        .modal-content textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .modal-content .modal-actions {
+            text-align: right;
+            margin-top: 20px;
+        }
+
+        .modal-content .modal-actions .btn {
+            margin-left: 10px;
+        }
+
+        .file-upload-area {
+            border: 2px dashed #a7d9ff; /* More prominent dashed border */
+            border-radius: 8px;
+            padding: 30px; /* More padding */
+            text-align: center;
+            cursor: pointer;
+            margin-bottom: 20px;
+            background-color: #fefefe;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+        }
+        .file-upload-area:hover {
+            background-color: #e9f5ff; /* Lighter blue hover */
+            border-color: #007bff;
+        }
+        .file-upload-area i {
+            font-size: 3.5em; /* Larger icon */
+            color: #007bff; /* Blue icon */
+            margin-bottom: 15px;
+        }
+        .file-upload-area p {
+            margin: 0;
+            color: #555;
+            font-size: 1.1em;
+        }
+
+
+        /* Dropdown for Add Material button */
+        .add-material-dropdown {
+            position: fixed; /* Same as the button */
+            bottom: 90px; /* Adjust based on button size */
+            right: 30px;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 1000; /* Ensure it's above everything */
+            min-width: 200px;
+            display: none; /* Hidden by default */
+            transform: translateY(10px); /* Small animation effect */
+            opacity: 0;
+            transition: all 0.2s ease-out;
+        }
+
+        .add-material-dropdown.show {
+            display: block;
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .add-material-dropdown a {
+            display: block;
+            padding: 12px 15px;
+            text-decoration: none;
+            color: #333;
+            transition: background-color 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .add-material-dropdown a:hover {
+            background-color: #f2f2f2;
+        }
+
+        .add-material-dropdown a i {
+            margin-right: 0; /* Already has gap */
+            color: #6c757d;
+        }
+
+        /* Mensagens de Sucesso/Erro */
+        .mensagem {
+            padding: 12px 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .mensagem.sucesso {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .mensagem.erro {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="breadcrumb">
+        <a th:href="@{/painelprincipal}"><i class="fas fa-home"></i> Dashboard</a> >
+        <a th:href="@{/cursos}"><i class="fas fa-book"></i> Cursos</a> >
+        <a th:href="@{'/curso/detalhes/' + ${cursoId}}"><i class="fas fa-cube"></i> <span th:text="${nomeCurso}">Nome do Curso</span></a> >
+        Preparação de Aula
+    </div>
+
+    <div class="header">
+        <h1 th:if="${aula.id == null}">
+            Nova Aula para <span th:text="${nomeCurso}">Nome do Curso</span>
+        </h1>
+        <h1 th:unless="${aula.id == null}">
+            Preparar Aula: <span th:text="${aula.titulo}">Título da Aula</span>
+            <i class="fas fa-pencil-alt edit-icon" id="editAulaTitleDesc"></i>
+        </h1>
+        <a th:href="@{'/curso/detalhes/' + ${cursoId}}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Voltar para o Curso
+        </a>
+    </div>
+
+    <div th:if="${msg}" class="mensagem sucesso" th:text="${msg}"></div>
+    <div th:if="${erro}" class="mensagem erro" th:text="${erro}"></div>
+
+    <div class="lesson-details">
+        <form id="aulaDetailsForm" th:action="@{/aula/salvar}" method="post">
+            <input type="hidden" name="id" th:value="${aula.id}">
+            <input type="hidden" name="idCurso" th:value="${aula.idCurso}">
+
+            <div class="form-group">
+                <label for="tituloAula">Título da Aula:</label>
+                <input type="text" id="tituloAula" name="titulo" th:value="${aula.titulo}" required
+                       th:attr="readonly=${aula.id == null ? false : true}">
+            </div>
+
+            <div class="form-group">
+                <label for="descricaoAula">Descrição da Aula:</label>
+                <textarea id="descricaoAula" name="descricao" rows="5" placeholder="Descreva os objetivos, tópicos abordados e pré-requisitos desta aula..." required
+                          th:attr="readonly=${aula.id == null ? false : true}" th:text="${aula.descricao}"></textarea>
+            </div>
+
+            <div class="actions" id="aulaDetailsActions"
+                 th:style="${aula.id == null ? 'display: flex;' : 'display: none;'}">
+                <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Salvar Aula</button>
+                <button type="button" class="btn btn-secondary" id="cancelEditAulaDetails" th:if="${aula.id != null}"><i class="fas fa-times"></i> Cancelar</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="materials-section" th:if="${aula.id != null}">
+        <h3><i class="fas fa-paperclip"></i> Materiais de Apoio</h3>
+
+        <ul class="material-list">
+            <li th:if="${#lists.isEmpty(aula.materiais)}" class="no-materials">Nenhum material adicionado ainda. Clique no botão "+" para começar!</li>
+
+            <li th:each="material : ${aula.materiais}" class="material-item" th:data-material-id="${material.id}">
+                <div class="material-info">
+                    <i class="icon" th:classappend="${material.tipo == 'ARQUIVO' ? 'fas fa-file-alt' : (material.tipo == 'VIDEO' ? 'fab fa-youtube' : (material.tipo == 'LINK' ? 'fas fa-link' : 'fas fa-align-left'))}"></i>
+                    <div class="details">
+                        <h4 th:text="${material.titulo}">Título do Material</h4>
+                        <p th:text="${material.descricao}">Pequena descrição do material ou tipo.</p>
+                    </div>
+                </div>
+                <div class="material-actions">
+                    <a th:if="${material.tipo == 'ARQUIVO'}" th:href="@{'/material/download/' + ${material.id}}" target="_blank" title="Baixar"><i class="fas fa-download"></i></a>
+                    <a th:if="${material.tipo == 'VIDEO' or material.tipo == 'LINK'}" th:href="${material.url}" target="_blank" title="Abrir"><i class="fas fa-external-link-alt"></i></a>
+                    <a th:if="${material.tipo == 'TEXTO_RICO'}" href="#" th:onclick="'openRichTextModal(\'' + ${material.id} + '\')'" title="Visualizar Conteúdo"><i class="fas fa-eye"></i></a>
+
+                    <a href="#" class="edit-material-btn" th:data-material-id="${material.id}" title="Editar"><i class="fas fa-pencil-alt"></i></a>
+
+                    <a href="#" class="delete-material-btn" th:data-material-id="${material.id}" title="Excluir"><i class="fas fa-trash-alt delete-btn"></i></a>
+                </div>
+            </li>
+        </ul>
+        <button class="btn btn-primary btn-add-material" id="addMaterialBtn">
+            <i class="fas fa-plus"></i>
+        </button>
+
+        <div class="add-material-dropdown" id="addMaterialDropdown">
+            <a href="#" data-type="arquivo"><i class="fas fa-file-alt"></i> Adicionar Arquivo</a>
+            <a href="#" data-type="video"><i class="fab fa-youtube"></i> Adicionar Vídeo</a>
+            <a href="#" data-type="link"><i class="fas fa-link"></i> Adicionar Link Externo</a>
+            <a href="#" data-type="texto_rico"><i class="fas fa-align-left"></i> Adicionar Texto/Conteúdo</a>
+        </div>
+    </div>
+</div>
+
+<div id="addFileModal" class="modal">
+    <div class="modal-content">
+        <span class="close-button">×</span>
+        <h3>Adicionar Arquivo à Aula</h3>
+        <form id="addFileForm" th:action="@{/material/upload}" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="aulaId" th:value="${aula.id}">
+            <input type="hidden" name="tipoMaterial" value="ARQUIVO">
+
+            <label for="fileTitle">Título do Material:</label>
+            <input type="text" id="fileTitle" name="titulo" placeholder="Ex: Slides da Aula, Material Complementar" required>
+
+            <label for="fileDescription">Descrição (opcional):</label>
+            <textarea id="fileDescription" name="descricao" rows="3" placeholder="Breve descrição do arquivo"></textarea>
+
+            <label>Arquivo:</label>
+            <div class="file-upload-area" id="fileUploadArea">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p>Arraste e solte seu arquivo aqui ou clique para selecionar</p>
+                <input type="file" id="materialFile" name="file" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.zip,.rar" style="display: none;">
+            </div>
+            <span id="fileNameDisplay" style="font-size: 0.9em; color: #555;"></span>
+
+            <div class="modal-actions">
+                <button type="submit" class="btn btn-success"><i class="fas fa-upload"></i> Upload</button>
+                <button type="button" class="btn btn-secondary close-modal-btn"><i class="fas fa-times"></i> Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="addVideoModal" class="modal">
+    <div class="modal-content">
+        <span class="close-button">×</span>
+        <h3>Adicionar Vídeo à Aula</h3>
+        <form id="addVideoForm" th:action="@{/material/salvar}" method="post">
+            <input type="hidden" name="aulaId" th:value="${aula.id}">
+            <input type="hidden" name="tipoMaterial" value="VIDEO">
+
+            <label for="videoTitle">Título do Vídeo:</label>
+            <input type="text" id="videoTitle" name="titulo" placeholder="Ex: Introdução ao Python" required>
+
+            <label for="videoUrl">URL do Vídeo (YouTube, Vimeo, etc.):</label>
+            <input type="url" id="videoUrl" name="url" placeholder="http://youtube.com/watch?v=..." required>
+
+            <label for="videoDescription">Descrição (opcional):</label>
+            <textarea id="videoDescription" name="descricao" rows="3" placeholder="Breve descrição do conteúdo do vídeo"></textarea>
+
+            <div class="modal-actions">
+                <button type="submit" class="btn btn-success"><i class="fas fa-plus-circle"></i> Adicionar Vídeo</button>
+                <button type="button" class="btn btn-secondary close-modal-btn"><i class="fas fa-times"></i> Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="addLinkModal" class="modal">
+    <div class="modal-content">
+        <span class="close-button">×</span>
+        <h3>Adicionar Link Externo à Aula</h3>
+        <form id="addLinkForm" th:action="@{/material/salvar}" method="post">
+            <input type="hidden" name="aulaId" th:value="${aula.id}">
+            <input type="hidden" name="tipoMaterial" value="LINK">
+
+            <label for="linkTitle">Título do Link:</label>
+            <input type="text" id="linkTitle" name="titulo" placeholder="Ex: Documentação Oficial Python" required>
+
+            <label for="linkUrl">URL do Link:</label>
+            <input type="url" id="linkUrl" name="url" placeholder="https://docs.python.org/3/" required>
+
+            <label for="linkDescription">Descrição (opcional):</label>
+            <textarea id="linkDescription" name="descricao" rows="3" placeholder="Breve descrição do recurso"></textarea>
+
+            <div class="modal-actions">
+                <button type="submit" class="btn btn-success"><i class="fas fa-plus-circle"></i> Adicionar Link</button>
+                <button type="button" class="btn btn-secondary close-modal-btn"><i class="fas fa-times"></i> Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="addRichTextModal" class="modal">
+    <div class="modal-content">
+        <span class="close-button">×</span>
+        <h3>Adicionar Texto/Conteúdo à Aula</h3>
+        <form id="addRichTextForm" th:action="@{/material/salvar}" method="post">
+            <input type="hidden" name="aulaId" th:value="${aula.id}">
+            <input type="hidden" name="tipoMaterial" value="TEXTO_RICO">
+
+            <label for="richTextTitle">Título do Conteúdo:</label>
+            <input type="text" id="richTextTitle" name="titulo" placeholder="Ex: Notas da Aula, Exemplo de Código" required>
+
+            <label for="richTextContent">Conteúdo:</label>
+            <textarea id="richTextContent" name="conteudo" rows="10" placeholder="Insira seu texto ou conteúdo HTML aqui."></textarea>
+
+            <div class="modal-actions">
+                <button type="submit" class="btn btn-success"><i class="fas fa-plus-circle"></i> Adicionar Conteúdo</button>
+                <button type="button" class="btn btn-secondary close-modal-btn"><i class="fas fa-times"></i> Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="viewRichTextModal" class="modal">
+    <div class="modal-content">
+        <span class="close-button">×</span>
+        <h3 id="viewRichTextTitle"></h3>
+        <div id="viewRichTextContent" style="max-height: 400px; overflow-y: auto; border: 1px solid #eee; padding: 15px; border-radius: 5px;">
+        </div>
+        <div class="modal-actions">
+            <button type="button" class="btn btn-secondary close-modal-btn"><i class="fas fa-check"></i> Fechar</button>
+        </div>
+    </div>
+</div>
+
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+
+    const aulaId = /*[[${aula.id}]]*/ null; // Captura o ID da aula do Thymeleaf
+    const cursoId = /*[[${cursoId}]]*/ null; // Captura o ID do curso do Thymeleaf
+
+
+    // --- Funções para Modais ---
+    function openModal(modalId) {
+        document.getElementById(modalId).style.display = 'flex'; // Use flex for centering
+        document.body.style.overflow = 'hidden'; // Prevent scrolling background
+    }
+
+    function closeModal(modalId) {
+        document.getElementById(modalId).style.display = 'none';
+        document.body.style.overflow = ''; // Restore scrolling
+    }
+
+    document.querySelectorAll('.close-button, .close-modal-btn').forEach(btn => {
+        btn.addEventListener('click', (event) => {
+            const modal = event.target.closest('.modal');
+            if (modal) {
+                closeModal(modal.id);
+            }
+        });
+    });
+
+    // Fechar modal ao clicar fora (exceto dropdown)
+    window.addEventListener('click', (event) => {
+        if (event.target.classList.contains('modal')) {
+            event.target.style.display = 'none';
+            document.body.style.overflow = ''; // Restore scrolling
+        }
+        // Close dropdown if clicked outside
+        const dropdown = document.getElementById('addMaterialDropdown');
+        const addBtn = document.getElementById('addMaterialBtn');
+        if (dropdown && dropdown.classList.contains('show') && event.target !== dropdown && !dropdown.contains(event.target) && event.target !== addBtn && !addBtn.contains(event.target)) {
+            dropdown.classList.remove('show');
+        }
+    });
+
+    // --- Lógica para o Botão "Adicionar Material" e Dropdown ---
+    const addMaterialBtn = document.getElementById('addMaterialBtn');
+    const addMaterialDropdown = document.getElementById('addMaterialDropdown');
+
+    if (addMaterialBtn) { // Only if the button exists (aula is not null)
+        addMaterialBtn.addEventListener('click', () => {
+            addMaterialDropdown.classList.toggle('show');
+        });
+    }
+
+    if (addMaterialDropdown) { // Only if the dropdown exists
+        addMaterialDropdown.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', (event) => {
+                event.preventDefault();
+                addMaterialDropdown.classList.remove('show'); // Hide dropdown
+                const type = event.target.dataset.type || event.target.closest('a').dataset.type; // Handle click on icon or text
+                switch (type) {
+                    case 'arquivo':
+                        openModal('addFileModal');
+                        break;
+                    case 'video':
+                        openModal('addVideoModal');
+                        break;
+                    case 'link':
+                        openModal('addLinkModal');
+                        break;
+                    case 'texto_rico':
+                        openModal('addRichTextModal');
+                        break;
+                }
+            });
+        });
+    }
+
+
+    // --- Lógica para Upload de Arquivo (Drag and Drop) ---
+    const fileUploadArea = document.getElementById('fileUploadArea');
+    const materialFile = document.getElementById('materialFile');
+    const fileNameDisplay = document.getElementById('fileNameDisplay');
+
+    if (fileUploadArea) {
+        fileUploadArea.addEventListener('click', () => materialFile.click());
+
+        materialFile.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                fileNameDisplay.textContent = `Arquivo selecionado: ${file.name}`;
+            } else {
+                fileNameDisplay.textContent = '';
+            }
+        });
+
+        fileUploadArea.addEventListener('dragover', (event) => {
+            event.preventDefault();
+            fileUploadArea.style.backgroundColor = '#e9f5ff';
+            fileUploadArea.style.borderColor = '#007bff';
+        });
+
+        fileUploadArea.addEventListener('dragleave', () => {
+            fileUploadArea.style.backgroundColor = '#fefefe';
+            fileUploadArea.style.borderColor = '#a7d9ff';
+        });
+
+        fileUploadArea.addEventListener('drop', (event) => {
+            event.preventDefault();
+            fileUploadArea.style.backgroundColor = '#fefefe';
+            fileUploadArea.style.borderColor = '#a7d9ff';
+            const files = event.dataTransfer.files;
+            if (files.length > 0) {
+                materialFile.files = files; // Assign dropped files to input
+                fileNameDisplay.textContent = `Arquivo selecionado: ${files[0].name}`;
+            }
+        });
+    }
+
+
+    // --- Lógica para Editar Título/Descrição da Aula ---
+    const editAulaTitleDescBtn = document.getElementById('editAulaTitleDesc');
+    const tituloAulaInput = document.getElementById('tituloAula');
+    const descricaoAulaTextarea = document.getElementById('descricaoAula');
+    const aulaDetailsActions = document.getElementById('aulaDetailsActions');
+    const cancelEditAulaDetailsBtn = document.getElementById('cancelEditAulaDetails');
+
+    let originalTitulo = tituloAulaInput ? tituloAulaInput.value : '';
+    let originalDescricao = descricaoAulaTextarea ? descricaoAulaTextarea.value : '';
+
+    // Se o botão de editar existe (aula existente), adiciona o listener
+    if (editAulaTitleDescBtn) {
+        editAulaTitleDescBtn.addEventListener('click', () => {
+            tituloAulaInput.readOnly = false;
+            descricaoAulaTextarea.readOnly = false;
+            aulaDetailsActions.style.display = 'flex'; // Use flex to center buttons
+            originalTitulo = tituloAulaInput.value; // Store current values
+            originalDescricao = descricaoAulaTextarea.value;
+            tituloAulaInput.focus();
+        });
+    }
+
+    // Se o botão de cancelar existe (aula existente), adiciona o listener
+    if (cancelEditAulaDetailsBtn) {
+        cancelEditAulaDetailsBtn.addEventListener('click', () => {
+            tituloAulaInput.value = originalTitulo; // Revert to original values
+            descricaoAulaTextarea.value = originalDescricao;
+            tituloAulaInput.readOnly = true;
+            descricaoAulaTextarea.readOnly = true;
+            aulaDetailsActions.style.display = 'none';
+        });
+    }
+
+
+    // --- Lógica para Deletar Material ---
+    document.querySelectorAll('.delete-material-btn').forEach(btn => {
+        btn.addEventListener('click', (event) => {
+            event.preventDefault();
+            const materialId = event.currentTarget.dataset.materialId;
+            if (confirm('Tem certeza que deseja excluir este material?')) {
+                fetch('/material/excluir/' + materialId, {
+                    method: 'POST', // Or DELETE, depending on backend
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // 'X-CSRF-TOKEN': '[[${_csrf.token}]]' // Add CSRF token if using Spring Security
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // Remove item from DOM
+                        event.currentTarget.closest('.material-item').remove();
+                        // If list becomes empty, show "no materials" message
+                        const materialList = document.querySelector('.material-list');
+                        if (materialList.children.length === 0) {
+                            materialList.innerHTML = '<li class="no-materials">Nenhum material adicionado ainda. Clique no botão "+" para começar!</li>';
+                        }
+                        // Optionally display a success message
+                        // location.reload(); // Simpler for now, but AJAX removal is better UX
+                    } else {
+                        alert('Erro ao excluir o material.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro:', error);
+                    alert('Erro na comunicação com o servidor.');
+                });
+            }
+        });
+    });
+
+    // --- Lógica para Editar Material (placeholder) ---
+    document.querySelectorAll('.edit-material-btn').forEach(btn => {
+        btn.addEventListener('click', (event) => {
+            event.preventDefault();
+            const materialId = event.currentTarget.dataset.materialId;
+            alert('Funcionalidade de edição para material ' + materialId + ' a ser implementada! (Abriria um modal com os dados do material para edição)');
+            // Example: openModal('editFileModal'); // if it's a file
+        });
+    });
+
+
+    // --- Lógica para Abrir Modal de Visualização de Conteúdo Rico ---
+    function openRichTextModal(materialId) {
+        fetch('/material/conteudo/' + materialId) // Assumes an endpoint to get rich text content
+            .then(response => {
+                if (response.ok) {
+                    return response.json(); // Or response.text() if it returns raw HTML/text
+                }
+                throw new Error('Erro ao buscar conteúdo do material.');
+            })
+            .then(data => {
+                const viewModal = document.getElementById('viewRichTextModal');
+                const viewTitle = document.getElementById('viewRichTextTitle');
+                const viewContent = document.getElementById('viewRichTextContent');
+
+                viewTitle.textContent = data.titulo; // Assuming 'titulo' from response
+                viewContent.innerHTML = data.conteudo; // Assuming 'conteudo' from response (HTML)
+
+                openModal('viewRichTextModal');
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                alert('Não foi possível carregar o conteúdo do material.');
+            });
+    }
+
+
+    /*]]>*/
+</script>
+</body>
+</html>

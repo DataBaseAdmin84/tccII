@@ -1,52 +1,62 @@
 package com.controller;
 
+import com.dto.AulaDTO;
+import com.dto.UsuarioDTO;
 import com.model.Aula;
 import com.model.Usuario;
-import com.service.AulaService;
-import com.service.CursoService;
+import com.repository.AulaRepository;
+import com.repository.CursoRepository;
 import jakarta.servlet.http.HttpSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
-@RequestMapping("/aulas")
 public class AulaController {
+    private static final Logger log = LoggerFactory.getLogger(AulaController.class);
+    @Autowired
+    CursoRepository cursoRepository;
 
-    private final AulaService aulaService;
-    private final CursoService cursoService;
+    @Autowired
+    AulaRepository aulaRepository;
 
-    public AulaController(AulaService aulaService, CursoService cursoService) {
-        this.aulaService = aulaService;
-        this.cursoService = cursoService;
+    @GetMapping("/aula/novo")
+    public String preencheFormulario(@ModelAttribute AulaDTO aulaDTO, Model model, HttpSession session) {
+        try {
+            var usuario = (Usuario) session.getAttribute("usuarioLogado");
+            model.addAttribute("aula", aulaDTO);
+            model.addAttribute("usuarioLogado", usuario);
+            return "preparacaoaula";
+        } catch (Exception e) {
+            model.addAttribute("erro", "Erro ao preencher formulário de aula "+e.getLocalizedMessage());
+            log.error(e.getLocalizedMessage());
+        }
+        return "redirect:/cursos";
     }
 
-    @GetMapping("/professor")
-    public String listarAulasProfessor(Model model, HttpSession session) {
-        Usuario professor = (Usuario) session.getAttribute("usuarioLogado");
-        //model.addAttribute("aulas", aulaService.listarPorProfessor(professor.getId()));
-        return "professor/aulas";
-    }
+    @PostMapping("/aula/salvar")
+    public String salvarAula(@ModelAttribute AulaDTO aulaDTO, Model model) {
+        try {
+            var curso = cursoRepository.findById(aulaDTO.getIdCurso());
+            Aula aula = new Aula();
+            curso.ifPresent(aula::setCurso);
+            aula.setDescricao(aulaDTO.getDescricao());
 
-    @GetMapping("/professor/nova")
-    public String formNovaAula(Model model, HttpSession session) {
-        Usuario professor = (Usuario) session.getAttribute("usuarioLogado");
-        model.addAttribute("aula", new Aula());
-       // model.addAttribute("cursos", cursoService.listarCursosPorProfessor(professor));
-        return "professor/aula-form";
-    }
+            aulaRepository.save(aula);
+            model.addAttribute("aula", aula);
+            return "redirect:/cursos";
 
-    @PostMapping("/professor/salvar")
-    public String salvarAula(@ModelAttribute Aula aula, HttpSession session) {
-        Usuario professor = (Usuario) session.getAttribute("usuarioLogado");
-        aulaService.salvar(aula);
-        return "redirect:/aulas/professor";
-    }
-
-    @GetMapping("/curso/{id}")
-    public String listarAulasCurso(@PathVariable Long id, Model model) {
-        model.addAttribute("aulas", aulaService.listarPorCurso(id));
-        model.addAttribute("cursoId", id);
-        return "aluno/aulas";
+        } catch (Exception e) {
+            model.addAttribute("erro", "Erro ao preencher formulário de aula "+e.getLocalizedMessage());
+            log.error(e.getLocalizedMessage());
+        }
+        return "redirect:/cursos";
     }
 }

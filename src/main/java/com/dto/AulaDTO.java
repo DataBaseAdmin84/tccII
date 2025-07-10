@@ -1,12 +1,12 @@
 package com.dto;
 
+import com.model.Aula;
+
 public class AulaDTO {
     private Long id;
     private String titulo;
     private String descricao;
-    private String urlConteudo;
-    private Long cursoId;
-    private Long professorId;
+    private Long idCurso;
 
     // Getters e Setters
     public Long getId() { return id; }
@@ -18,12 +18,22 @@ public class AulaDTO {
     public String getDescricao() { return descricao; }
     public void setDescricao(String descricao) { this.descricao = descricao; }
 
-    public String getUrlConteudo() { return urlConteudo; }
-    public void setUrlConteudo(String urlConteudo) { this.urlConteudo = urlConteudo; }
+    public Long getIdCurso() {return idCurso; }
+    public void setIdCurso(Long idCurso) {this.idCurso = idCurso;}
 
-    public Long getCursoId() { return cursoId; }
-    public void setCursoId(Long cursoId) { this.cursoId = cursoId; }
+    public static AulaDTO toDto(Aula aula){
+        AulaDTO aulaDTO = new AulaDTO();
+        aulaDTO.setId(aula.getId());
+        aulaDTO.setDescricao(aula.getDescricao());
+        aulaDTO.setIdCurso(aula.getCurso().getId());
 
-    public Long getProfessorId() { return professorId; }
-    public void setProfessorId(Long professorId) { this.professorId = professorId; }
+        return aulaDTO;
+    }
+
+    public static Aula toModel(AulaDTO aulaDTO){
+        Aula aula = new Aula();
+        aula.setId(aulaDTO.getId());
+        aula.setDescricao(aulaDTO.getDescricao());
+        return aula;
+    }
 }
