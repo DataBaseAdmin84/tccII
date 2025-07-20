@@ -343,33 +343,6 @@
             font-size: 2em;
             margin-bottom: 10px;
         }
-
-        /* Material Type Selection Modal */
-        .material-type-options {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .material-type-options button {
-            width: 100%;
-            padding: 15px;
-            font-size: 1.1em;
-            border-radius: 8px;
-            border: 1px solid #ddd;
-            background-color: #f0f0f0;
-            cursor: pointer;
-            transition: background-color 0.2s ease, border-color 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .material-type-options button:hover {
-            background-color: #e9ecef;
-            border-color: #cce5ff;
-        }
     </style>
 </head>
 <body>
@@ -445,24 +418,11 @@
     </div>
 </div>
 
-<div id="materialTypeSelectionModal" class="modal">
-    <div class="modal-content">
-        <span class="close-button">×</span>
-        <h3>Adicionar Novo Material</h3>
-        <div class="material-type-options">
-            <button id="addFileOptionBtn"><i class="fas fa-file-alt"></i> Adicionar Arquivo</button>
-            <button id="addVideoOptionBtn"><i class="fab fa-youtube"></i> Adicionar Vídeo</button>
-            <button id="addLinkOptionBtn"><i class="fas fa-link"></i> Adicionar Link Externo</button>
-            <button id="addRichTextOptionBtn"><i class="fas fa-align-left"></i> Adicionar Texto/Conteúdo</button>
-        </div>
-    </div>
-</div>
-
 <div id="addFileModal" class="modal">
     <div class="modal-content">
         <span class="close-button">×</span>
         <h3>Adicionar Arquivo à Aula</h3>
-        <form id="addFileForm" th:action="@{/material/upload}" method="post" enctype="multipart/form-data">
+        <form id="addFileForm" th:action="@{/upload}" method="post" enctype="multipart/form-data">
             <input type="hidden" name="aulaId" th:value="${aula.id}">
 
             <div style="margin-bottom: 15px;">
@@ -594,30 +554,15 @@
         const addMaterialBtn = document.getElementById('addMaterialBtn');
         if (addMaterialBtn) {
             addMaterialBtn.addEventListener('click', () => {
-                openModal('materialTypeSelectionModal');
+                openModal('addFileModal'); // Directly open the addFileModal
             });
         }
 
-        // --- Lógica para as opções dentro do Modal de Seleção de Tipo de Material ---
-        document.getElementById('addFileOptionBtn').addEventListener('click', () => {
-            closeModal('materialTypeSelectionModal');
-            openModal('addFileModal');
-        });
-
-        document.getElementById('addVideoOptionBtn').addEventListener('click', () => {
-            closeModal('materialTypeSelectionModal');
-            openModal('addVideoModal');
-        });
-
-        document.getElementById('addLinkOptionBtn').addEventListener('click', () => {
-            closeModal('materialTypeSelectionModal');
-            openModal('addLinkModal');
-        });
-
-        document.getElementById('addRichTextOptionBtn').addEventListener('click', () => {
-            closeModal('materialTypeSelectionModal');
-            openModal('addRichTextModal');
-        });
+        // Removed logic for material type selection modal as it's no longer needed.
+        // document.getElementById('addFileOptionBtn').addEventListener('click', () => { ... });
+        // document.getElementById('addVideoOptionBtn').addEventListener('click', () => { ... });
+        // document.getElementById('addLinkOptionBtn').addEventListener('click', () => { ... });
+        // document.getElementById('addRichTextOptionBtn').addEventListener('click', () => { ... });
 
         // --- Lógica para o Modal de Adicionar Arquivo (Seleção e Drag-and-Drop) ---
         const fileDropZone = document.getElementById('fileDropZone');

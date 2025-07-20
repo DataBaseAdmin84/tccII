@@ -2,27 +2,24 @@ package com.controller;
 
 import com.dto.ArquivoDTO;
 import com.dto.AulaDTO;
-import com.dto.UsuarioDTO;
 import com.model.Arquivo;
 import com.model.Aula;
 import com.model.Usuario;
-import com.repository.ArquivoRepository;
 import com.repository.AulaRepository;
 import com.repository.CursoRepository;
-import com.service.S3Service;
+import com.service.AulaService;
 import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -35,10 +32,7 @@ public class AulaController {
     AulaRepository aulaRepository;
 
     @Autowired
-    private ArquivoRepository arquivoRepository;
-
-    @Autowired
-    private S3Service s3Service;
+    AulaService aulaService;
 
     @GetMapping("/aula/novo")
     public String preencheFormulario(@ModelAttribute AulaDTO aulaDTO, Model model, HttpSession session) {
@@ -107,60 +101,18 @@ public class AulaController {
         }
     }
 
-
-    @PostMapping("/material/upload")
-    public String uploadArquivo(@RequestParam("aulaId") Long aulaId,
-                                @RequestParam("file") MultipartFile file,
-                                @RequestParam("titulo") String titulo,
-                                RedirectAttributes redirectAttributes) {
-
-        if (file.isEmpty()) {
-            redirectAttributes.addFlashAttribute("erro", "Por favor, selecione um arquivo para o upload.");
-            return "redirect:/aula/editar/" + aulaId;
-        }
-
+    @PostMapping("/aula/excluir/{id}")
+    public String excluir(@PathVariable Long id, HttpSession session) {
         try {
-            // 1. Encontrar a Aula no banco de dados.
-            Optional<Aula> aulaOpt = aulaRepository.findById(aulaId);
-            if (aulaOpt.isEmpty()) {
-                redirectAttributes.addFlashAttribute("erro", "Aula não encontrada.");
-                return "redirect:/cursos"; // Redireciona para uma página segura
+            var aulaOpt = aulaRepository.findById(id);
+            if(aulaOpt.isPresent()){
+                aulaOpt.ifPresent(aula -> aulaService.removerVinculosArquivos(aula));
+                aulaRepository.delete(aulaOpt.get());
+                return "redirect:/cursos";
             }
-            Aula aula = aulaOpt.get();
-
-            // 2. Upload do arquivo para o S3.
-            String s3Url = s3Service.uploadArquivo(file);
-
-            // 3. Criar uma nova entidade Arquivo.
-            Arquivo novoArquivo = new Arquivo();
-            novoArquivo.setNome(titulo); // Use o nome do formulário para o arquivo.
-            novoArquivo.setCaminho(s3Url); // Salva o URL do S3 no campo 'caminho'.
-            novoArquivo.setTamanho(file.getSize());
-            novoArquivo.setTipo("ARQUIVO");
-
-            // 4. Salvar a nova entidade Arquivo no banco de dados.
-            // Isso é necessário porque o JPA precisa de um ID para a entidade antes de poder
-            // adicioná-la à lista da Aula para o relacionamento ManyToMany.
-            arquivoRepository.save(novoArquivo);
-
-            // 5. Adicionar o novo Arquivo à lista de arquivos da Aula.
-            List<Arquivo> arquivosDaAula = aula.getArquivos();
-            arquivosDaAula.add(novoArquivo);
-            aula.setArquivos(arquivosDaAula);
-
-            // 6. Salvar a Aula atualizada para persistir o relacionamento.
-            aulaRepository.save(aula);
-
-            redirectAttributes.addFlashAttribute("msg", "Arquivo '" + titulo + "' adicionado com sucesso!");
-
-        } catch (IOException e) {
-            redirectAttributes.addFlashAttribute("erro", "Erro ao processar o arquivo: " + e.getMessage());
-            e.printStackTrace();
+            return "redirect:/cursos";
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("erro", "Erro inesperado durante o upload: " + e.getMessage());
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-
-        return "redirect:/aula/editar/" + aulaId;
     }
 }
