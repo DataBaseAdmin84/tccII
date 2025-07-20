@@ -2,13 +2,17 @@ package com.dto;
 
 import com.model.Aula;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class AulaDTO {
     private Long id;
     private String titulo;
+    private int numero;
     private String descricao;
     private Long idCurso;
+    private List<ArquivoDTO> arquivos;
 
-    // Getters e Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -21,11 +25,29 @@ public class AulaDTO {
     public Long getIdCurso() {return idCurso; }
     public void setIdCurso(Long idCurso) {this.idCurso = idCurso;}
 
+    public int getNumero() {   return numero;}
+    public void setNumero(int numero) {this.numero = numero;}
+
+    public List<ArquivoDTO> getArquivos() {
+        return arquivos;
+    }
+    public void setArquivos(List<ArquivoDTO> arquivos) {
+        this.arquivos = arquivos;
+    }
+
     public static AulaDTO toDto(Aula aula){
         AulaDTO aulaDTO = new AulaDTO();
         aulaDTO.setId(aula.getId());
+        aulaDTO.setTitulo(aula.getTitulo());
         aulaDTO.setDescricao(aula.getDescricao());
         aulaDTO.setIdCurso(aula.getCurso().getId());
+        if (aula.getArquivos() != null && !aula.getArquivos().isEmpty()) {
+            aulaDTO.setArquivos(
+                    aula.getArquivos().stream()
+                            .map(ArquivoDTO::toDto)
+                            .collect(Collectors.toList())
+            );
+        }
 
         return aulaDTO;
     }
@@ -33,6 +55,7 @@ public class AulaDTO {
     public static Aula toModel(AulaDTO aulaDTO){
         Aula aula = new Aula();
         aula.setId(aulaDTO.getId());
+        aula.setTitulo(aulaDTO.getTitulo());
         aula.setDescricao(aulaDTO.getDescricao());
         return aula;
     }

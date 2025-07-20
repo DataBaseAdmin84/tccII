@@ -18,6 +18,12 @@ public class Aula {
     @JoinColumn(name = "ID_CURSO")
     private Curso curso;
 
+    @Column(name = "TITULO")
+    private String titulo;
+
+    @Column(name = "NUMERO")
+    private String numero;
+
     @Column(name = "DESCRICAO", nullable = false)
     private String descricao;
 
@@ -32,7 +38,6 @@ public class Aula {
     public Long getId() {
         return id;
     }
-
     public void setId(Long id) {
         this.id = id;
     }
@@ -40,7 +45,6 @@ public class Aula {
     public String getDescricao() {
         return descricao;
     }
-
     public void setDescricao(String descricao) {
         this.descricao = descricao;
     }
@@ -48,15 +52,19 @@ public class Aula {
     public Curso getCurso() {
         return curso;
     }
-
     public void setCurso(Curso curso) {
         this.curso = curso;
     }
 
+    public String getTitulo() {return titulo; }
+    public void setTitulo(String titulo) {this.titulo = titulo;}
+
+    public String getNumero() {return numero;}
+    public void setNumero(String numero) {this.numero = numero;}
+
     public List<Arquivo> getArquivos() {
         return arquivos;
     }
-
     public void setArquivos(List<Arquivo> arquivos) {
         this.arquivos = arquivos;
     }

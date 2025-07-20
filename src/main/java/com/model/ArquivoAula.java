@@ -2,6 +2,8 @@ package com.model;
 
 import jakarta.persistence.*;
 
+@Entity
+@Table(name = "AULA_ARQUIVO")
 public class ArquivoAula {
     @Id
     @Column(name = "ID")
@@ -10,7 +12,7 @@ public class ArquivoAula {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "ID_CURSO")
+    @JoinColumn(name = "ID_AULA")
     private Aula aula;
 
     @ManyToOne

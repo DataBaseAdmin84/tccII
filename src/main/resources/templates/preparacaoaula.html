@@ -145,8 +145,8 @@
             gap: 10px;
         }
 
-        /* Seção de Materiais */
-        .materials-section {
+        /* Seção de Arquivos */
+        .arquivos-section {
             background-color: #f8f9fa;
             border: 1px solid #e9ecef;
             padding: 25px;
@@ -154,7 +154,7 @@
             position: relative; /* For the floating add button */
         }
 
-        .materials-section h3 {
+        .arquivos-section h3 {
             color: #2c3e50;
             font-size: 1.6em;
             margin-top: 0;
@@ -166,7 +166,7 @@
             border-bottom: 1px dashed #eee;
         }
 
-        .btn-add-material {
+        .btn-add-arquivo {
             width: 50px;
             height: 50px;
             border-radius: 50%;
@@ -175,20 +175,20 @@
             justify-content: center;
             align-items: center;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            position: fixed; /* Fixed position on the screen */
-            bottom: 30px;
-            right: 30px;
-            z-index: 100; /* Ensure it's above other content */
+            position: absolute; /* Alterado de 'fixed' para 'absolute' */
+            bottom: 15px; /* Ajuste a distância da parte inferior do contêiner */
+            right: 15px; /* Ajuste a distância da parte direita do contêiner */
+            z-index: 100;
         }
 
-        .material-list {
+        .arquivo-list {
             list-style: none;
             padding: 0;
             margin-top: 20px;
-            min-height: 150px; /* Ensure space even if no materials */
+            min-height: 150px; /* Ensure space even if no arquivos */
         }
 
-        .material-item {
+        .arquivo-item {
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -201,18 +201,18 @@
             transition: all 0.2s ease;
         }
 
-        .material-item:hover {
+        .arquivo-item:hover {
             border-color: #a7d9ff;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
 
-        .material-info {
+        .arquivo-info {
             display: flex;
             align-items: center;
             flex-grow: 1;
         }
 
-        .material-info .icon {
+        .arquivo-info .icon {
             font-size: 1.8em;
             margin-right: 15px;
             color: #3498db;
@@ -220,42 +220,42 @@
             text-align: center;
         }
 
-        .material-info .details {
+        .arquivo-info .details {
             flex-grow: 1;
         }
 
-        .material-info .details h4 {
+        .arquivo-info .details h4 {
             margin: 0;
             font-size: 1.1em;
             color: #2c3e50;
         }
 
-        .material-info .details p {
+        .arquivo-info .details p {
             margin: 5px 0 0;
             font-size: 0.85em;
             color: #7f8c8d;
         }
 
-        .material-actions a {
+        .arquivo-actions a {
             color: #6c757d;
             margin-left: 15px;
             font-size: 1.1em;
             transition: color 0.2s ease;
         }
 
-        .material-actions a:hover {
+        .arquivo-actions a:hover {
             color: #007bff;
         }
 
-        .material-actions .delete-btn {
+        .arquivo-actions .delete-btn {
             color: #dc3545;
         }
 
-        .material-actions .delete-btn:hover {
+        .arquivo-actions .delete-btn:hover {
             color: #c82333;
         }
 
-        .no-materials {
+        .no-arquivos {
             text-align: center;
             padding: 30px;
             color: #7f8c8d;
@@ -316,140 +316,37 @@
             padding-bottom: 10px;
         }
 
-        .modal-content label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-            color: #555;
-        }
-
-        .modal-content input[type="text"],
-        .modal-content input[type="url"],
-        .modal-content input[type="file"],
-        .modal-content textarea {
-            width: calc(100% - 20px);
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ced4da;
-            border-radius: 4px;
-            box-sizing: border-box;
-            font-size: 1em;
-        }
-
-        .modal-content textarea {
-            min-height: 80px;
-            resize: vertical;
-        }
-
-        .modal-content .modal-actions {
-            text-align: right;
-            margin-top: 20px;
-        }
-
-        .modal-content .modal-actions .btn {
-            margin-left: 10px;
-        }
-
-        .file-upload-area {
-            border: 2px dashed #a7d9ff; /* More prominent dashed border */
+        /* Drop Zone Styles */
+        .drop-zone {
+            border: 2px dashed #ced4da;
             border-radius: 8px;
-            padding: 30px; /* More padding */
+            padding: 20px;
             text-align: center;
+            color: #6c757d;
+            font-size: 1.1em;
             cursor: pointer;
-            margin-bottom: 20px;
-            background-color: #fefefe;
-            transition: background-color 0.2s ease, border-color 0.2s ease;
-        }
-        .file-upload-area:hover {
-            background-color: #e9f5ff; /* Lighter blue hover */
-            border-color: #007bff;
-        }
-        .file-upload-area i {
-            font-size: 3.5em; /* Larger icon */
-            color: #007bff; /* Blue icon */
+            transition: border-color 0.3s ease, background-color 0.3s ease;
             margin-bottom: 15px;
         }
-        .file-upload-area p {
+
+        .drop-zone.highlight {
+            border-color: #007bff;
+            background-color: #e7f3ff;
+        }
+
+        .drop-zone p {
             margin: 0;
-            color: #555;
-            font-size: 1.1em;
+            padding: 10px 0;
         }
 
-
-        /* Dropdown for Add Material button */
-        .add-material-dropdown {
-            position: fixed; /* Same as the button */
-            bottom: 90px; /* Adjust based on button size */
-            right: 30px;
-            background-color: white;
-            border-radius: 5px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            z-index: 1000; /* Ensure it's above everything */
-            min-width: 200px;
-            display: none; /* Hidden by default */
-            transform: translateY(10px); /* Small animation effect */
-            opacity: 0;
-            transition: all 0.2s ease-out;
+        .drop-zone .icon {
+            font-size: 2em;
+            margin-bottom: 10px;
         }
-
-        .add-material-dropdown.show {
-            display: block;
-            transform: translateY(0);
-            opacity: 1;
-        }
-
-        .add-material-dropdown a {
-            display: block;
-            padding: 12px 15px;
-            text-decoration: none;
-            color: #333;
-            transition: background-color 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .add-material-dropdown a:hover {
-            background-color: #f2f2f2;
-        }
-
-        .add-material-dropdown a i {
-            margin-right: 0; /* Already has gap */
-            color: #6c757d;
-        }
-
-        /* Mensagens de Sucesso/Erro */
-        .mensagem {
-            padding: 12px 20px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            font-weight: bold;
-            text-align: center;
-        }
-
-        .mensagem.sucesso {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        .mensagem.erro {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-
     </style>
 </head>
 <body>
 <div class="container">
-    <div class="breadcrumb">
-        <a th:href="@{/painelprincipal}"><i class="fas fa-home"></i> Dashboard</a> >
-        <a th:href="@{/cursos}"><i class="fas fa-book"></i> Cursos</a> >
-        <a th:href="@{'/curso/detalhes/' + ${cursoId}}"><i class="fas fa-cube"></i> <span th:text="${nomeCurso}">Nome do Curso</span></a> >
-        Preparação de Aula
-    </div>
-
     <div class="header">
         <h1 th:if="${aula.id == null}">
             Nova Aula para <span th:text="${nomeCurso}">Nome do Curso</span>
@@ -458,7 +355,7 @@
             Preparar Aula: <span th:text="${aula.titulo}">Título da Aula</span>
             <i class="fas fa-pencil-alt edit-icon" id="editAulaTitleDesc"></i>
         </h1>
-        <a th:href="@{'/curso/detalhes/' + ${cursoId}}" class="btn btn-secondary">
+        <a th:href="@{'/cursos'}" class="btn btn-secondary">
             <i class="fas fa-arrow-left"></i> Voltar para o Curso
         </a>
     </div>
@@ -491,41 +388,33 @@
         </form>
     </div>
 
-    <div class="materials-section" th:if="${aula.id != null}">
+    <div class="arquivos-section" th:if="${aula.id != null}">
         <h3><i class="fas fa-paperclip"></i> Materiais de Apoio</h3>
 
-        <ul class="material-list">
-            <li th:if="${#lists.isEmpty(aula.materiais)}" class="no-materials">Nenhum material adicionado ainda. Clique no botão "+" para começar!</li>
+        <ul class="arquivo-list">
+            <li th:if="${#lists.isEmpty(aula.arquivos)}" class="no-arquivos">Nenhum material adicionado ainda. Clique no botão "+" para começar!</li>
 
-            <li th:each="material : ${aula.materiais}" class="material-item" th:data-material-id="${material.id}">
-                <div class="material-info">
-                    <i class="icon" th:classappend="${material.tipo == 'ARQUIVO' ? 'fas fa-file-alt' : (material.tipo == 'VIDEO' ? 'fab fa-youtube' : (material.tipo == 'LINK' ? 'fas fa-link' : 'fas fa-align-left'))}"></i>
+            <li th:each="material : ${aula.arquivos}" class="arquivo-item" th:data-material-id="${material.id}">
+                <div class="arquivo-info">
+                    <i class="icon" th:classappend="${material.tipo == 'ARQUIVO' ? 'fas fa-file-alt' : (material.tipo == 'VIDEO' ? 'fab fa-youtube' : (material.tipo == 'LINK' ? 'fas fa-link' : (material.tipo == 'TEXTO_RICO' ? 'fas fa-align-left' : 'fas fa-question-circle')))}"></i>
                     <div class="details">
-                        <h4 th:text="${material.titulo}">Título do Material</h4>
-                        <p th:text="${material.descricao}">Pequena descrição do material ou tipo.</p>
+                        <h4 th:text="${material.nome}">Título do Material</h4>
+                        <p th:text="${material.tipo}">Tipo do material.</p>
                     </div>
                 </div>
-                <div class="material-actions">
+                <div class="arquivo-actions">
                     <a th:if="${material.tipo == 'ARQUIVO'}" th:href="@{'/material/download/' + ${material.id}}" target="_blank" title="Baixar"><i class="fas fa-download"></i></a>
-                    <a th:if="${material.tipo == 'VIDEO' or material.tipo == 'LINK'}" th:href="${material.url}" target="_blank" title="Abrir"><i class="fas fa-external-link-alt"></i></a>
+                    <a th:if="${material.tipo == 'VIDEO' or material.tipo == 'LINK'}" th:href="${material.caminho}" target="_blank" title="Abrir"><i class="fas fa-external-link-alt"></i></a>
                     <a th:if="${material.tipo == 'TEXTO_RICO'}" href="#" th:onclick="'openRichTextModal(\'' + ${material.id} + '\')'" title="Visualizar Conteúdo"><i class="fas fa-eye"></i></a>
 
                     <a href="#" class="edit-material-btn" th:data-material-id="${material.id}" title="Editar"><i class="fas fa-pencil-alt"></i></a>
-
                     <a href="#" class="delete-material-btn" th:data-material-id="${material.id}" title="Excluir"><i class="fas fa-trash-alt delete-btn"></i></a>
                 </div>
             </li>
         </ul>
-        <button class="btn btn-primary btn-add-material" id="addMaterialBtn">
+        <button class="btn btn-primary btn-add-arquivo" id="addMaterialBtn">
             <i class="fas fa-plus"></i>
         </button>
-
-        <div class="add-material-dropdown" id="addMaterialDropdown">
-            <a href="#" data-type="arquivo"><i class="fas fa-file-alt"></i> Adicionar Arquivo</a>
-            <a href="#" data-type="video"><i class="fab fa-youtube"></i> Adicionar Vídeo</a>
-            <a href="#" data-type="link"><i class="fas fa-link"></i> Adicionar Link Externo</a>
-            <a href="#" data-type="texto_rico"><i class="fas fa-align-left"></i> Adicionar Texto/Conteúdo</a>
-        </div>
     </div>
 </div>
 
@@ -533,26 +422,26 @@
     <div class="modal-content">
         <span class="close-button">×</span>
         <h3>Adicionar Arquivo à Aula</h3>
-        <form id="addFileForm" th:action="@{/material/upload}" method="post" enctype="multipart/form-data">
+        <form id="addFileForm" th:action="@{/upload}" method="post" enctype="multipart/form-data">
             <input type="hidden" name="aulaId" th:value="${aula.id}">
-            <input type="hidden" name="tipoMaterial" value="ARQUIVO">
 
-            <label for="fileTitle">Título do Material:</label>
-            <input type="text" id="fileTitle" name="titulo" placeholder="Ex: Slides da Aula, Material Complementar" required>
-
-            <label for="fileDescription">Descrição (opcional):</label>
-            <textarea id="fileDescription" name="descricao" rows="3" placeholder="Breve descrição do arquivo"></textarea>
-
-            <label>Arquivo:</label>
-            <div class="file-upload-area" id="fileUploadArea">
-                <i class="fas fa-cloud-upload-alt"></i>
-                <p>Arraste e solte seu arquivo aqui ou clique para selecionar</p>
-                <input type="file" id="materialFile" name="file" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.zip,.rar" style="display: none;">
+            <div style="margin-bottom: 15px;">
+                <label for="fileTitle">Título do Material:</label>
+                <input type="text" id="fileTitle" name="titulo" placeholder="Ex: Slides da Aula 1" required style="width: 100%; padding: 8px;">
             </div>
-            <span id="fileNameDisplay" style="font-size: 0.9em; color: #555;"></span>
 
-            <div class="modal-actions">
-                <button type="submit" class="btn btn-success"><i class="fas fa-upload"></i> Upload</button>
+            <div class="drop-zone" id="fileDropZone">
+                <i class="fas fa-cloud-upload-alt icon"></i>
+                <p>Arraste e solte seu arquivo aqui ou</p>
+                <label for="selectFileInput" class="btn btn-primary" style="display: inline-block; margin-top: 10px;">
+                    <i class="fas fa-folder-open"></i> Selecionar Arquivo
+                </label>
+                <input type="file" id="selectFileInput" name="file" style="display: none;" required>
+                <span id="fileNameDisplay" style="margin-left: 10px; display: block; margin-top: 10px; font-size: 0.9em; color: #555;">Nenhum arquivo selecionado</span>
+            </div>
+
+            <div class="modal-actions" style="text-align: right; margin-top: 20px;">
+                <button type="submit" class="btn btn-success"><i class="fas fa-upload"></i> Fazer Upload</button>
                 <button type="button" class="btn btn-secondary close-modal-btn"><i class="fas fa-times"></i> Cancelar</button>
             </div>
         </form>
@@ -643,231 +532,217 @@
     </div>
 </div>
 
-
 <script th:inline="javascript">
     /*<![CDATA[*/
+    document.addEventListener('DOMContentLoaded', function() {
 
-    const aulaId = /*[[${aula.id}]]*/ null; // Captura o ID da aula do Thymeleaf
-    const cursoId = /*[[${cursoId}]]*/ null; // Captura o ID do curso do Thymeleaf
+        const aulaId = /*[[${aula.id}]]*/ null;
+        const cursoId = /*[[${cursoId}]]*/ null;
 
+        // --- Funções para Modais ---
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
 
-    // --- Funções para Modais ---
-    function openModal(modalId) {
-        document.getElementById(modalId).style.display = 'flex'; // Use flex for centering
-        document.body.style.overflow = 'hidden'; // Prevent scrolling background
-    }
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+            document.body.style.overflow = '';
+        }
 
-    function closeModal(modalId) {
-        document.getElementById(modalId).style.display = 'none';
-        document.body.style.overflow = ''; // Restore scrolling
-    }
+        // --- Lógica para o Botão Flutuante "+" (addMaterialBtn) ---
+        const addMaterialBtn = document.getElementById('addMaterialBtn');
+        if (addMaterialBtn) {
+            addMaterialBtn.addEventListener('click', () => {
+                openModal('addFileModal'); // Directly open the addFileModal
+            });
+        }
 
-    document.querySelectorAll('.close-button, .close-modal-btn').forEach(btn => {
-        btn.addEventListener('click', (event) => {
-            const modal = event.target.closest('.modal');
-            if (modal) {
-                closeModal(modal.id);
+        // Removed logic for material type selection modal as it's no longer needed.
+        // document.getElementById('addFileOptionBtn').addEventListener('click', () => { ... });
+        // document.getElementById('addVideoOptionBtn').addEventListener('click', () => { ... });
+        // document.getElementById('addLinkOptionBtn').addEventListener('click', () => { ... });
+        // document.getElementById('addRichTextOptionBtn').addEventListener('click', () => { ... });
+
+        // --- Lógica para o Modal de Adicionar Arquivo (Seleção e Drag-and-Drop) ---
+        const fileDropZone = document.getElementById('fileDropZone');
+        const selectFileInput = document.getElementById('selectFileInput');
+        const fileNameDisplay = document.getElementById('fileNameDisplay');
+
+        if (fileDropZone && selectFileInput && fileNameDisplay) {
+            // Abre o seletor de arquivo ao clicar na zona de drop ou no botão "Selecionar Arquivo"
+            fileDropZone.addEventListener('click', (event) => {
+                // Previne que o clique no botão "Selecionar Arquivo" acione o evento duas vezes
+                if (event.target.id !== 'selectFileInput') {
+                    selectFileInput.click();
+                }
+            });
+
+            // Atualiza o nome do arquivo selecionado
+            selectFileInput.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    fileNameDisplay.textContent = `Arquivo selecionado: ${file.name}`;
+                } else {
+                    fileNameDisplay.textContent = 'Nenhum arquivo selecionado';
+                }
+            });
+
+            // Drag-and-Drop: Prevenir comportamento padrão
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                fileDropZone.addEventListener(eventName, preventDefaults, false);
+                document.body.addEventListener(eventName, preventDefaults, false); // Previne para todo o body
+            });
+
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
             }
-        });
-    });
 
-    // Fechar modal ao clicar fora (exceto dropdown)
-    window.addEventListener('click', (event) => {
-        if (event.target.classList.contains('modal')) {
-            event.target.style.display = 'none';
-            document.body.style.overflow = ''; // Restore scrolling
+            // Drag-and-Drop: Adicionar/Remover destaque visual
+            ['dragenter', 'dragover'].forEach(eventName => {
+                fileDropZone.addEventListener(eventName, highlight, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                fileDropZone.addEventListener(eventName, unhighlight, false);
+            });
+
+            function highlight() {
+                fileDropZone.classList.add('highlight');
+            }
+
+            function unhighlight() {
+                fileDropZone.classList.remove('highlight');
+            }
+
+            // Drag-and-Drop: Lidar com o arquivo solto
+            fileDropZone.addEventListener('drop', handleDrop, false);
+
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+
+                if (files.length > 0) {
+                    // Atribui o arquivo ao input de tipo "file"
+                    selectFileInput.files = files;
+                    // Atualiza o texto de exibição do nome do arquivo
+                    fileNameDisplay.textContent = `Arquivo selecionado: ${files[0].name}`;
+                }
+            }
         }
-        // Close dropdown if clicked outside
-        const dropdown = document.getElementById('addMaterialDropdown');
-        const addBtn = document.getElementById('addMaterialBtn');
-        if (dropdown && dropdown.classList.contains('show') && event.target !== dropdown && !dropdown.contains(event.target) && event.target !== addBtn && !addBtn.contains(event.target)) {
-            dropdown.classList.remove('show');
-        }
-    });
 
-    // --- Lógica para o Botão "Adicionar Material" e Dropdown ---
-    const addMaterialBtn = document.getElementById('addMaterialBtn');
-    const addMaterialDropdown = document.getElementById('addMaterialDropdown');
-
-    if (addMaterialBtn) { // Only if the button exists (aula is not null)
-        addMaterialBtn.addEventListener('click', () => {
-            addMaterialDropdown.classList.toggle('show');
-        });
-    }
-
-    if (addMaterialDropdown) { // Only if the dropdown exists
-        addMaterialDropdown.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', (event) => {
-                event.preventDefault();
-                addMaterialDropdown.classList.remove('show'); // Hide dropdown
-                const type = event.target.dataset.type || event.target.closest('a').dataset.type; // Handle click on icon or text
-                switch (type) {
-                    case 'arquivo':
-                        openModal('addFileModal');
-                        break;
-                    case 'video':
-                        openModal('addVideoModal');
-                        break;
-                    case 'link':
-                        openModal('addLinkModal');
-                        break;
-                    case 'texto_rico':
-                        openModal('addRichTextModal');
-                        break;
+        // --- Fechar modais (botões de fechar e clique fora) ---
+        document.querySelectorAll('.close-button, .close-modal-btn').forEach(btn => {
+            btn.addEventListener('click', (event) => {
+                const modal = event.target.closest('.modal');
+                if (modal) {
+                    closeModal(modal.id);
                 }
             });
         });
-    }
 
-
-    // --- Lógica para Upload de Arquivo (Drag and Drop) ---
-    const fileUploadArea = document.getElementById('fileUploadArea');
-    const materialFile = document.getElementById('materialFile');
-    const fileNameDisplay = document.getElementById('fileNameDisplay');
-
-    if (fileUploadArea) {
-        fileUploadArea.addEventListener('click', () => materialFile.click());
-
-        materialFile.addEventListener('change', (event) => {
-            const file = event.target.files[0];
-            if (file) {
-                fileNameDisplay.textContent = `Arquivo selecionado: ${file.name}`;
-            } else {
-                fileNameDisplay.textContent = '';
+        window.addEventListener('click', (event) => {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+                document.body.style.overflow = '';
             }
         });
 
-        fileUploadArea.addEventListener('dragover', (event) => {
-            event.preventDefault();
-            fileUploadArea.style.backgroundColor = '#e9f5ff';
-            fileUploadArea.style.borderColor = '#007bff';
+        // --- Lógica para Editar Título/Descrição da Aula ---
+        const editAulaTitleDescBtn = document.getElementById('editAulaTitleDesc');
+        const tituloAulaInput = document.getElementById('tituloAula');
+        const descricaoAulaTextarea = document.getElementById('descricaoAula');
+        const aulaDetailsActions = document.getElementById('aulaDetailsActions');
+        const cancelEditAulaDetailsBtn = document.getElementById('cancelEditAulaDetails');
+        let originalTitulo = tituloAulaInput ? tituloAulaInput.value : '';
+        let originalDescricao = descricaoAulaTextarea ? descricaoAulaTextarea.value : '';
+
+        if (editAulaTitleDescBtn) {
+            editAulaTitleDescBtn.addEventListener('click', () => {
+                tituloAulaInput.readOnly = false;
+                descricaoAulaTextarea.readOnly = false;
+                aulaDetailsActions.style.display = 'flex';
+                originalTitulo = tituloAulaInput.value;
+                originalDescricao = descricaoAulaTextarea.value;
+                tituloAulaInput.focus();
+            });
+        }
+
+        if (cancelEditAulaDetailsBtn) {
+            cancelEditAulaDetailsBtn.addEventListener('click', () => {
+                tituloAulaInput.value = originalTitulo;
+                descricaoAulaTextarea.value = originalDescricao;
+                tituloAulaInput.readOnly = true;
+                descricaoAulaTextarea.readOnly = true;
+                aulaDetailsActions.style.display = 'none';
+            });
+        }
+
+        // --- Lógica para Deletar Material ---
+        document.querySelectorAll('.delete-material-btn').forEach(btn => {
+            btn.addEventListener('click', (event) => {
+                event.preventDefault();
+                const materialId = event.currentTarget.dataset.materialId;
+                if (confirm('Tem certeza que deseja excluir este material?')) {
+                    fetch('/material/excluir/' + materialId, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        }
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            event.currentTarget.closest('.arquivo-item').remove();
+                            const materialList = document.querySelector('.arquivo-list');
+                            if (!materialList.querySelector('.arquivo-item')) { // Verifica se não há mais itens
+                                materialList.innerHTML = '<li class="no-arquivos">Nenhum material adicionado ainda. Clique no botão "+" para começar!</li>';
+                            }
+                        } else {
+                            alert('Erro ao excluir o material.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erro:', error);
+                        alert('Erro na comunicação com o servidor.');
+                    });
+                }
+            });
         });
 
-        fileUploadArea.addEventListener('dragleave', () => {
-            fileUploadArea.style.backgroundColor = '#fefefe';
-            fileUploadArea.style.borderColor = '#a7d9ff';
+        // --- Lógica para Editar Material (placeholder) ---
+        document.querySelectorAll('.edit-material-btn').forEach(btn => {
+            btn.addEventListener('click', (event) => {
+                event.preventDefault();
+                const materialId = event.currentTarget.dataset.materialId;
+                alert('Funcionalidade de edição para material ' + materialId + ' a ser implementada!');
+            });
         });
-
-        fileUploadArea.addEventListener('drop', (event) => {
-            event.preventDefault();
-            fileUploadArea.style.backgroundColor = '#fefefe';
-            fileUploadArea.style.borderColor = '#a7d9ff';
-            const files = event.dataTransfer.files;
-            if (files.length > 0) {
-                materialFile.files = files; // Assign dropped files to input
-                fileNameDisplay.textContent = `Arquivo selecionado: ${files[0].name}`;
-            }
-        });
-    }
-
-
-    // --- Lógica para Editar Título/Descrição da Aula ---
-    const editAulaTitleDescBtn = document.getElementById('editAulaTitleDesc');
-    const tituloAulaInput = document.getElementById('tituloAula');
-    const descricaoAulaTextarea = document.getElementById('descricaoAula');
-    const aulaDetailsActions = document.getElementById('aulaDetailsActions');
-    const cancelEditAulaDetailsBtn = document.getElementById('cancelEditAulaDetails');
-
-    let originalTitulo = tituloAulaInput ? tituloAulaInput.value : '';
-    let originalDescricao = descricaoAulaTextarea ? descricaoAulaTextarea.value : '';
-
-    // Se o botão de editar existe (aula existente), adiciona o listener
-    if (editAulaTitleDescBtn) {
-        editAulaTitleDescBtn.addEventListener('click', () => {
-            tituloAulaInput.readOnly = false;
-            descricaoAulaTextarea.readOnly = false;
-            aulaDetailsActions.style.display = 'flex'; // Use flex to center buttons
-            originalTitulo = tituloAulaInput.value; // Store current values
-            originalDescricao = descricaoAulaTextarea.value;
-            tituloAulaInput.focus();
-        });
-    }
-
-    // Se o botão de cancelar existe (aula existente), adiciona o listener
-    if (cancelEditAulaDetailsBtn) {
-        cancelEditAulaDetailsBtn.addEventListener('click', () => {
-            tituloAulaInput.value = originalTitulo; // Revert to original values
-            descricaoAulaTextarea.value = originalDescricao;
-            tituloAulaInput.readOnly = true;
-            descricaoAulaTextarea.readOnly = true;
-            aulaDetailsActions.style.display = 'none';
-        });
-    }
-
-
-    // --- Lógica para Deletar Material ---
-    document.querySelectorAll('.delete-material-btn').forEach(btn => {
-        btn.addEventListener('click', (event) => {
-            event.preventDefault();
-            const materialId = event.currentTarget.dataset.materialId;
-            if (confirm('Tem certeza que deseja excluir este material?')) {
-                fetch('/material/excluir/' + materialId, {
-                    method: 'POST', // Or DELETE, depending on backend
-                    headers: {
-                        'Content-Type': 'application/json',
-                        // 'X-CSRF-TOKEN': '[[${_csrf.token}]]' // Add CSRF token if using Spring Security
-                    }
-                })
+        function openRichTextModal(materialId) {
+            fetch('/material/conteudo/' + materialId)
                 .then(response => {
                     if (response.ok) {
-                        // Remove item from DOM
-                        event.currentTarget.closest('.material-item').remove();
-                        // If list becomes empty, show "no materials" message
-                        const materialList = document.querySelector('.material-list');
-                        if (materialList.children.length === 0) {
-                            materialList.innerHTML = '<li class="no-materials">Nenhum material adicionado ainda. Clique no botão "+" para começar!</li>';
-                        }
-                        // Optionally display a success message
-                        // location.reload(); // Simpler for now, but AJAX removal is better UX
-                    } else {
-                        alert('Erro ao excluir o material.');
+                        return response.json();
                     }
+                    throw new Error('Erro ao buscar conteúdo do material.');
+                })
+                .then(data => {
+                    const viewModal = document.getElementById('viewRichTextModal');
+                    const viewTitle = document.getElementById('viewRichTextTitle');
+                    const viewContent = document.getElementById('viewRichTextContent');
+
+                    viewTitle.textContent = data.titulo;
+                    viewContent.innerHTML = data.conteudo;
+
+                    openModal('viewRichTextModal');
                 })
                 .catch(error => {
                     console.error('Erro:', error);
-                    alert('Erro na comunicação com o servidor.');
+                    alert('Não foi possível carregar o conteúdo do material.');
                 });
-            }
-        });
+        }
+        window.openRichTextModal = openRichTextModal;
     });
-
-    // --- Lógica para Editar Material (placeholder) ---
-    document.querySelectorAll('.edit-material-btn').forEach(btn => {
-        btn.addEventListener('click', (event) => {
-            event.preventDefault();
-            const materialId = event.currentTarget.dataset.materialId;
-            alert('Funcionalidade de edição para material ' + materialId + ' a ser implementada! (Abriria um modal com os dados do material para edição)');
-            // Example: openModal('editFileModal'); // if it's a file
-        });
-    });
-
-
-    // --- Lógica para Abrir Modal de Visualização de Conteúdo Rico ---
-    function openRichTextModal(materialId) {
-        fetch('/material/conteudo/' + materialId) // Assumes an endpoint to get rich text content
-            .then(response => {
-                if (response.ok) {
-                    return response.json(); // Or response.text() if it returns raw HTML/text
-                }
-                throw new Error('Erro ao buscar conteúdo do material.');
-            })
-            .then(data => {
-                const viewModal = document.getElementById('viewRichTextModal');
-                const viewTitle = document.getElementById('viewRichTextTitle');
-                const viewContent = document.getElementById('viewRichTextContent');
-
-                viewTitle.textContent = data.titulo; // Assuming 'titulo' from response
-                viewContent.innerHTML = data.conteudo; // Assuming 'conteudo' from response (HTML)
-
-                openModal('viewRichTextModal');
-            })
-            .catch(error => {
-                console.error('Erro:', error);
-                alert('Não foi possível carregar o conteúdo do material.');
-            });
-    }
-
-
     /*]]>*/
 </script>
 </body>
