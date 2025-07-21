@@ -1,10 +1,7 @@
 package com.service;
 
 import com.filtro.FiltroArquivoAula;
-import com.model.ArquivoAula;
-import com.model.Aula;
-import com.model.Curso;
-import com.model.Usuario;
+import com.model.*;
 import com.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,7 +22,7 @@ public class AulaService {
     @Autowired
     private S3Service s3Service;
 
-    public void removerVinculosArquivos(Aula aula){
+    public void removerVinculosPorAula(Aula aula){
         var filtro = new FiltroArquivoAula();
         filtro.setIdAula(aula.getId());
         var vinculados = arquivoAulaRepository.findAll(filtro.toSpecification());
@@ -35,5 +32,16 @@ public class AulaService {
             arquivoAulaRepository.delete(vinculo);
             arquivoRepository.delete(vinculo.getArquivo());
         }
+    }
+    public void removerVinculosPorArquivo(Arquivo arquivo){
+        var filtro = new FiltroArquivoAula();
+        filtro.setIdArquivo(arquivo.getId());
+
+        var arquivosAulas = arquivoAulaRepository.findAll(filtro.toSpecification());
+        for(ArquivoAula arquivoAula : arquivosAulas){
+            arquivoAulaRepository.delete(arquivoAula);
+        }
+        s3Service.deleteFileFromS3(arquivo.getCaminho());
+        arquivoRepository.delete(arquivo);
     }
 }
