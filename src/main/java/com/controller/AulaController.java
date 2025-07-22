@@ -106,7 +106,7 @@ public class AulaController {
         try {
             var aulaOpt = aulaRepository.findById(id);
             if(aulaOpt.isPresent()){
-                aulaOpt.ifPresent(aula -> aulaService.removerVinculosArquivos(aula));
+                aulaOpt.ifPresent(aula -> aulaService.removerVinculosPorAula(aula));
                 aulaRepository.delete(aulaOpt.get());
                 return "redirect:/cursos";
             }

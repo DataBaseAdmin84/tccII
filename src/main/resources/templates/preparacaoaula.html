@@ -407,7 +407,6 @@
                     <a th:if="${material.tipo == 'VIDEO' or material.tipo == 'LINK'}" th:href="${material.caminho}" target="_blank" title="Abrir"><i class="fas fa-external-link-alt"></i></a>
                     <a th:if="${material.tipo == 'TEXTO_RICO'}" href="#" th:onclick="'openRichTextModal(\'' + ${material.id} + '\')'" title="Visualizar Conteúdo"><i class="fas fa-eye"></i></a>
 
-                    <a href="#" class="edit-material-btn" th:data-material-id="${material.id}" title="Editar"><i class="fas fa-pencil-alt"></i></a>
                     <a href="#" class="delete-material-btn" th:data-material-id="${material.id}" title="Excluir"><i class="fas fa-trash-alt delete-btn"></i></a>
                 </div>
             </li>
@@ -698,49 +697,14 @@
                             if (!materialList.querySelector('.arquivo-item')) { // Verifica se não há mais itens
                                 materialList.innerHTML = '<li class="no-arquivos">Nenhum material adicionado ainda. Clique no botão "+" para começar!</li>';
                             }
-                        } else {
-                            alert('Erro ao excluir o material.');
                         }
                     })
                     .catch(error => {
                         console.error('Erro:', error);
-                        alert('Erro na comunicação com o servidor.');
                     });
                 }
             });
         });
-
-        // --- Lógica para Editar Material (placeholder) ---
-        document.querySelectorAll('.edit-material-btn').forEach(btn => {
-            btn.addEventListener('click', (event) => {
-                event.preventDefault();
-                const materialId = event.currentTarget.dataset.materialId;
-                alert('Funcionalidade de edição para material ' + materialId + ' a ser implementada!');
-            });
-        });
-        function openRichTextModal(materialId) {
-            fetch('/material/conteudo/' + materialId)
-                .then(response => {
-                    if (response.ok) {
-                        return response.json();
-                    }
-                    throw new Error('Erro ao buscar conteúdo do material.');
-                })
-                .then(data => {
-                    const viewModal = document.getElementById('viewRichTextModal');
-                    const viewTitle = document.getElementById('viewRichTextTitle');
-                    const viewContent = document.getElementById('viewRichTextContent');
-
-                    viewTitle.textContent = data.titulo;
-                    viewContent.innerHTML = data.conteudo;
-
-                    openModal('viewRichTextModal');
-                })
-                .catch(error => {
-                    console.error('Erro:', error);
-                    alert('Não foi possível carregar o conteúdo do material.');
-                });
-        }
         window.openRichTextModal = openRichTextModal;
     });
     /*]]>*/
