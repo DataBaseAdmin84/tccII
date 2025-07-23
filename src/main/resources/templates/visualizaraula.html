@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${aula.titulo} ?: 'Título da Aula'">Título da Aula</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 900px;
+            width: 100%;
+            margin: auto;
+            background: #fff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .aula-header {
+            margin-bottom: 40px;
+        }
+        .aula-header h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .aula-header p {
+            color: #666;
+            font-size: 1.1em;
+            line-height: 1.6;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .materiais-section {
+            margin-top: 50px;
+            text-align: left;
+        }
+        .materiais-section h2 {
+            color: #34495e;
+            font-size: 1.8em;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .materiais-section h2 i {
+            margin-right: 10px;
+            color: #7f8c8d;
+        }
+        .materiais-list {
+            list-style: none;
+            padding: 0;
+        }
+        .material-item {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            background-color: #fcfcfc;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.05);
+            transition: transform 0.2s ease-in-out;
+        }
+        .material-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        .material-item .icon {
+            font-size: 2em;
+            margin-right: 20px;
+            color: #3498db;
+            width: 40px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+        /* Cores específicas para ícones de tipo */
+        .material-item .icon.fa-file-alt { color: #8e44ad; } /* Roxo para arquivo */
+        .material-item .icon.fa-youtube { color: #e74c3c; } /* Vermelho para YouTube */
+        .material-item .icon.fa-link { color: #2ecc71; }    /* Verde para link */
+
+
+        .material-item .info {
+            flex-grow: 1;
+            text-align: left;
+        }
+        .material-item .info h4 {
+            margin: 0 0 5px 0;
+            color: #333;
+            font-size: 1.2em;
+        }
+        .material-item .info p {
+            margin: 0;
+            color: #777;
+            font-size: 0.9em;
+        }
+
+        .material-item .actions {
+            flex-shrink: 0;
+            margin-left: 20px;
+        }
+        .material-item .actions a {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+            transition: background-color 0.2s ease-in-out;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .material-item .actions a:hover {
+            background-color: #218838;
+        }
+        .material-item .actions a i {
+            font-size: 1.1em;
+        }
+
+        .no-materials-message {
+            margin-top: 50px;
+            padding: 30px;
+            background-color: #f0f0f0;
+            border-radius: 8px;
+            color: #555;
+            font-size: 1.1em;
+            text-align: center;
+        }
+
+        .back-button-container {
+            margin-top: 50px;
+            text-align: center;
+        }
+        .btn-back-to-course {
+            padding: 12px 25px;
+            background-color: #007bff; /* Azul vibrante */
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 1.1em;
+            transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .btn-back-to-course:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+        .btn-back-to-course i {
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="aula-header">
+        <h1 th:text="${aula.titulo} ?: 'Apresentação Inicial do Curso'">Título da Aula</h1>
+        <p th:text="${aula.descricao} ?: 'Nesta aula introdutória, exploraremos os conceitos fundamentais e a estrutura do curso, preparando você para uma jornada de aprendizado aprofundado.'">Descrição detalhada sobre o que será aprendido nesta aula.</p>
+    </div>
+
+    <div class="materiais-section" th:if="${not #lists.isEmpty(aula.arquivos)}">
+        <h2><i class="fas fa-paperclip"></i> Materiais de Apoio</h2>
+        <ul class="materiais-list">
+            <li th:each="material : ${aula.arquivos}" class="material-item">
+                <i class="icon"
+                   th:classappend="${material.tipo.toString() == 'ARQUIVO' ? 'fas fa-file-alt' :
+                                   (material.tipo.toString() == 'VIDEO' ? 'fab fa-youtube' : 'fas fa-link')}"></i>
+                <div class="info">
+                    <h4 th:text="${material.nome} ?: 'Nome do Material'">Nome do Material</h4>
+                    <p th:if="${material.tipo.toString() == 'ARQUIVO'}" th:text="'Tamanho: ' + ${material.tamanho} + ' MB'">Tamanho: 10.5 MB</p>
+                    <p th:if="${material.tipo.toString() == 'VIDEO'}" th:text="'Duração: ' + ${material.duracao} + ' min'">Duração: 15 min</p>
+                    <p th:if="${material.tipo.toString() == 'LINK'}">Tipo: Link Externo</p>
+                </div>
+                <div class="actions">
+                    <!-- Botão unificado que leva para a nova página de visualização -->
+                    <a th:href="@{'/material/visualizar/' + ${material.id}}" target="_blank" class="btn-view">
+                        <i class="fas fa-eye"></i> Visualizar
+                    </a>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <div th:unless="${not #lists.isEmpty(aula.arquivos)}" class="no-materials-message">
+        <p>Esta aula não possui materiais de apoio no momento. Verifique novamente mais tarde!</p>
+    </div>
+
+    <div class="back-button-container">
+        <a th:href="@{'/cursos'}" class="btn-back-to-course">
+            <i class="fas fa-arrow-left"></i> Voltar para o Curso
+        </a>
+    </div>
+</div>
+
+</body>
+</html>
