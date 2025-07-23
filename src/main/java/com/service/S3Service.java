@@ -8,14 +8,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
-import software.amazon.awssdk.services.s3.model.GetUrlRequest;
-import software.amazon.awssdk.services.s3.model.PutObjectRequest;
-import software.amazon.awssdk.services.s3.model.S3Exception;
+import software.amazon.awssdk.services.s3.model.*;
+import software.amazon.awssdk.services.s3.presigner.S3Presigner;
+import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
+import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequest;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.time.Duration;
 import java.util.UUID;
 
 @Service
@@ -25,10 +24,13 @@ public class S3Service {
     @Autowired
     private S3Client s3Client;
 
+    @Autowired
+    private S3Presigner s3Presigner;
+
     @Value("${aws.s3.bucket-name}")
     private String bucketName;
 
-    public String uploadFile(MultipartFile multipartFile) throws IOException {
+    public String uploadArquivo(MultipartFile multipartFile) throws IOException {
         String originalFilename = multipartFile.getOriginalFilename();
         String fileExtension = "";
         if (originalFilename != null && originalFilename.contains(".")) {
@@ -44,41 +46,56 @@ public class S3Service {
         s3Client.putObject(putObjectRequest,
                 RequestBody.fromInputStream(multipartFile.getInputStream(), multipartFile.getSize()));
 
-        GetUrlRequest getUrlRequest = GetUrlRequest.builder()
-                .bucket(bucketName)
-                .key(key)
-                .build();
+        log.info("Arquivo {} enviado para o S3 com a chave: {}", originalFilename, key);
 
-        URL fileUrl = s3Client.utilities().getUrl(getUrlRequest);
-        return fileUrl.toString();
+        // MUDANÇA IMPORTANTE: Retorna APENAS a chave.
+        return key;
     }
 
-    public void deleteFileFromS3(String fileUrl) {
-        if (fileUrl == null || fileUrl.isBlank()) {
-            log.warn("Tentativa de exclusão de arquivo com URL nula ou vazia.");
+    public void excluirArquivo(String chaveArquivo) {
+        if (chaveArquivo == null || chaveArquivo.isBlank()) {
+            log.warn("Tentativa de exclusão de arquivo com chave nula ou vazia.");
             return;
         }
 
         try {
-            URL url = new URL(fileUrl);
-            String key = url.getPath().substring(1);
-
             DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
                     .bucket(bucketName)
-                    .key(key)
+                    .key(chaveArquivo)
                     .build();
 
             s3Client.deleteObject(deleteObjectRequest);
-            log.info("Arquivo com a chave {} foi excluído com sucesso do bucket {}.", key, bucketName);
+            log.info("Arquivo com a chave {} foi excluído com sucesso do bucket {}.", chaveArquivo, bucketName);
 
         } catch (S3Exception e) {
-            log.error("Erro ao excluir o arquivo {} do S3: {}", fileUrl, e.awsErrorDetails().errorMessage(), e);
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
+            log.error("Erro ao excluir o arquivo com chave {} do S3: {}", chaveArquivo, e.awsErrorDetails().errorMessage(), e);
         }
     }
 
-    public String uploadArquivo(MultipartFile arquivo) throws IOException {
-        return uploadFile(arquivo);
+    public String gerarUrlPresignada(String chaveArquivo) {
+        if (chaveArquivo == null || chaveArquivo.isBlank()) {
+            log.warn("Tentativa de gerar URL para chave nula ou vazia.");
+            return "#"; // Retorna um link inofensivo para evitar erros no frontend
+        }
+        try {
+            GetObjectRequest getObjectRequest = GetObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(chaveArquivo)
+                    .build();
+
+            GetObjectPresignRequest presignRequest = GetObjectPresignRequest.builder()
+                    .signatureDuration(Duration.ofMinutes(10)) // O link expira em 10 minutos
+                    .getObjectRequest(getObjectRequest)
+                    .build();
+
+            PresignedGetObjectRequest presignedGetObjectRequest = s3Presigner.presignGetObject(presignRequest);
+            String url = presignedGetObjectRequest.url().toString();
+            log.info("URL pré-assinada gerada para a chave '{}'", chaveArquivo);
+            return url;
+
+        } catch (S3Exception e) {
+            log.error("Erro do S3 ao gerar URL pré-assinada para a chave {}: {}", chaveArquivo, e.getMessage(), e);
+            throw new RuntimeException("Não foi possível gerar a URL de download para o arquivo.", e);
+        }
     }
 }

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -113,6 +114,27 @@ public class AulaController {
             return "redirect:/cursos";
         } catch (Exception e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    @GetMapping("/visualizar/{id}")
+    public ModelAndView visualizarAula(@PathVariable("id") Long id) {
+        Optional<Aula> aulaOpt = aulaRepository.findById(id);
+
+        if (aulaOpt.isPresent()) {
+            Aula aula = aulaOpt.get();
+            ModelAndView mv = new ModelAndView("visualizaraula");
+
+            mv.addObject("aula", AulaDTO.toDto(aula));
+
+            if (aula.getCurso() != null) {
+                mv.addObject("cursoId", aula.getCurso().getId());
+            }
+
+            return mv;
+        } else {
+            log.warn("Tentativa de visualizar aula com ID inexistente: {}", id);
+            return new ModelAndView("redirect:/cursos");
         }
     }
 }

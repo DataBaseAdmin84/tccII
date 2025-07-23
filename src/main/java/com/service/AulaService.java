@@ -28,7 +28,7 @@ public class AulaService {
         var vinculados = arquivoAulaRepository.findAll(filtro.toSpecification());
 
         for(ArquivoAula vinculo : vinculados){
-            s3Service.deleteFileFromS3(vinculo.getArquivo().getCaminho());
+            s3Service.excluirArquivo(vinculo.getArquivo().getCaminho());
             arquivoAulaRepository.delete(vinculo);
             arquivoRepository.delete(vinculo.getArquivo());
         }
@@ -41,7 +41,7 @@ public class AulaService {
         for(ArquivoAula arquivoAula : arquivosAulas){
             arquivoAulaRepository.delete(arquivoAula);
         }
-        s3Service.deleteFileFromS3(arquivo.getCaminho());
+        s3Service.excluirArquivo(arquivo.getCaminho());
         arquivoRepository.delete(arquivo);
     }
 }

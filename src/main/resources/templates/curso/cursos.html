@@ -209,6 +209,7 @@
             color: #007bff;
             text-decoration: none;
             font-weight: normal;
+            flex-grow: 1; /* Faz o link ocupar o espaço disponível */
         }
 
         .aula-description-link:hover { /* Hover effect for clickable aula description */
@@ -216,15 +217,24 @@
             color: #0056b3;
         }
 
+        .aula-item .aula-actions {
+            margin-left: 15px;
+            white-space: nowrap; /* Impede que os botões quebrem a linha */
+        }
         .aula-item .aula-actions a {
             margin-left: 10px;
-            color: #dc3545; /* Red for delete */
             text-decoration: none; /* Ensure no underline by default */
         }
         .aula-item .aula-actions a:hover {
-            color: #c82333;
             text-decoration: underline; /* Add underline on hover */
         }
+        .aula-item .aula-actions a.delete-link {
+             color: #dc3545; /* Red for delete */
+        }
+        .aula-item .aula-actions a.delete-link:hover {
+             color: #c82333;
+        }
+
 
         .add-aula-form {
             display: flex;
@@ -324,10 +334,16 @@
     <div th:each="curso : ${cursos}" th:id="'aulas-section-' + ${curso.id}" class="aulas-section">
         <h4>Aulas do Curso: <span th:text="${curso.titulo}"></span></h4>
         <div class="aulas-list" th:id="'aulas-list-' + ${curso.id}">
-            <div th:if="${!#lists.isEmpty(curso.aulas)}" th:each="aula : ${curso.aulas}" class="aula-item">
-                <a th:href="@{'/aula/editar/' + ${aula.id}}" th:text="${aula.descricao}" class="aula-description-link">Descrição da Aula</a>
+            <div th:if="${!#lists.isEmpty(curso.aulas)}" th:each="aula : ${curso.aulas}" class="aula-item" th:id="'aula-item-' + ${aula.id}">
+                <!-- Link principal para VISUALIZAR a aula (para todos os usuários) -->
+                <a th:href="@{'/visualizar/' + ${aula.id}}" th:text="${aula.descricao}" class="aula-description-link">Descrição da Aula</a>
+
+                <!-- Ações específicas para o professor (perfil 2) -->
                 <div class="aula-actions">
-                    <a th:if="${perfil == 2}" href="#" th:onclick="'excluirAula(' + ${aula.id} + ', ' + ${curso.id} + ')'">Excluir</a>
+                    <span th:if="${perfil == 2}">
+                        <a th:href="@{'/aula/editar/' + ${aula.id}}">Editar</a>
+                        <a href="#" class="delete-link" th:onclick="'excluirAula(' + ${aula.id} + ', ' + ${curso.id} + ')'">Excluir</a>
+                    </span>
                 </div>
             </div>
             <div th:if="${#lists.isEmpty(curso.aulas)}" style="font-style: italic;">Nenhuma aula cadastrada para este curso.</div>
@@ -361,13 +377,14 @@
                     if (section.id !== 'aulas-section-' + cursoId) {
                         section.style.display = 'none';
                         // Also reset the arrow for the other sections
-                        document.querySelector(`.toggle-aulas[data-curso-id="${section.id.replace('aulas-section-', '')}"]`).innerHTML = 'Aulas &#9660;';
+                        const otherArrow = document.querySelector(`.toggle-aulas[data-curso-id="${section.id.replace('aulas-section-', '')}"]`);
+                        if (otherArrow) {
+                            otherArrow.innerHTML = 'Aulas &#9660;';
+                        }
                     }
                 });
                 aulasSection.style.display = 'block';
                 arrow.innerHTML = 'Aulas &#9650;'; // Up arrow
-                // Optional: Fetch aulas dynamically if not pre-loaded
-                // loadAulasForCurso(cursoId);
             }
         });
     });
@@ -377,19 +394,19 @@
         if (confirm('Tem certeza que deseja excluir esta aula?')) {
             // Send an AJAX request to delete the aula
             fetch('/aula/excluir/' + aulaId, {
-                method: 'POST' // Or DELETE if your backend supports it directly
+                method: 'POST'
             })
             .then(response => {
                 if (response.ok) {
-                    // Remove the aula from the DOM after successful deletion
-                    const aulasList = document.getElementById('aulas-list-' + cursoId);
-                    const aulaItemToRemove = aulasList.querySelector(`[th-data-aula-id="${aulaId}"]`); // Using a custom data attribute for finding
+                    // MELHORIA: Busca o elemento pelo ID único para remoção segura
+                    const aulaItemToRemove = document.getElementById('aula-item-' + aulaId);
                     if (aulaItemToRemove) {
                         aulaItemToRemove.remove();
                     }
                     // If no more aulas, display "Nenhuma aula..." message
-                    if (aulasList.children.length === 0 || (aulasList.children.length === 1 && aulasList.children[0].classList.contains('no-aulas-message'))) { // Check if only the "no aulas" message remains
-                        aulasList.innerHTML = '<div style="font-style: italic;" class="no-aulas-message">Nenhuma aula cadastrada para este curso.</div>';
+                    const aulasList = document.getElementById('aulas-list-' + cursoId);
+                    if (!aulasList.querySelector('.aula-item')) { // Verifica se não há mais itens de aula
+                        aulasList.innerHTML = '<div style="font-style: italic;">Nenhuma aula cadastrada para este curso.</div>';
                     }
                 } else {
                     alert('Erro ao excluir a aula.');

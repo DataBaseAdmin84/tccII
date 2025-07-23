@@ -12,11 +12,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.IOException;
 import java.util.Date;
@@ -78,5 +77,25 @@ public class UploadController {
             redirectAttributes.addFlashAttribute("erro", "Erro ao processar o arquivo: " + e.getMessage());
         }
         return "redirect:aula/editar/" + aulaId;
+    }
+
+    @GetMapping("/download/{materialId}")
+    public RedirectView downloadMaterial(@PathVariable Long materialId) {
+        int i = 0;
+        // 1. Busca o material no banco de dados
+//        Material material = materialService.findById(materialId);
+//
+//        // 2. Verifica se é um arquivo e se tem um caminho (chave S3)
+//        if (material != null && material.getTipo() == TipoMaterial.ARQUIVO && material.getCaminho() != null) {
+//            // 3. Gera a URL pré-assinada usando o serviço S3
+//            String presignedUrl = s3Service.gerarUrlPresignada(material.getCaminho());
+//
+//            // 4. Redireciona o navegador do usuário para a URL do S3
+//            return new RedirectView(presignedUrl);
+//        }
+
+        // Se o material não for encontrado ou não for um arquivo, redireciona para algum lugar
+        // com uma mensagem de erro.
+        return new RedirectView("/erro"); // Crie uma página de erro genérica
     }
 }
