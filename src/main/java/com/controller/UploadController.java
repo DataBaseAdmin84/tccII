@@ -62,7 +62,7 @@ public class UploadController {
             arquivo.setCaminho(s3Url);
             arquivo.setTamanho(file.getSize());
             arquivo.setDataUpload(DataUtils.dateToLocalDate(new Date()));
-            arquivo.setTipo(" ");//TODO
+            arquivo.setTipo(file.getContentType());//TODO
 
             var arq = arquivoRepository.save(arquivo);
             var arquivoAula = new ArquivoAula();

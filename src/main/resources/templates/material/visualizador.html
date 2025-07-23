@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${arquivo.nome}">Visualizador de Material</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; background-color: #f0f2f5; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; }
+        .container { width: 100%; max-width: 960px; margin: 2rem; padding: 1.5rem; background-color: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.1); border-radius: 8px; }
+        h1 { color: #1c1e21; margin-top: 0; }
+        .metadata { color: #606770; margin-bottom: 1.5rem; }
+        .media-viewer { width: 100%; margin-top: 1rem; }
+
+        /* Container de vídeo responsivo (16:9) */
+        .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; background: #000; border-radius: 8px; }
+        .video-container video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+
+        /* Estilos para imagem e iframe */
+        .media-viewer img, .media-viewer iframe {
+            max-width: 100%;
+            display: block; /* Garante que a imagem não tenha espaço extra abaixo */
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        .download-link { display: inline-block; margin-top: 1.5rem; font-weight: bold; color: #1877f2; text-decoration: none; }
+        .download-link:hover { text-decoration: underline; }
+        .unsupported-message { padding: 2rem; text-align: center; background-color: #f7f7f7; border: 1px dashed #ccc; border-radius: 8px; color: #333; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1 th:text="${arquivo.nome}">Nome do Arquivo</h1>
+    <p class="metadata">
+        Tipo: <span th:text="${arquivo.tipo}"></span> | Tamanho: <span th:text="${#numbers.formatDecimal(arquivo.tamanho / 1024.0 / 1024.0, 1, 2)} + ' MB'"></span>
+    </p>
+
+    <!-- Lógica de visualização mais explícita e limpa -->
+    <div class="media-viewer">
+        <!-- th:block é um container invisível, perfeito para condicionais -->
+        <th:block th:switch="${#strings.substringBefore(arquivo.tipo, '/')}">
+
+            <!-- Caso 1: Vídeo -->
+            <div th:case="'video'" class="video-container">
+                <video controls preload="metadata">
+                    <source th:src="${urlVisualizacao}" th:type="${arquivo.tipo}">
+                    Seu navegador não suporta a tag de vídeo.
+                </video>
+            </div>
+
+            <!-- Caso 2: Imagem -->
+            <div th:case="'image'">
+                <img th:src="${urlVisualizacao}" th:alt="${arquivo.nome}">
+            </div>
+
+            <!-- Caso 3: Outros tipos (como 'application') -->
+            <div th:case="*">
+                <!-- Verificação específica para PDF dentro do caso 'application' -->
+                <div th:if="${arquivo.tipo == 'application/pdf'}">
+                    <iframe th:src="${urlVisualizacao}" width="100%" height="700px" style="border: none;" title="Visualizador de PDF"></iframe>
+                </div>
+
+                <!-- Mensagem para todos os outros tipos não suportados -->
+                <div th:unless="${arquivo.tipo == 'application/pdf'}" class="unsupported-message">
+                    <p>A pré-visualização para este tipo de arquivo não está disponível.</p>
+                </div>
+            </div>
+        </th:block>
+    </div>
+
+    <a class="download-link" th:href="${urlVisualizacao}" download th:text="'Baixar ' + ${arquivo.nome}">Baixar Arquivo</a>
+</div>
+
+</body>
+</html>

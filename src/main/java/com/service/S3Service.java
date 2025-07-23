@@ -2,7 +2,6 @@ package com.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,6 +13,8 @@ import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignReques
 import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequest;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.UUID;
 
@@ -21,14 +22,17 @@ import java.util.UUID;
 public class S3Service {
     private static final Logger log = LoggerFactory.getLogger(S3Service.class);
 
-    @Autowired
-    private S3Client s3Client;
+    // Campos agora são 'final' para garantir imutabilidade após a construção
+    private final S3Client s3Client;
+    private final S3Presigner s3Presigner;
+    private final String bucketName;
 
-    @Autowired
-    private S3Presigner s3Presigner;
-
-    @Value("${aws.s3.bucket-name}")
-    private String bucketName;
+    // Injeção de dependência via construtor (melhor prática)
+    public S3Service(S3Client s3Client, S3Presigner s3Presigner, @Value("${aws.s3.bucket-name}") String bucketName) {
+        this.s3Client = s3Client;
+        this.s3Presigner = s3Presigner;
+        this.bucketName = bucketName;
+    }
 
     public String uploadArquivo(MultipartFile multipartFile) throws IOException {
         String originalFilename = multipartFile.getOriginalFilename();
@@ -41,14 +45,13 @@ public class S3Service {
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                 .bucket(bucketName)
                 .key(key)
+                .contentType(multipartFile.getContentType()) // Boa prática: salvar o content type
                 .build();
 
         s3Client.putObject(putObjectRequest,
                 RequestBody.fromInputStream(multipartFile.getInputStream(), multipartFile.getSize()));
 
         log.info("Arquivo {} enviado para o S3 com a chave: {}", originalFilename, key);
-
-        // MUDANÇA IMPORTANTE: Retorna APENAS a chave.
         return key;
     }
 
@@ -72,30 +75,36 @@ public class S3Service {
         }
     }
 
-    public String gerarUrlPresignada(String chaveArquivo) {
+    public String gerarUrlPresignadaParaVisualizacao(String chaveArquivo, String nomeOriginal) {
         if (chaveArquivo == null || chaveArquivo.isBlank()) {
             log.warn("Tentativa de gerar URL para chave nula ou vazia.");
-            return "#"; // Retorna um link inofensivo para evitar erros no frontend
+            return "#"; // Retorna um link morto seguro
         }
         try {
+            // Garante que o nome do arquivo seja seguro para o cabeçalho HTTP
+            String encodedFilename = URLEncoder.encode(nomeOriginal, StandardCharsets.UTF_8).replace("+", "%20");
+            String contentDisposition = "inline; filename=\"" + encodedFilename + "\"";
+
             GetObjectRequest getObjectRequest = GetObjectRequest.builder()
                     .bucket(bucketName)
                     .key(chaveArquivo)
+                    .responseContentDisposition(contentDisposition)
                     .build();
 
             GetObjectPresignRequest presignRequest = GetObjectPresignRequest.builder()
-                    .signatureDuration(Duration.ofMinutes(10)) // O link expira em 10 minutos
+                    .signatureDuration(Duration.ofMinutes(15)) // Tempo bom para vídeos e PDFs
                     .getObjectRequest(getObjectRequest)
                     .build();
 
             PresignedGetObjectRequest presignedGetObjectRequest = s3Presigner.presignGetObject(presignRequest);
             String url = presignedGetObjectRequest.url().toString();
-            log.info("URL pré-assinada gerada para a chave '{}'", chaveArquivo);
+            log.info("URL pré-assinada (inline) gerada para a chave '{}'", chaveArquivo);
             return url;
 
         } catch (S3Exception e) {
             log.error("Erro do S3 ao gerar URL pré-assinada para a chave {}: {}", chaveArquivo, e.getMessage(), e);
-            throw new RuntimeException("Não foi possível gerar a URL de download para o arquivo.", e);
+            // Lançar uma exceção específica da aplicação seria ainda melhor, mas RuntimeException é aceitável.
+            throw new RuntimeException("Não foi possível gerar a URL de visualização para o arquivo.", e);
         }
     }
 }

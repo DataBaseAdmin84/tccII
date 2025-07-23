@@ -187,11 +187,9 @@
                     <p th:if="${material.tipo.toString() == 'LINK'}">Tipo: Link Externo</p>
                 </div>
                 <div class="actions">
-                    <a th:if="${material.tipo.toString() == 'ARQUIVO'}" th:href="@{'/material/download/' + ${material.id}}" class="btn-download">
-                        <i class="fas fa-download"></i> Baixar
-                    </a>
-                    <a th:if="${material.tipo.toString() == 'VIDEO' or material.tipo.toString() == 'LINK'}" th:href="${material.caminho}" target="_blank" class="btn-open">
-                        <i class="fas fa-external-link-alt"></i> Abrir
+                    <!-- Botão unificado que leva para a nova página de visualização -->
+                    <a th:href="@{'/material/visualizar/' + ${material.id}}" target="_blank" class="btn-view">
+                        <i class="fas fa-eye"></i> Visualizar
                     </a>
                 </div>
             </li>

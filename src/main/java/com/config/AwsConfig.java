@@ -12,34 +12,35 @@ import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 @Configuration
 public class AwsConfig {
 
-    @Value("${cloud.aws.credentials.access-key}")
-    private String accessKey;
+    private final String accessKey;
+    private final String secretKey;
+    private final String region;
 
-    @Value("${cloud.aws.credentials.secret-key}")
-    private String secretKey;
-
-    @Value("${cloud.aws.region.static}")
-    private String region;
-    
-    @Bean
-    public StaticCredentialsProvider staticCredentialsProvider() {
-        AwsBasicCredentials credentials = AwsBasicCredentials.create(accessKey, secretKey);
-        return StaticCredentialsProvider.create(credentials);
+    // Ajuste o construtor para usar as chaves do seu application.properties
+    public AwsConfig(
+            @Value("${cloud.aws.credentials.access-key}") String accessKey,
+            @Value("${cloud.aws.credentials.secret-key}") String secretKey,
+            @Value("${cloud.aws.region.static}") String region) {
+        this.accessKey = accessKey;
+        this.secretKey = secretKey;
+        this.region = region;
     }
 
     @Bean
-    public S3Client s3Client(StaticCredentialsProvider credentialsProvider) {
+    public S3Client s3Client() {
+        AwsBasicCredentials credentials = AwsBasicCredentials.create(accessKey, secretKey);
         return S3Client.builder()
                 .region(Region.of(region))
-                .credentialsProvider(credentialsProvider)
+                .credentialsProvider(StaticCredentialsProvider.create(credentials))
                 .build();
     }
 
     @Bean
-    public S3Presigner s3Presigner(StaticCredentialsProvider credentialsProvider) {
+    public S3Presigner s3Presigner() {
+        AwsBasicCredentials credentials = AwsBasicCredentials.create(accessKey, secretKey);
         return S3Presigner.builder()
-                .region(Region.of(region)) // Usa a mesma região da propriedade
-                .credentialsProvider(credentialsProvider) // Usa o mesmo provedor de credenciais
+                .region(Region.of(region))
+                .credentialsProvider(StaticCredentialsProvider.create(credentials))
                 .build();
     }
 }
