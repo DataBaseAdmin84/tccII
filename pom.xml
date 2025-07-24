@@ -124,14 +124,10 @@
             <artifactId>thymeleaf-layout-dialect</artifactId>
         </dependency>
 
-        <!-- AWS SDK V2 (as versões são gerenciadas pelo BOM acima) -->
+        <!-- AWS SDK V2 (as versões são gerenciadas pelo BOM acima) aqui -->
         <dependency>
             <groupId>software.amazon.awssdk</groupId>
             <artifactId>s3</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>software.amazon.awssdk</groupId>
-            <artifactId>s3-presigner</artifactId>
         </dependency>
     </dependencies>
 </project>
