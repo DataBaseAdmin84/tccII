@@ -342,7 +342,7 @@
                 <div class="aula-actions">
                     <span th:if="${perfil == 2}">
                         <a th:href="@{'/aula/editar/' + ${aula.id}}">Editar</a>
-                        <a href="#" class="delete-link" th:onclick="'excluirAula(' + ${aula.id} + ', ' + ${curso.id} + ')'">Excluir</a>
+                        <a href="#" class="delete-link" th:onclick="'excluirAula(' + ${aula.id} + ')'">Excluir</a>
                     </span>
                 </div>
             </div>
@@ -389,33 +389,15 @@
         });
     });
 
-    // JavaScript function to handle aula deletion
-    function excluirAula(aulaId, cursoId) {
-        if (confirm('Tem certeza que deseja excluir esta aula?')) {
-            // Send an AJAX request to delete the aula
-            fetch('/aula/excluir/' + aulaId, {
-                method: 'POST'
-            })
-            .then(response => {
-                if (response.ok) {
-                    // MELHORIA: Busca o elemento pelo ID único para remoção segura
-                    const aulaItemToRemove = document.getElementById('aula-item-' + aulaId);
-                    if (aulaItemToRemove) {
-                        aulaItemToRemove.remove();
-                    }
-                    // If no more aulas, display "Nenhuma aula..." message
-                    const aulasList = document.getElementById('aulas-list-' + cursoId);
-                    if (!aulasList.querySelector('.aula-item')) { // Verifica se não há mais itens de aula
-                        aulasList.innerHTML = '<div style="font-style: italic;">Nenhuma aula cadastrada para este curso.</div>';
-                    }
-                } else {
-                    alert('Erro ao excluir a aula.');
-                }
-            })
-            .catch(error => {
-                console.error('Erro:', error);
-                alert('Erro na comunicação com o servidor.');
-            });
+    function excluirAula(aulaId) {
+        if (confirm("Tem certeza que deseja excluir esta aula?")) {
+            var form = document.createElement("form");
+            form.setAttribute("method", "post");
+            form.setAttribute("action", "/aula/excluir/" + aulaId);
+
+            document.body.appendChild(form);
+
+            form.submit();
         }
     }
 

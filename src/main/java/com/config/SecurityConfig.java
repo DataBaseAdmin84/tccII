@@ -5,39 +5,52 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final String s3BucketUrl;
-
-    public SecurityConfig(@Value("${aws.s3.bucket-url:}") String s3BucketUrl) {
-        this.s3BucketUrl = s3BucketUrl;
-    }
+    @Value("${aws.s3.bucket-name}")
+    private String s3BucketName;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        String s3UrlForCsp = (s3BucketUrl != null && !s3BucketUrl.isBlank()) ? " " + s3BucketUrl : "";
-
-        String cspDirectives =
-                "default-src 'self'; " +
-                        "frame-src 'self' https://www.youtube.com" + s3UrlForCsp + "; " +
-                        "media-src 'self'" + s3UrlForCsp + "; " +
-                        "img-src 'self' data: https://placehold.co" + s3UrlForCsp + "; " +
-                        "script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; " +
-                        "style-src 'self' 'unsafe-inline'; " +
-                        "font-src 'self';";
+        final String s3BucketUrl = "https://" + s3BucketName + ".s3.us-east-2.amazonaws.com";
 
         http
-                .authorizeHttpRequests(authz -> authz.anyRequest().permitAll())
+                .authorizeHttpRequests(authorize -> authorize
+                        .anyRequest().permitAll()
+                )
+                .csrf(AbstractHttpConfigurer::disable)
                 .headers(headers -> headers
                         .contentSecurityPolicy(csp -> csp
-                                .policyDirectives(cspDirectives)
+                                .policyDirectives(
+                                        "default-src 'self';" +
+                                                "script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdn.jsdelivr.net;" +
+                                                "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com;" +
+                                                "font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;" +
+                                                "img-src 'self' data: " + s3BucketUrl + " https://placehold.co;" +
+                                                "media-src 'self' " + s3BucketUrl + ";" +
+                                                "frame-src 'self' " + s3BucketUrl + " https://www.youtube.com"
+                                )
                         )
                 );
 
         return http.build();
+    }
+
+    private String buildCspPolicy(String s3BucketUrl, String... scriptHashes) {
+        String scriptSrcHashes = String.join(" ", scriptHashes);
+        return String.join("; ",
+                "default-src 'self'",
+                "script-src 'self' " + scriptSrcHashes + " https://cdn.tailwindcss.com https://cdn.jsdelivr.net",
+                "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com",
+                "font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com",
+                "img-src 'self' data: " + s3BucketUrl + " https://placehold.co",
+                "media-src 'self' " + s3BucketUrl,
+                "frame-src 'self' " + s3BucketUrl + " https://www.youtube.com"
+        );
     }
 }

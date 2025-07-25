@@ -73,7 +73,7 @@ public class CursoController {
     @GetMapping("/cursos")
     public String listarCursos(CursoDTO dto, Model model, HttpSession session) {
         var filtro = new FiltroCurso();
-        filtro.preencheFiltro(dto);//metodo para preencher o filtro criteriaBuilder (implementação filtro dafault do Spring boot)
+        filtro.preencheFiltro(dto);
         var usuario = (Usuario) session.getAttribute("usuarioLogado");
 
         var cursos = cursoRepository.findAll(filtro.toSpecification());
