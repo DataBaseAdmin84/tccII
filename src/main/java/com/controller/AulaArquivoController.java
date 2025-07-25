@@ -48,19 +48,18 @@ public class AulaArquivoController {
         try {
             String presignedUrl = s3Service.gerarUrlPresignadaParaVisualizacao(arquivo.getCaminho(), arquivo.getNome());
 
-            ModelAndView mv = new ModelAndView("material/visualizador"); // Nome do arquivo HTML
+            ModelAndView mv = new ModelAndView("material/visualizador");
             mv.addObject("arquivo", arquivo);
             mv.addObject("urlVisualizacao", presignedUrl);
             return mv;
 
         } catch (RuntimeException e) {
             log.error("Erro ao tentar gerar a URL pré-assinada para a chave {}: {}", arquivo.getCaminho(), e.getMessage());
-            // Retorna para uma página de erro genérica
             return new ModelAndView("error/500");
         }
     }
     @PostMapping("/excluir/{id}")
-    @Transactional // Garante que todas as operações (banco e S3) sejam um sucesso ou falhem juntas
+    @Transactional
     public ResponseEntity<?> excluir(@PathVariable Long id) {
         log.info("Iniciando processo de exclusão para o arquivo de id: {}", id);
 
@@ -72,8 +71,8 @@ public class AulaArquivoController {
 
         try {
             aulaService.removerVinculosPorArquivo(arquivo);
-            s3Service.excluirArquivo(arquivo.getCaminho());
             arquivoRepository.delete(arquivo);
+            s3Service.excluirArquivo(arquivo.getCaminho());
 
             log.info("Arquivo com id {} foi completamente excluído.", id);
             return ResponseEntity.ok().build();

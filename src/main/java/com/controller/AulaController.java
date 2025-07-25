@@ -103,7 +103,7 @@ public class AulaController {
     }
 
     @PostMapping("/aula/excluir/{id}")
-    public String excluir(@PathVariable Long id, HttpSession session) {
+    public String excluir(@PathVariable Long id) {
         try {
             var aulaOpt = aulaRepository.findById(id);
             if(aulaOpt.isPresent()){

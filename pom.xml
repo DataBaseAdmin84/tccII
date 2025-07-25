@@ -21,12 +21,6 @@
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.3.1</version>
     </parent>
-
-    <!-- =================================================================== -->
-    <!-- CORREÇÃO: RE-ADICIONANDO O GERENCIAMENTO DE DEPENDÊNCIAS (BOM) da AWS -->
-    <!-- Isso torna explícito para o Maven qual versão usar para TODOS os   -->
-    <!-- artefatos da AWS, eliminando o erro de versão "unknown".          -->
-    <!-- =================================================================== -->
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -128,6 +122,10 @@
         <dependency>
             <groupId>software.amazon.awssdk</groupId>
             <artifactId>s3</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.thymeleaf.extras</groupId>
+            <artifactId>thymeleaf-extras-springsecurity6</artifactId>
         </dependency>
     </dependencies>
 </project>
