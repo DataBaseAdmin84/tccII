@@ -73,14 +73,21 @@ public class CursoController {
     @GetMapping("/cursos")
     public String listarCursos(CursoDTO dto, Model model, HttpSession session) {
         var filtro = new FiltroCurso();
-        filtro.preencheFiltro(dto);
         var usuario = (Usuario) session.getAttribute("usuarioLogado");
+        if(usuario.getPerfil().equals(PerfilUsuario.PROFESSOR.getCodigo()))
+            filtro.setIdProfessor(usuario.getId());
+        filtro.preencheFiltro(dto);
 
         var cursos = cursoRepository.findAll(filtro.toSpecification());
         var listCurso = new ArrayList<CursoDTO>();
         for(Curso curso : cursos){
             var c = CursoDTO.toDto(curso);
-            c.setMatriculado(cursoService.possuiMatricula(curso, usuario.getId()));
+            if(usuario.getPerfil().equals(PerfilUsuario.ALUNO.getCodigo())){
+                var isMatriculado = cursoService.possuiMatricula(curso, usuario.getId());
+                c.setMatriculado(isMatriculado);
+                if(!isMatriculado)
+                    c.setAulas(null);
+            }
             listCurso.add(c);
         }
         model.addAttribute("usuarioLogado", usuario);
@@ -101,7 +108,11 @@ public class CursoController {
     @GetMapping("/curso/excluir/{id}")
     public String excluir(@PathVariable Long id, RedirectAttributes redirect) {
         try {
-            cursoService.excluirPorId(id);
+            if(!cursoService.possuiArquivo(id)){
+                cursoService.excluirPorId(id);
+            }else{
+                cursoService.removerComArquivos(id);
+            }
         } catch (RuntimeException e) {
             redirect.addFlashAttribute("erro", e.getMessage());
         }

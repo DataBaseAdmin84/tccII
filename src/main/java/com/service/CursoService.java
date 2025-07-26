@@ -1,7 +1,7 @@
 package com.service;
 
-import com.dataUtil.DataUtils;
 import com.dto.CursoDTO;
+import com.model.Aula;
 import com.model.Curso;
 import com.model.Matricula;
 import com.model.Usuario;
@@ -10,15 +10,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class CursoService {
 
     @Autowired
     private CursoRepository cursoRepository;
+
+    @Autowired
+    private AulaService aulaService;
 
     @Autowired
     private MatriculaService matriculaService;
@@ -49,5 +50,27 @@ public class CursoService {
                 return true;
         }
         return false;
+    }
+
+    public boolean possuiArquivo(Long idCurso){
+        var curso = cursoRepository.findById(idCurso);
+        if(curso.isPresent()){
+            var aulas = curso.get().getAulas();
+            for(Aula aula :  aulas){
+                if(aula.getArquivos() != null && !aula.getArquivos().isEmpty())
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    public void removerComArquivos(Long idCurso){
+        var curso = cursoRepository.findById(idCurso);
+        if(curso.isPresent()){
+            var aulas = curso.get().getAulas();
+            for(Aula aula :  aulas){
+                aulaService.removerVinculosPorAula(aula);
+            }
+        }
     }
 }

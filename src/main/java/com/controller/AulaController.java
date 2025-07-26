@@ -3,8 +3,10 @@ package com.controller;
 import com.dto.ArquivoDTO;
 import com.dto.AulaDTO;
 import com.model.Arquivo;
+import com.model.ArquivoAula;
 import com.model.Aula;
 import com.model.Usuario;
+import com.repository.ArquivoAulaRepository;
 import com.repository.AulaRepository;
 import com.repository.CursoRepository;
 import com.service.AulaService;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -31,6 +34,9 @@ public class AulaController {
 
     @Autowired
     AulaRepository aulaRepository;
+
+    @Autowired
+    ArquivoAulaRepository arquivoAulaRepository;
 
     @Autowired
     AulaService aulaService;
@@ -52,24 +58,39 @@ public class AulaController {
     @PostMapping("/aula/salvar")
     public String salvarAula(@ModelAttribute AulaDTO aulaDTO, Model model, HttpSession session) {
         try {
-            if(aulaDTO.getId() != null)
-                editarAula(aulaDTO.getId(), aulaDTO, model, session);
+            var curso = cursoRepository.findById(aulaDTO.getIdCurso())
+                    .orElseThrow(() -> new IllegalArgumentException("Curso com ID " + aulaDTO.getIdCurso() + " não encontrado."));
 
-            var curso = cursoRepository.findById(aulaDTO.getIdCurso());
-            Aula aula = AulaDTO.toModel(aulaDTO);
-            curso.ifPresent(aula::setCurso);
+            Aula aula;
+            if (aulaDTO.getId() != null) {
+                aula = aulaRepository.findById(aulaDTO.getId())
+                        .orElseThrow(() -> new IllegalArgumentException("Aula com ID " + aulaDTO.getId() + " não encontrada para atualização."));
+            } else {
+                aula = new Aula();
+            }
 
-            aulaRepository.save(aula);
-            model.addAttribute("aula", AulaDTO.toDto(aula));
-            model.addAttribute("cursoId", aula.getCurso().getId());
+            aula.setTitulo(aulaDTO.getTitulo());
+            aula.setDescricao(aulaDTO.getDescricao());
+            aula.setCurso(curso);
+
+            Aula aulaSalva = aulaRepository.save(aula);
+
+            model.addAttribute("sucesso", "Aula salva com sucesso!");
+            model.addAttribute("aula", AulaDTO.toDto(aulaSalva));
+            model.addAttribute("cursoId", aulaSalva.getCurso().getId());
             model.addAttribute("usuarioLogado", session.getAttribute("usuarioLogado"));
+
             return "preparacaoaula";
 
+        } catch (IllegalArgumentException e) {
+            log.error("Erro ao salvar aula: {}", e.getMessage());
+            model.addAttribute("erro", e.getMessage());
+            return "preparacaoaula";
         } catch (Exception e) {
-            model.addAttribute("erro", "Erro ao preencher formulário de aula "+e.getLocalizedMessage());
-            log.error(e.getLocalizedMessage());
+            log.error("Erro inesperado ao salvar aula: {}", e.getMessage(), e);
+            model.addAttribute("erro", "Ocorreu um erro inesperado ao salvar a aula.");
+            return "preparacaoaula";
         }
-        return "redirect:/preparacaoaula";
     }
 
     @GetMapping("/aula/editar/{id}")
