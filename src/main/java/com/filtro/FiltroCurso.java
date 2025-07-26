@@ -14,6 +14,7 @@ public class FiltroCurso {
     private Long id;
     private String titulo;
     private String descricao;
+    private Long idProfessor;
     private String nomeProfessor;
 
     public Specification<Curso> toSpecification() {
@@ -26,6 +27,10 @@ public class FiltroCurso {
 
             if(!StringUtils.isEmpty(titulo)) {
                 predicates.add(criteriaBuilder.like(criteriaBuilder.upper(root.get("titulo")), "%"+titulo.toUpperCase()+"%"));
+            }
+
+            if(idProfessor != null) {
+                predicates.add(criteriaBuilder.equal(root.join("professor").get("id"), idProfessor));
             }
 
             if(!StringUtils.isEmpty(nomeProfessor)) {
@@ -85,5 +90,13 @@ public class FiltroCurso {
 
     public void setNomeProfessor(String nomeProfessor) {
         this.nomeProfessor = nomeProfessor;
+    }
+
+    public Long getIdProfessor() {
+        return idProfessor;
+    }
+
+    public void setIdProfessor(Long idProfessor) {
+        this.idProfessor = idProfessor;
     }
 }

@@ -30,19 +30,13 @@ public class UsuarioController {
         try {
             String email = usuarioDTO.getEmail();
             String login = usuarioDTO.getLogin();
-            boolean existe = usuarioRepository.existsByEmailAndLogin(email, login);
-            if (existe) {
-                model.addAttribute("erro", "E-mail já estão sendo usado por outro usuário.");
-                model.addAttribute("usuario", usuarioDTO);
-                return "cadastrousuario";
-            }
 
-            if (usuarioService.validarEmail(email)) {
+            if (usuarioService.validarEmail(email) && usuarioDTO.getId() == null) {
                 model.addAttribute("erro", "Email já está sendo usado por outro usuário.");
                 model.addAttribute("usuario", usuarioDTO);
                 return "cadastrousuario";
             }
-            if (!usuarioService.validarLogin(login)) {
+            if (!usuarioService.validarLogin(login) && usuarioDTO.getId() == null) {
                 model.addAttribute("erro", "Login já está sendo usado por outro usuário.");
                 model.addAttribute("usuario", usuarioDTO);
                 return "cadastrousuario";
