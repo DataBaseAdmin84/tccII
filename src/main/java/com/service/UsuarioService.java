@@ -1,15 +1,11 @@
 package com.service;
 
-import com.dto.UsuarioDTO;
+import com.dto.LoginDTO;
+import com.filtro.FiltroUsuario;
 import com.model.Usuario;
-import com.repository.CursoRepository;
 import com.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class UsuarioService {
@@ -28,9 +24,26 @@ public class UsuarioService {
         return usuarioRepository.findByLogin(login).isEmpty();
     }
 
-    public Optional<Usuario> autenticar(String login) {
-        List<Usuario> usuarios = usuarioRepository.findByLogin(login);
-        return usuarios.stream().findFirst();
+    public boolean autenticar(LoginDTO login) {
+        var filtro = new FiltroUsuario();
+        filtro.setLogin(login.getLogin());
+        filtro.setSenha(login.getSenha());
+        var usuario = usuarioRepository.findAll(filtro.toSpecification());
+        if (usuario.isEmpty()){
+            return false;
+        }
+        return true;
+    }
+
+    public Usuario findUser(LoginDTO login){
+        var filtro = new FiltroUsuario();
+        filtro.setLogin(login.getLogin());
+        filtro.setSenha(login.getSenha());
+        var usuario = usuarioRepository.findAll(filtro.toSpecification());
+        if (!usuario.isEmpty()){
+            return usuario.getFirst();
+        }
+        return null;
     }
 
     public void removeVincululos(Usuario usuario){
